@@ -1,4 +1,4 @@
-# 🌟 LUMIÈRE SALON - HỆ THỐNG QUẢN LÝ ĐẶT LỊCH SALON TÓC TÍCH HỢP AI
+# 🌟THEMANH SALON - HỆ THỐNG QUẢN LÝ ĐẶT LỊCH SALON TÓC TÍCH HỢP AI
 
 Hệ thống quản lý salon tóc cao cấp chuẩn **Clean Code & SOLID Architecture**, tích hợp **Google Gemini AI (`google-genai` SDK)** hỗ trợ tư vấn chất tóc, tạo tin nhắn chăm sóc khách hàng và tóm tắt hồ sơ kỹ thuật màu/uốn.
 
