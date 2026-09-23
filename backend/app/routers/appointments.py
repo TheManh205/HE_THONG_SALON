@@ -7,6 +7,7 @@ from sqlalchemy import or_
 
 from app.core.database import get_db
 from app.models.appointment import Appointment, AppointmentStatus
+from app.models.customer import Customer
 from app.models.invoice import Invoice
 from app.models.user import User
 from app.schemas.appointment import (
@@ -23,6 +24,52 @@ from app.services.auth_service import require_roles, get_current_user
 from app.services.audit_service import AuditService
 
 router = APIRouter(prefix="/appointments", tags=["Appointment & Booking Management"])
+
+@router.get("/my-bookings", response_model=List[AppointmentResponse])
+def get_my_bookings(
+    phone: str = Query(..., description="Số điện thoại khách hàng tra cứu"),
+    db: Session = Depends(get_db)
+):
+    """Tra cứu lịch sử đặt lịch công khai dành cho khách hàng qua số điện thoại."""
+    clean_phone = phone.strip()
+    customer = db.query(Customer).filter(Customer.phone == clean_phone).first()
+    if not customer:
+        return []
+
+    appointments = db.query(Appointment).filter(
+        Appointment.customer_id == customer.id
+    ).order_by(Appointment.appointment_date.desc()).all()
+
+    results = []
+    for app in appointments:
+        resp = AppointmentResponse.model_validate(app)
+        resp.has_invoice = (app.invoice is not None)
+        results.append(resp)
+    return results
+
+
+@router.post("/public-cancel/{appointment_id}", response_model=AppointmentResponse)
+def public_cancel_appointment(
+    appointment_id: int,
+    phone: str = Query(..., description="Số điện thoại xác thực"),
+    db: Session = Depends(get_db)
+):
+    """Khách hàng tự hủy lịch hẹn nếu chưa hoàn tất và số điện thoại trùng khớp."""
+    app = db.query(Appointment).filter(Appointment.id == appointment_id).first()
+    if not app:
+        raise HTTPException(status_code=404, detail="Không tìm thấy lịch hẹn")
+    if not app.customer or app.customer.phone != phone.strip():
+        raise HTTPException(status_code=403, detail="Số điện thoại không khớp với thông tin đặt lịch")
+    if app.status in [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED]:
+        raise HTTPException(status_code=400, detail="Lịch hẹn đã hoàn thành hoặc đã bị hủy trước đó")
+
+    app.status = AppointmentStatus.CANCELLED
+    db.commit()
+    db.refresh(app)
+    resp = AppointmentResponse.model_validate(app)
+    resp.has_invoice = (app.invoice is not None)
+    return resp
+
 
 @router.post("/check-overlap", response_model=OverlapCheckResponse)
 def check_overlap(

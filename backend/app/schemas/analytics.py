@@ -2,7 +2,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 class DailyRevenue(BaseModel):
-    date: str # YYYY-MM-DD
+    date: str  # YYYY-MM-DD
     revenue: float
     appointment_count: int
 
@@ -11,6 +11,30 @@ class RevenueStatsResponse(BaseModel):
     total_invoices: int
     average_order_value: float
     daily_breakdown: List[DailyRevenue]
+
+class DateRangeRevenueResponse(BaseModel):
+    """Revenue breakdown for a custom date range (start_date → end_date)."""
+    start_date: str
+    end_date: str
+    total_revenue: float
+    total_invoices: int
+    average_order_value: float
+    daily_breakdown: List[DailyRevenue]
+
+class StylistPerformanceItem(BaseModel):
+    hairdresser_id: int
+    hairdresser_name: str
+    avatar_url: Optional[str] = None
+    total_revenue: float
+    total_appointments: int
+    completed_appointments: int
+    average_rating: Optional[float] = None
+
+class StylistPerformanceResponse(BaseModel):
+    """Aggregated stylist performance within a date range."""
+    start_date: str
+    end_date: str
+    stylists: List[StylistPerformanceItem]
 
 class PopularServiceItem(BaseModel):
     service_id: int

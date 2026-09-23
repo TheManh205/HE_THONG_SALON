@@ -1,19 +1,23 @@
 from typing import List
-from fastapi import APIRouter, Depends, Query
+from datetime import datetime, timedelta, timezone
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.user import User, RoleEnum
 from app.schemas.analytics import (
     RevenueStatsResponse,
+    DateRangeRevenueResponse,
+    StylistPerformanceResponse,
     PopularServiceItem,
     ReturningCustomersResponse,
-    DashboardOverview
+    DashboardOverview,
 )
 from app.services.analytics_service import AnalyticsService
 from app.services.auth_service import require_roles
 
 router = APIRouter(prefix="/analytics", tags=["Reports & Analytics"])
+
 
 @router.get("/overview", response_model=DashboardOverview)
 def get_dashboard_overview(
@@ -48,3 +52,44 @@ def get_customer_retention(
 ):
     """Calculate customer return and retention rates."""
     return AnalyticsService.get_customer_retention(db)
+
+
+@router.get("/revenue-range", response_model=DateRangeRevenueResponse)
+def get_revenue_by_range(
+    start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
+    end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+):
+    """Get revenue breakdown for custom date range A -> B (Admin only)."""
+    try:
+        start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+        end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+
+    if start_dt > end_dt:
+        raise HTTPException(status_code=400, detail="start_date must be before or equal to end_date.")
+
+    return AnalyticsService.get_revenue_by_date_range(db, start_date=start_dt, end_date=end_dt)
+
+
+@router.get("/stylist-performance", response_model=StylistPerformanceResponse)
+def get_stylist_performance(
+    start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
+    end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+):
+    """Get stylist performance metrics within date range A -> B (Admin only)."""
+    try:
+        start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+        end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+
+    if start_dt > end_dt:
+        raise HTTPException(status_code=400, detail="start_date must be before or equal to end_date.")
+
+    return AnalyticsService.get_stylist_performance(db, start_date=start_dt, end_date=end_dt)
+

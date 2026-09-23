@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { analyticsAPI, appointmentAPI } from '../services/endpoints';
 import { AppointmentBadge } from '../components/common/Badge';
+import HeroBanner from '../components/common/HeroBanner';
 import {
   DollarSign, Calendar, Clock, Users, Sparkles,
-  TrendingUp, ChevronRight, CheckCircle, AlertCircle, ArrowUpRight
+  TrendingUp, ChevronRight, AlertCircle, ArrowUpRight
 } from 'lucide-react';
 
 export const DashboardPage = () => {
@@ -40,99 +41,70 @@ export const DashboardPage = () => {
   const kpiCards = [
     {
       label: 'Doanh Thu Hôm Nay',
-      value: overview ? `${overview.today_revenue?.toLocaleString('vi-VN')}đ` : '—',
+      value: overview ? `${overview.today_revenue?.toLocaleString('vi-VN')} đ` : '—',
       icon: DollarSign,
-      color: 'text-[#111111]',
-      bg: 'bg-[#f5f5f3]',
-      border: 'border-black/10',
+      color: 'text-amber-400',
+      bg: 'bg-amber-500/15',
+      border: 'border-amber-500/30',
       sub: 'Từ hóa đơn đã thanh toán',
-      subColor: 'text-[#4b5563]',
+      subColor: 'text-amber-300/80',
     },
     {
       label: 'Lịch Hẹn Hôm Nay',
-      value: overview ? `${overview.today_appointments} cuộc` : '—',
+      value: overview ? `${overview.today_appointments} ca` : '—',
       icon: Calendar,
-      color: 'text-[#111111]',
-      bg: 'bg-[#f5f5f3]',
-      border: 'border-black/10',
+      color: 'text-blue-400',
+      bg: 'bg-blue-500/15',
+      border: 'border-blue-500/30',
       sub: 'Theo lịch biểu ca làm việc',
-      subColor: 'text-[#6b7280]',
+      subColor: 'text-slate-400',
     },
     {
       label: 'Chờ Xác Nhận',
       value: overview ? `${overview.pending_appointments} lịch` : '—',
       icon: Clock,
-      color: 'text-[#111111]',
-      bg: 'bg-[#f5f5f3]',
-      border: 'border-black/10',
+      color: 'text-amber-400',
+      bg: 'bg-amber-500/15',
+      border: 'border-amber-500/30',
       sub: 'Cần lễ tân kiểm tra & duyệt',
-      subColor: 'text-[#6b7280]',
+      subColor: 'text-slate-400',
     },
     {
       label: 'Khách Quay Lại',
       value: overview ? `${overview.retention_rate}%` : '—',
       icon: Users,
-      color: 'text-[#111111]',
-      bg: 'bg-[#f5f5f3]',
-      border: 'border-black/10',
+      color: 'text-purple-400',
+      bg: 'bg-purple-500/15',
+      border: 'border-purple-500/30',
       sub: 'Tỷ lệ khách hàng thân thiết',
-      subColor: 'text-[#6b7280]',
+      subColor: 'text-slate-400',
     },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-slate-100 pb-12">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-[28px] border border-black/10 bg-[#111111] p-6 sm:p-8 shadow-[0_18px_40px_rgba(17,17,17,0.12)]">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -top-8 -right-8 h-64 w-64 rounded-full bg-white/30 blur-2xl" />
-          <div className="absolute -bottom-8 -left-8 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
-        </div>
-        <div className="relative z-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-white backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5" /> Bảng Điều Khiển · THEMANH SALON
-            </div>
-            <h1 className="text-2xl font-extrabold text-white sm:text-3xl">
-              Xin chào, {user?.full_name || 'Nhân viên'}!
-            </h1>
-            <p className="max-w-lg text-sm text-white/75">
-              Hệ thống đang hoạt động ổn định với đầy đủ phân hệ đặt lịch, chống trùng ca, thanh toán và AI Gemini.
-            </p>
-          </div>
-          <div className="flex shrink-0 flex-wrap gap-2.5">
-            <Link
-              to="/appointments"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#f5f5f3]"
-            >
-              <Calendar className="h-4 w-4" /> Quản Lý Lịch Hẹn
-            </Link>
-            <Link
-              to="/ai-hub"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-white/10"
-            >
-              <Sparkles className="h-4 w-4" /> Trợ Lý AI
-            </Link>
-          </div>
-        </div>
-      </div>
+      <HeroBanner name={user?.full_name || 'Nhân viên'} />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpiCards.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="bg-white rounded-2xl p-5 border border-slate-200 shadow-soft hover:shadow-soft-lg transition-shadow">
+            <div
+              key={card.label}
+              className="bg-slate-800 rounded-2xl p-5 border border-slate-700 shadow-card-dark hover:border-slate-600 transition-all"
+            >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{card.label}</span>
-                <div className={`w-9 h-9 rounded-xl ${card.bg} ${card.color} flex items-center justify-center border ${card.border}`}>
-                  <Icon className="w-4.5 h-4.5" />
+                <span className="text-xs font-black text-slate-400 uppercase tracking-wider">{card.label}</span>
+                <div className={`w-10 h-10 rounded-xl ${card.bg} ${card.color} flex items-center justify-center border ${card.border}`}>
+                  <Icon className="w-5 h-5" />
                 </div>
               </div>
-              <div className={`text-2xl font-black ${card.color} leading-tight`}>
-                {loading ? <div className="h-7 w-24 bg-slate-100 animate-pulse rounded-lg" /> : card.value}
+              <div className={`text-2xl sm:text-3xl font-black ${card.color} font-serif-salon leading-tight`}>
+                {loading ? <div className="h-8 w-28 bg-slate-700/60 animate-pulse rounded-lg" /> : card.value}
               </div>
-              <p className={`text-[11px] font-medium ${card.subColor} mt-1.5`}>{card.sub}</p>
+              <p className={`text-xs font-medium ${card.subColor} mt-1.5`}>{card.sub}</p>
             </div>
           );
         })}
@@ -143,38 +115,44 @@ export const DashboardPage = () => {
         {/* Recent Appointments */}
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-amber-500" />
+            <h2 className="text-base font-black text-white flex items-center gap-2 font-serif-salon">
+              <Calendar className="w-5 h-5 text-amber-400" />
               Lịch Hẹn Gần Đây
             </h2>
-            <Link to="/appointments" className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 hover:underline">
+            <Link
+              to="/appointments"
+              className="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 hover:underline"
+            >
               Xem tất cả <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-          <div className="overflow-hidden rounded-[24px] border border-black/10 bg-white shadow-[0_12px_30px_rgba(17,17,17,0.04)]">
+          <div className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 shadow-card-dark">
             {loading ? (
               <div className="p-6 space-y-4">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-12 bg-slate-50 animate-pulse rounded-xl" />
+                  <div key={i} className="h-14 bg-slate-700/50 animate-pulse rounded-xl" />
                 ))}
               </div>
             ) : recentAppointments.length > 0 ? (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-slate-700/70">
                 {recentAppointments.map((app) => (
-                  <div key={app.id} className="px-5 py-3.5 hover:bg-slate-50/70 transition-colors flex items-center justify-between gap-3">
+                  <div
+                    key={app.id}
+                    className="px-5 py-4 hover:bg-slate-700/40 transition-colors flex items-center justify-between gap-3 text-sm"
+                  >
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                        <span className="text-sm font-bold text-slate-800 truncate">{app.customer?.full_name}</span>
+                      <div className="flex items-center gap-2.5 mb-1 flex-wrap">
+                        <span className="font-bold text-white truncate">{app.customer?.full_name}</span>
                         <span className="text-xs text-slate-400 font-mono">{app.customer?.phone}</span>
                         <AppointmentBadge status={app.status} />
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-slate-500">
-                        <span className="text-amber-600 font-semibold">
+                      <div className="flex items-center gap-3 text-xs text-slate-300">
+                        <span className="text-amber-400 font-bold">
                           {app.hairdresser?.full_name}
                         </span>
                         <span>·</span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
+                        <span className="flex items-center gap-1 text-slate-400">
+                          <Clock className="w-3.5 h-3.5" />
                           {new Date(app.appointment_date).toLocaleString('vi-VN', {
                             day: 'numeric', month: 'numeric',
                             hour: '2-digit', minute: '2-digit'
@@ -182,48 +160,48 @@ export const DashboardPage = () => {
                         </span>
                       </div>
                     </div>
-                    <span className="shrink-0 text-sm font-bold text-slate-700">
-                      {app.total_price?.toLocaleString('vi-VN')}đ
+                    <span className="shrink-0 text-sm font-black text-amber-400">
+                      {app.total_price?.toLocaleString('vi-VN')} đ
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-10 text-center">
-                <AlertCircle className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                <p className="text-slate-500 text-sm font-medium">Chưa có lịch hẹn nào trong hệ thống.</p>
+              <div className="p-12 text-center">
+                <AlertCircle className="w-10 h-10 text-slate-500 mx-auto mb-3" />
+                <p className="text-slate-400 text-sm font-medium">Chưa có lịch hẹn nào trong hệ thống.</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Right Panel */}
-        <div className="space-y-5">
+        <div className="space-y-6">
           {/* Popular Services */}
           <div>
-            <h3 className="text-base font-bold text-slate-800 flex items-center gap-2 mb-3">
-              <TrendingUp className="w-4 h-4 text-amber-500" />
+            <h3 className="text-base font-black text-white flex items-center gap-2 mb-3 font-serif-salon">
+              <TrendingUp className="w-4 h-4 text-amber-400" />
               Dịch Vụ Phổ Biến
             </h3>
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-soft divide-y divide-slate-100 overflow-hidden">
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-card-dark divide-y divide-slate-700/70 overflow-hidden">
               {loading ? (
                 <div className="p-4 space-y-3">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-8 bg-slate-50 animate-pulse rounded-lg" />
+                    <div key={i} className="h-8 bg-slate-700/50 animate-pulse rounded-lg" />
                   ))}
                 </div>
               ) : popularServices.length > 0 ? popularServices.map((svc, idx) => (
-                <div key={svc.service_id} className="flex items-center justify-between px-4 py-3 hover:bg-slate-50/70 transition-colors">
+                <div key={svc.service_id} className="flex items-center justify-between px-4 py-3.5 hover:bg-slate-700/40 transition-colors">
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className={`text-xs font-black w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${idx === 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`text-xs font-black w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${idx === 0 ? 'bg-amber-500 text-slate-950 shadow-glow-gold' : 'bg-slate-700 text-slate-300'}`}>
                       {idx + 1}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-slate-700 truncate">{svc.service_name}</p>
-                      <p className="text-[10px] text-slate-400">{svc.category}</p>
+                      <p className="text-sm font-bold text-white truncate">{svc.service_name}</p>
+                      <p className="text-[11px] text-slate-400">{svc.category}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-amber-600 shrink-0 ml-2">{svc.booking_count} lượt</span>
+                  <span className="text-xs font-bold text-amber-400 shrink-0 ml-2">{svc.booking_count} lượt</span>
                 </div>
               )) : (
                 <div className="p-6 text-center text-slate-400 text-xs">Chưa có dữ liệu</div>
@@ -232,19 +210,19 @@ export const DashboardPage = () => {
           </div>
 
           {/* AI Quick Access */}
-          <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl p-5 border border-purple-200 text-center space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mx-auto">
-              <Sparkles className="w-5 h-5" />
+          <div className="bg-gradient-to-br from-slate-800 to-slate-850 rounded-2xl p-6 border border-purple-500/30 text-center space-y-3.5 shadow-card-dark">
+            <div className="w-11 h-11 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center mx-auto shadow-sm">
+              <Sparkles className="w-6 h-6" />
             </div>
-            <h4 className="text-sm font-bold text-slate-800">Trợ Lý AI Gemini</h4>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Soạn tin nhắn CSKH, tư vấn kiểu tóc, tóm tắt lịch sử kỹ thuật tự động.
+            <h4 className="text-base font-bold text-white">Trợ Lý AI Gemini</h4>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Soạn tin nhắn CSKH, tư vấn kiểu tóc, tóm tắt lịch sử kỹ thuật tự động bằng trí tuệ nhân tạo.
             </p>
             <Link
               to="/ai-hub"
-              className="inline-flex items-center gap-2 w-full justify-center py-2 rounded-xl text-xs font-bold bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-glow-accent"
+              className="inline-flex items-center gap-2 w-full justify-center py-2.5 rounded-xl text-xs font-black bg-purple-600 text-white hover:bg-purple-500 transition-colors shadow-glow-accent"
             >
-              Mở Module AI <ArrowUpRight className="w-3.5 h-3.5" />
+              Mở Module AI <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -252,3 +230,5 @@ export const DashboardPage = () => {
     </div>
   );
 };
+
+export default DashboardPage;

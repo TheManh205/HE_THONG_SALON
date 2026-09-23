@@ -25,6 +25,8 @@ export const appointmentAPI = {
   checkOverlap: (data) => api.post('/appointments/check-overlap', data),
   getAvailableSlots: (params) => api.get('/appointments/available-slots', { params }),
   publicBook: (data) => api.post('/appointments/book', data),
+  getMyBookings: (phone) => api.get('/appointments/my-bookings', { params: { phone } }),
+  publicCancel: (id, phone) => api.post(`/appointments/public-cancel/${id}`, null, { params: { phone } }),
   adminCreate: (data) => api.post('/appointments/', data),
   getAll: (params) => api.get('/appointments/', { params }),
   getById: (id) => api.get(`/appointments/${id}`),
@@ -50,6 +52,10 @@ export const invoiceAPI = {
 export const analyticsAPI = {
   getOverview: () => api.get('/analytics/overview'),
   getRevenue: (days = 7) => api.get('/analytics/revenue', { params: { days } }),
+  getRevenueByRange: (startDate, endDate) =>
+    api.get('/analytics/revenue-range', { params: { start_date: startDate, end_date: endDate } }),
+  getStylistPerformance: (startDate, endDate) =>
+    api.get('/analytics/stylist-performance', { params: { start_date: startDate, end_date: endDate } }),
   getPopularServices: (limit = 5) => api.get('/analytics/popular-services', { params: { limit } }),
   getCustomerRetention: () => api.get('/analytics/customer-retention'),
 };

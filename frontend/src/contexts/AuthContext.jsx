@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const role = user?.role || 'guest';
-  const isAdmin = role === 'admin' || role === 'manager';
+  const isAdmin = role === 'admin';
   const isReceptionist = role === 'receptionist' || isAdmin;
   const isStylist = role === 'hairdresser';
 

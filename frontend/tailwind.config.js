@@ -4,69 +4,21 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         salon: {
-          bg: '#F5F5F4',
-          card: '#FFFFFF',
-          border: '#E7E5E4',
-          primary: '#111111',
-          primaryHover: '#2F2F2F',
-          primaryLight: '#F5F5F5',
-          primaryText: '#1F2937',
-          muted: '#6B7280',
-          dark: '#111111',
-          text: '#1F2937',
-          subtle: '#9CA3AF',
-        },
-        amber: {
-          50: '#F7F7F5',
-          100: '#EFEFEA',
-          200: '#E2E1DA',
-          300: '#D1D0C7',
-          400: '#B4B1A4',
-          500: '#111111',
-          600: '#1D1D1D',
-          700: '#2A2A2A',
-          800: '#3A3A3A',
-          900: '#111111',
-        },
-        yellow: {
-          50: '#F8F8F7',
-          100: '#F1F1EE',
-          200: '#E6E5E1',
-          300: '#D7D5D1',
-          400: '#B7B4AE',
-          500: '#111111',
-          600: '#222222',
-          700: '#333333',
-          800: '#444444',
-          900: '#111111',
-        },
-        purple: {
-          50: '#F5F5F5',
-          100: '#EDEDED',
-          200: '#D9D9D9',
-          300: '#C4C4C4',
-          400: '#9E9E9E',
-          500: '#111111',
-          600: '#1F1F1F',
-          700: '#2D2D2D',
-          800: '#3A3A3A',
-          900: '#111111',
-        },
-        cyan: {
-          50: '#F5F5F5',
-          100: '#EFEFEF',
-          200: '#DEDEDE',
-          300: '#C9C9C9',
-          400: '#A6A6A6',
-          500: '#111111',
-          600: '#252525',
-          700: '#343434',
-          800: '#444444',
-          900: '#111111',
+          bg: '#0F172A',         // Slate 900
+          card: '#1E293B',       // Slate 800
+          border: '#334155',     // Slate 700
+          borderHover: '#475569',
+          primary: '#F59E0B',    // Amber 500 Gold
+          primaryHover: '#D97706',
+          gold: '#FBBF24',       // Amber 400
+          text: '#F8FAFC',       // Slate 50
+          muted: '#94A3B8',      // Slate 400
+          dark: '#020617',       // Slate 950
         },
       },
       fontFamily: {
@@ -74,11 +26,9 @@ export default {
         serif: ['Playfair Display', 'Georgia', 'serif'],
       },
       boxShadow: {
-        'soft': '0 1px 3px 0 rgba(0,0,0,0.04), 0 1px 2px -1px rgba(0,0,0,0.04)',
-        'soft-md': '0 4px 12px -2px rgba(0,0,0,0.06), 0 2px 4px -1px rgba(0,0,0,0.04)',
-        'soft-lg': '0 8px 24px -4px rgba(0,0,0,0.08), 0 4px 8px -2px rgba(0,0,0,0.04)',
-        'primary-glow': '0 0 0 3px rgba(17, 17, 17, 0.12)',
-      }
+        'glow-gold': '0 0 20px -3px rgba(245, 158, 11, 0.35)',
+        'card-dark': '0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3)',
+      },
     },
   },
   plugins: [],

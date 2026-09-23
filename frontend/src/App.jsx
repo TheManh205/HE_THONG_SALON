@@ -32,16 +32,18 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-// Main Layout with Navbar & Sidebar
+// Main Layout with Fixed Sidebar & Topbar
 const AppLayout = ({ children }) => {
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
   return (
-    <div className="min-h-screen bg-[#f5f5f3] text-[#111111]">
-      <div className="mx-auto w-full max-w-[1700px]">
-        <Navbar />
-        <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col gap-5 px-3 py-4 sm:px-4 lg:flex-row lg:gap-6 lg:px-6 lg:py-7 xl:px-8">
-          <Sidebar />
-          <main className="min-w-0 flex-1">{children}</main>
-        </div>
+    <div className="min-h-screen bg-slate-900 text-slate-100">
+      <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <Navbar onMenuClick={() => setMobileOpen(true)} />
+      <div className="lg:pl-64 pt-16 flex flex-col min-h-screen">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto">
+          {children}
+        </main>
       </div>
     </div>
   );
@@ -93,7 +95,7 @@ export function App() {
             <Route
               path="/customers"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'manager', 'receptionist', 'hairdresser']}>
+                <ProtectedRoute allowedRoles={['admin', 'receptionist', 'hairdresser']}>
                   <AppLayout>
                     <CustomersPage />
                   </AppLayout>
@@ -123,7 +125,7 @@ export function App() {
             <Route
               path="/invoices"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'manager', 'receptionist']}>
+                <ProtectedRoute allowedRoles={['admin', 'receptionist']}>
                   <AppLayout>
                     <InvoicesPage />
                   </AppLayout>
@@ -133,7 +135,7 @@ export function App() {
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'manager']}>
+                <ProtectedRoute allowedRoles={['admin']}>
                   <AppLayout>
                     <AnalyticsPage />
                   </AppLayout>
