@@ -5,7 +5,7 @@ import { useToast } from '../contexts/ToastContext';
 import { Scissors, Lock, User, Shield, ArrowRight, ExternalLink } from 'lucide-react';
 
 export const LoginPage = () => {
-  const { login, demoLogin } = useAuth();
+  const { login } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -30,17 +30,7 @@ export const LoginPage = () => {
     }
   };
 
-  const handleQuickDemo = async (roleType) => {
-    setLoading(true);
-    const result = await demoLogin(roleType);
-    setLoading(false);
-    if (result.success) {
-      addToast(`Đăng nhập Demo ${roleType} thành công!`, 'success');
-      navigate('/');
-    } else {
-      addToast(result.error || 'Đăng nhập thất bại!', 'error');
-    }
-  };
+  // demo login removed for production
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 p-4 text-slate-100">
@@ -109,43 +99,12 @@ export const LoginPage = () => {
                 Đang xác thực...
               </span>
             ) : (
-              <>Đăng Nhập Quản Trị <ArrowRight className="w-4 h-4" /></>
+              <>Đăng Nhập <ArrowRight className="w-4 h-4" /></>
             )}
           </button>
         </form>
 
-        {/* Demo Switcher */}
-        <div className="border-t border-slate-700 pt-5">
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
-            Truy Cập Nhanh 1-Click (Demo)
-          </p>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('admin')}
-              className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 p-3 text-xs font-bold text-slate-200 transition hover:border-amber-400 hover:text-amber-300"
-            >
-              <Shield className="w-4 h-4 text-amber-400" />
-              Quản Trị
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('receptionist')}
-              className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 p-3 text-xs font-bold text-slate-200 transition hover:border-amber-400 hover:text-amber-300"
-            >
-              <User className="w-4 h-4 text-blue-400" />
-              Lễ Tân
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('hairdresser')}
-              className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 p-3 text-xs font-bold text-slate-200 transition hover:border-amber-400 hover:text-amber-300"
-            >
-              <Scissors className="w-4 h-4 text-purple-400" />
-              Thợ Tóc
-            </button>
-          </div>
-        </div>
+        {/* Demo switcher removed: production auth only */}
 
         <div className="mt-5 text-center">
           <Link

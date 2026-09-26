@@ -45,6 +45,22 @@ class BookingService:
     def get_stylist_schedule_for_date(db: Session, hairdresser_id: int, target_date: datetime) -> Optional[Schedule]:
         """Fetch working schedule for a stylist on target date's day-of-week (0=Mon, 6=Sun)."""
         day_of_week = target_date.weekday()
+        # First check for a daily override
+        from app.models.hairdresser import DailySchedule
+        ds = db.query(DailySchedule).filter(
+            DailySchedule.hairdresser_id == hairdresser_id,
+            DailySchedule.schedule_date == target_date.date()
+        ).first()
+        if ds:
+            # Build a lightweight Schedule-like object
+            class _S:
+                def __init__(self, start_time, end_time, is_day_off):
+                    self.start_time = start_time
+                    self.end_time = end_time
+                    self.is_day_off = is_day_off
+
+            return _S(ds.start_time, ds.end_time, ds.is_day_off)
+
         schedule = db.query(Schedule).filter(
             Schedule.hairdresser_id == hairdresser_id,
             Schedule.day_of_week == day_of_week

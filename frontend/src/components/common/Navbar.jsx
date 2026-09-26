@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const Navbar = ({ onMenuClick }) => {
-  const { user, isAuthenticated, logout, demoLogin, role } = useAuth();
+  const { user, isAuthenticated, logout, role } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -48,42 +48,7 @@ export const Navbar = ({ onMenuClick }) => {
 
         {isAuthenticated ? (
           <>
-            {/* Quick Demo Switcher */}
-            <div className="hidden md:flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-800/90 p-1">
-              <span className="flex items-center gap-1 px-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                <ShieldCheck className="h-3.5 w-3.5 text-amber-400" /> Demo:
-              </span>
-              <button
-                onClick={() => demoLogin('admin')}
-                className={`rounded-full px-3 py-1 text-xs font-bold transition ${
-                  role === 'admin'
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                }`}
-              >
-                Admin
-              </button>
-              <button
-                onClick={() => demoLogin('receptionist')}
-                className={`rounded-full px-3 py-1 text-xs font-bold transition ${
-                  role === 'receptionist'
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                }`}
-              >
-                Lễ Tân
-              </button>
-              <button
-                onClick={() => demoLogin('hairdresser')}
-                className={`rounded-full px-3 py-1 text-xs font-bold transition ${
-                  role === 'hairdresser'
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                }`}
-              >
-                Stylist
-              </button>
-            </div>
+            {/* Demo controls removed from navbar */}
 
             {/* User Profile & Logout */}
             <div className="flex items-center gap-3 pl-2 sm:border-l sm:border-slate-800">

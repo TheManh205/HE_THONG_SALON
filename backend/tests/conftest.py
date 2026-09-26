@@ -80,7 +80,7 @@ def setup_test_db():
             day_of_week=dow,
             start_time=time(8, 30),
             end_time=time(20, 0),
-            is_day_off=(dow == 0)
+            is_day_off=False
         )
         db.add(s)
 

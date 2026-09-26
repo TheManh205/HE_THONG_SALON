@@ -16,6 +16,7 @@ import {
   ToggleLeft,
   ToggleRight
 } from 'lucide-react';
+import MonthlyScheduleView from '../components/MonthlyScheduleView';
 
 const DAYS_OF_WEEK = [
   'Thứ Hai',
@@ -28,11 +29,12 @@ const DAYS_OF_WEEK = [
 ];
 
 export const StylistsPage = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isStylist, user } = useAuth();
   const { addToast } = useToast();
 
   const [stylists, setStylists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useState('list');
 
   // Schedule modal
   const [selectedStylist, setSelectedStylist] = useState(null);
@@ -184,80 +186,106 @@ export const StylistsPage = () => {
         )}
       </div>
 
-      {/* Stylists Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {loading ? (
-          <div className="col-span-full py-12 text-center text-salon-muted text-sm">Đang tải danh sách stylist...</div>
+      {/* Tabs */}
+      <div className="flex items-center gap-2">
+        <button onClick={() => setView('list')} className="px-3 py-1 rounded bg-slate-800">Danh Sách Thợ</button>
+        <button onClick={() => setView('monthly')} className="px-3 py-1 rounded bg-slate-800">Lịch Phân Ca Theo Tháng</button>
+      </div>
+
+      <div className="mt-4">
+        {view === 'monthly' ? (
+          <MonthlyScheduleView />
         ) : (
-          stylists.map((s) => (
-            <div
-              key={s.id}
-              className="glass-panel rounded-3xl p-6 border border-salon-border/60 hover:border-slate-600 transition-all flex flex-col justify-between"
-            >
-              <div className="space-y-4 text-center">
-                <img
-                  src={s.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300'}
-                  alt={s.full_name}
-                  className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-salon-primary/50"
-                />
-                <div>
-                  <h3 className="font-bold text-lg text-slate-100">{s.full_name}</h3>
-                  <div className="flex items-center justify-center gap-1 text-amber-400 text-xs font-semibold mt-1">
-                    <Star className="w-3.5 h-3.5 fill-amber-400" />
-                    <span>{s.rating?.toFixed(1) || '5.0'} / 5.0</span>
-                    <span className="text-slate-500">•</span>
-                    <span className="text-salon-muted">{s.phone || 'Chưa cập nhật SĐT'}</span>
-                  </div>
-                </div>
-
-                <p className="text-xs text-salon-muted line-clamp-3 leading-relaxed text-left">
-                  {s.bio || 'Chuyên gia tạo mẫu tóc tại Lumière Salon.'}
-                </p>
-
-                {/* Weekly schedule preview badge */}
-                <div className="p-3 rounded-2xl bg-slate-900/60 border border-salon-border/40 text-left text-xs space-y-1">
-                  <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
-                    Lịch làm việc tuần:
-                  </span>
-                  <div className="grid grid-cols-7 gap-1 text-center">
-                    {DAYS_OF_WEEK.map((d, idx) => {
-                      const sched = s.schedules?.find((sc) => sc.day_of_week === idx);
-                      const isOff = sched ? sched.is_day_off : idx === 0;
-                      return (
-                        <div
-                          key={idx}
-                          title={`${d}: ${isOff ? 'Nghỉ' : `${sched?.start_time?.slice(0,5)} - ${sched?.end_time?.slice(0,5)}`}`}
-                          className={`py-1 rounded text-[10px] font-bold ${
-                            isOff ? 'bg-rose-950/40 text-rose-400 border border-rose-500/20' : 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/20'
-                          }`}
-                        >
-                          T{idx === 6 ? 'CN' : idx + 2}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 pt-4 mt-4 border-t border-salon-border/50">
-                <button
-                  onClick={() => openScheduleModal(s)}
-                  className="flex-1 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-200 hover:bg-slate-700 border border-salon-border transition-all flex items-center justify-center gap-1.5"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading ? (
+              <div className="col-span-full py-12 text-center text-salon-muted text-sm">Đang tải danh sách stylist...</div>
+            ) : (
+              stylists.map((s) => (
+                <div
+                  key={s.id}
+                  className="glass-panel rounded-3xl p-6 border border-salon-border/60 hover:border-slate-600 transition-all flex flex-col justify-between"
                 >
-                  <Calendar className="w-3.5 h-3.5 text-salon-primary" /> Cài Đặt Ca Làm
-                </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => openEditStylist(s)}
-                    className="p-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:text-white border border-salon-border"
-                  >
-                    <Edit className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            </div>
-          ))
+                  <div className="space-y-4 text-center">
+                    <img
+                      src={s.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300'}
+                      alt={s.full_name}
+                      className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-salon-primary/50"
+                    />
+                    <div>
+                      <h3 className="font-bold text-lg text-slate-100">{s.full_name}</h3>
+                      <div className="flex items-center justify-center gap-1 text-amber-400 text-xs font-semibold mt-1">
+                        <Star className="w-3.5 h-3.5 fill-amber-400" />
+                        <span>{s.rating?.toFixed(1) || '5.0'} / 5.0</span>
+                        <span className="text-slate-500">•</span>
+                        <span className="text-salon-muted">{s.phone || 'Chưa cập nhật SĐT'}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-salon-muted line-clamp-3 leading-relaxed text-left">
+                      {s.bio || 'Chuyên gia tạo mẫu tóc tại Lumière Salon.'}
+                    </p>
+
+                    {/* Weekly schedule preview badge */}
+                    <div className="p-3 rounded-2xl bg-slate-900/60 border border-salon-border/40 text-left text-xs space-y-1">
+                      <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">
+                        Lịch làm việc tuần:
+                      </span>
+                      <div className="grid grid-cols-7 gap-1 text-center">
+                        {DAYS_OF_WEEK.map((d, idx) => {
+                          const sched = s.schedules?.find((sc) => sc.day_of_week === idx);
+                          const isOff = sched ? sched.is_day_off : idx === 0;
+                          return (
+                            <div
+                              key={idx}
+                              title={`${d}: ${isOff ? 'Nghỉ' : `${sched?.start_time?.slice(0,5)} - ${sched?.end_time?.slice(0,5)}`}`}
+                              className={`py-1 rounded text-[10px] font-bold ${
+                                isOff ? 'bg-rose-950/40 text-rose-400 border border-rose-500/20' : 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/20'
+                              }`}
+                            >
+                              T{idx === 6 ? 'CN' : idx + 2}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons: only Admin can open schedule modal; Stylists/Receptionists cannot edit system schedules */}
+                  <div className="flex items-center gap-2 pt-4 mt-4 border-t border-salon-border/50">
+                    {isAdmin ? (
+                      <>
+                        <button
+                          onClick={() => openScheduleModal(s)}
+                          className="flex-1 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-200 hover:bg-slate-700 border border-salon-border transition-all flex items-center justify-center gap-1.5"
+                        >
+                          <Calendar className="w-3.5 h-3.5 text-salon-primary" /> Cài Đặt Ca Làm
+                        </button>
+                        <button
+                          onClick={() => openEditStylist(s)}
+                          className="p-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:text-white border border-salon-border"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+                      </>
+                    ) : (
+                      // Non-admin: Stylists should only see their own schedules and no edit actions
+                      <>
+                        {isStylist && user?.id && user.hairdresser && user.hairdresser.id === s.id ? (
+                          <div className="flex-1 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-200 border border-salon-border/20 text-center">
+                            <Calendar className="inline-block w-3.5 h-3.5 mr-2 text-salon-primary" /> Xem Lịch & Lịch Hẹn Cá Nhân
+                          </div>
+                        ) : (
+                          <div className="flex-1 py-2 rounded-xl text-xs font-bold bg-slate-900/40 text-slate-500 border border-salon-border/10 text-center">
+                            Không có quyền
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         )}
       </div>
 

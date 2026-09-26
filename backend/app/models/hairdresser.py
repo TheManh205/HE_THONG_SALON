@@ -2,6 +2,7 @@ from datetime import datetime, time
 from sqlalchemy import Column, Integer, String, Text, Boolean, Float, DateTime, Time, ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.database import Base
+from sqlalchemy import Date
 
 class Hairdresser(Base):
     __tablename__ = "hairdressers"
@@ -32,3 +33,16 @@ class Schedule(Base):
     is_day_off = Column(Boolean, default=False)
 
     hairdresser = relationship("Hairdresser", back_populates="schedules")
+
+
+class DailySchedule(Base):
+    __tablename__ = "daily_schedules"
+
+    id = Column(Integer, primary_key=True, index=True)
+    hairdresser_id = Column(Integer, ForeignKey("hairdressers.id"), nullable=False, index=True)
+    schedule_date = Column(Date, nullable=False, index=True)
+    start_time = Column(Time, default=time(8, 30))
+    end_time = Column(Time, default=time(20, 0))
+    is_day_off = Column(Boolean, default=False)
+
+    hairdresser = relationship("Hairdresser", backref="daily_schedules")

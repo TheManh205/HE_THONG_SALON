@@ -19,6 +19,7 @@ export const hairdresserAPI = {
   create: (data) => api.post('/hairdressers/', data),
   update: (id, data) => api.put(`/hairdressers/${id}`, data),
   updateSchedules: (id, schedules) => api.put(`/hairdressers/${id}/schedules`, schedules),
+  upsertDailySchedule: (id, body) => api.put(`/hairdressers/${id}/daily-schedule`, body),
 };
 
 export const appointmentAPI = {

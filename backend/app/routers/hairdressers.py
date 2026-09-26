@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.hairdresser import Hairdresser, Schedule
+from app.models.hairdresser import Hairdresser, Schedule, DailySchedule
 from app.models.user import User
 from app.schemas.hairdresser import (
     HairdresserCreate,
@@ -130,3 +131,55 @@ def update_hairdresser_schedules(
 
     db.commit()
     return created_schedules
+
+
+@router.put("/{hairdresser_id}/daily-schedule", response_model=ScheduleResponse)
+def upsert_daily_schedule(
+    hairdresser_id: int,
+    sched_in: ScheduleBase,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+):
+    """Upsert a daily schedule override for a specific date (Admin only)."""
+    # sched_in.day_of_week will be ignored; expect schedule_date provided as ISO date in additional param
+    from datetime import datetime
+    # client must send schedule_date as additional field inside request body under 'schedule_date' key
+    data = sched_in.model_dump()
+    schedule_date_str = (sched_in.__dict__.get('schedule_date') or None)
+    if not schedule_date_str:
+        raise HTTPException(status_code=400, detail="Missing schedule_date (YYYY-MM-DD)")
+    try:
+        sd = datetime.strptime(schedule_date_str, "%Y-%m-%d").date()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid schedule_date format, expected YYYY-MM-DD")
+
+    daily = db.query(DailySchedule).filter(
+        DailySchedule.hairdresser_id == hairdresser_id,
+        DailySchedule.schedule_date == sd
+    ).first()
+
+    if daily:
+        daily.start_time = sched_in.start_time
+        daily.end_time = sched_in.end_time
+        daily.is_day_off = sched_in.is_day_off
+    else:
+        daily = DailySchedule(
+            hairdresser_id=hairdresser_id,
+            schedule_date=sd,
+            start_time=sched_in.start_time,
+            end_time=sched_in.end_time,
+            is_day_off=sched_in.is_day_off
+        )
+        db.add(daily)
+
+    db.commit()
+    db.refresh(daily)
+    # Return a ScheduleResponse-like object
+    return ScheduleResponse.model_validate({
+        "id": daily.id,
+        "hairdresser_id": daily.hairdresser_id,
+        "day_of_week": sd.weekday(),
+        "start_time": daily.start_time,
+        "end_time": daily.end_time,
+        "is_day_off": daily.is_day_off
+    })
