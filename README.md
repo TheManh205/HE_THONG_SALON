@@ -1,4 +1,4 @@
-# 🌟THEMANH SALON - HỆ THỐNG QUẢN LÝ ĐẶT LỊCH SALON TÓC TÍCH HỢP AI
+# 🌟 THEMANH SALON - HỆ THỐNG QUẢN LÝ ĐẶT LỊCH SALON TÓC TÍCH HỢP AI
 
 Hệ thống quản lý salon tóc cao cấp chuẩn **Clean Code & SOLID Architecture**, tích hợp **Google Gemini AI (`google-genai` SDK)** hỗ trợ tư vấn chất tóc, tạo tin nhắn chăm sóc khách hàng và tóm tắt hồ sơ kỹ thuật màu/uốn.
 
@@ -12,11 +12,11 @@ Hệ thống quản lý salon tóc cao cấp chuẩn **Clean Code & SOLID Archit
 - **Validation**: Pydantic v2
 - **Bảo mật**: JWT (JSON Web Token), Bcrypt Password Hashing, RBAC (Role-Based Access Control)
 - **AI Engine**: Google Gemini API (`google-genai` SDK) với `temperature=0.2`, Prompt Guarding khóa cứng catalog dịch vụ chống Hallucination.
-- **Testing**: Pytest (14/14 tests tự động đạt 100% pass)
+- **Testing**: Pytest hiện tại chạy 17 test, với 16 passing và 1 case đang fail trong kiểm tra overlap ngày nghỉ của stylist.
 
 ### Frontend (ReactJS + Vite + TailwindCSS + Lucide Icons)
 - **Công nghệ**: React 18, Vite 5, TailwindCSS 3, Lucide React Icons
-- **Giao diện**: Chuẩn Luxury Salon Aesthetic, Glassmorphism cao cấp, Dark/Gold Modern Theme, Responsive 100%.
+- **Giao diện**: Dark Luxury Salon Theme hiện tại (slate + amber/gold accents, glassmorphism, bo góc rõ rệt, responsive 100%).
 
 ---
 
@@ -80,8 +80,6 @@ npm run dev
 ---
 
 ## 🔑 4. Danh Sách Tài Khoản Thử Nghiệm Mặc Định
-
-Hệ thống đã tích hợp sẵn bộ chuyển đổi tài khoản 1-click (**Demo Switcher**) trên giao diện đăng nhập:
 
 | Vai trò | Tên đăng nhập | Mật khẩu | Quyền hạn chính |
 | :--- | :--- | :--- | :--- |
