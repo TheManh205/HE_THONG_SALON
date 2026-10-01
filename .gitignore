@@ -53,3 +53,8 @@ coverage/
 # Project-specific generated files
 src/build/
 
+
+# Microsoft Office temporary lock files
+~$*.docx
+~$*.xlsx
+~$*.pptx
