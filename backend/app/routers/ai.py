@@ -35,17 +35,18 @@ def get_ai_recommendation(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Không được phép truy cập lịch sử khách hàng nếu chưa đăng nhập."
         )
-    return AIService.get_recommendations(db, request)
+    return AIService.get_recommendations(db, request, current_user)
 
 @router.post("/generate-care-message", response_model=AICareMessageResponse)
 def generate_care_message(
     request: AICareMessageRequest,
+    db: Session = Depends(get_db),
     current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
 ):
     """
     Generate personalized salon messages (Appointment reminders, post-care guides, re-engagement).
     """
-    return AIService.generate_care_message(request)
+    return AIService.generate_care_message(db, request, current_user)
 
 @router.post("/summarize-history", response_model=AISummaryResponse)
 def summarize_customer_history(
