@@ -1,6 +1,6 @@
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, EmailStr, ConfigDict
+from typing import Optional, Any
+from pydantic import BaseModel, EmailStr, ConfigDict, field_validator
 
 class RoleResponse(BaseModel):
     id: int
@@ -35,6 +35,16 @@ class UserResponse(BaseModel):
     phone: Optional[str] = None
     is_active: bool
     role_id: int
-    role: Optional[RoleResponse] = None
+    role: Optional[str] = None
     created_at: datetime
+
+    @field_validator('role', mode='before')
+    @classmethod
+    def extract_role_name(cls, v: Any) -> Optional[str]:
+        if hasattr(v, 'name'):
+            return v.name
+        if isinstance(v, str):
+            return v
+        return None
+
     model_config = ConfigDict(from_attributes=True)
