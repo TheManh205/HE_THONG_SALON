@@ -112,6 +112,7 @@ Flow:
 ### 2.7. Dữ liệu nền của module
 
 Model chủ chốt:
+- [backend/app/models/ai_log.py](backend/app/models/ai_log.py): lưu nhật ký (audit log) cho các tương tác AI.
 - [backend/app/models/customer.py](backend/app/models/customer.py): lưu thông tin khách hàng
 - [backend/app/models/appointment.py](backend/app/models/appointment.py): lịch hẹn của khách với thợ
 - [backend/app/models/history.py](backend/app/models/history.py): lịch sử dịch vụ đã hoàn thành
@@ -129,6 +130,61 @@ Mối quan hệ đang có:
 - appointment -> appointment_services
 - appointment -> invoice
 - invoice -> payments
+- users -> ai_logs
+- customers -> ai_logs
+
+### 2.8. Kiến trúc AI và AI Logging
+
+Hệ thống cung cấp tính năng AI (Gemini + Structured output + Catalog guard / validation + Fallback + Persistent AI_LOGS audit trail) với kiến trúc như sau.
+
+**1. AI Flow**
+Luồng xử lý AI tuân theo trình tự thực tế:
+1. Client gửi yêu cầu.
+2. Router tiếp nhận request.
+3. `AIService` xử lý nghiệp vụ AI.
+4. Gửi request tới Gemini (AI provider).
+5. Output được Parsing và Catalog Validation (đảm bảo recommendation chỉ sử dụng service hợp lệ trong catalog).
+6. Nếu Gemini không phản hồi hợp lệ hoặc output thất bại, Fallback engine được sử dụng.
+7. Sau khi xác định kết quả cuối cùng (Final response + status), hệ thống ghi vào `AI_LOGS`.
+8. Trả response về cho Client.
+
+*Lưu ý:* Lỗi trong quá trình ghi `AI_LOGS` không được phép làm request AI chính bị crash. Cơ chế logging được bảo vệ bằng xử lý exception và rollback transaction khi cần.
+
+**2. Các loại request (Request Type)**
+Hệ thống hiện tại hỗ trợ 3 loại request chính:
+- `recommend`: Đề xuất dịch vụ.
+- `care_message`: Tạo tin nhắn chăm sóc khách hàng.
+- `summary`: Tóm tắt lịch sử khách hàng.
+
+**3. Ý nghĩa các trạng thái (Status Semantics)**
+- **SUCCESS**: Gemini trả về response hợp lệ và response vượt qua bước parsing/catalog validation.
+- **FALLBACK**: Gemini không tạo được response hợp lệ hoặc output không thể parse/validation thất bại, sau đó hệ thống sử dụng fallback engine để tạo response. (Ví dụ: Gemini unavailable/offline, không có API key, JSON response lỗi, response không đạt validation, v.v.).
+- **ERROR**: Request không thể tạo được response cuối cùng hợp lệ hoặc request phát sinh lỗi nghiệp vụ/hệ thống khiến quá trình xử lý thất bại.
+
+**4. Mô hình dữ liệu AI_LOGS**
+Dữ liệu log được lưu vào bảng `ai_logs` thông qua registry, khởi tạo bằng `Base.metadata.create_all(bind=engine)` (không sử dụng Alembic migration).
+
+| Field | Type | Nullable | Ý nghĩa |
+|---|---|---|---|
+| id | Integer | Không | Primary key |
+| user_id | Integer | Có | FK → users.id |
+| customer_id | Integer | Có | FK → customers.id |
+| request_type | String(50) | Không | Loại yêu cầu AI |
+| model | String(50) | Không | Model AI được sử dụng |
+| status | String(20) | Không | SUCCESS / FALLBACK / ERROR |
+| prompt_details | Text | Có | Thông tin request phù hợp để audit |
+| response_details | Text | Có | Thông tin response phù hợp để audit |
+| error_message | Text | Có | Thông tin lỗi nếu có |
+| processing_time_ms | Integer | Có | Thời gian xử lý request tính bằng milliseconds |
+| created_at | DateTime | Không | Thời điểm tạo log |
+
+*Ghi chú:*
+- Foreign key `user_id` và `customer_id` đều nullable vì một AI request có thể không gắn với user hoặc customer. Khóa ngoại tham chiếu `AI_LOGS.user_id → users.id` và `AI_LOGS.customer_id → customers.id`.
+- `processing_time_ms` được tính bằng `time.perf_counter()`. `created_at` là timestamp của log, không phải processing duration (`created_at ≠ processing_time_ms`).
+
+**5. Security & Testing**
+- **Security**: AI_LOGS chỉ lưu thông tin cần thiết cho mục đích audit/debug/monitoring và không lưu credentials hoặc authentication secrets. Các thông tin nhạy cảm như Gemini API key, JWT/access token, Authorization header, và password KHÔNG ĐƯỢC LƯU và phải được loại khỏi dữ liệu log.
+- **Testing**: Toàn bộ test suite hiện tại đạt 27 passed / 0 failed tại thời điểm kiểm thử Phase 2. Các nhóm test kiểm chứng AI_LOGS bao gồm: AI log persistence, SUCCESS logging, FALLBACK logging, JSON parsing failure → FALLBACK, ERROR logging, user_id persistence, customer_id persistence, Sensitive-data protection (JWT/access token/Authorization/password không bị ghi vào log).
 
 ## 3. Có đoạn logic nào đang bị thừa, lặp lặp, hoặc vi phạm nguyên tắc RBAC không?
 
