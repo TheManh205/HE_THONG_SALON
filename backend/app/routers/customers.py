@@ -59,9 +59,9 @@ def update_customer(
 def delete_customer(
     customer_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
 ):
-    """Xóa khách hàng (Chỉ Admin mới có quyền)."""
+    """Xóa khách hàng (Admin, Receptionist)."""
     success = CustomerService(db).delete_customer(customer_id)
     if not success:
         raise HTTPException(status_code=404, detail="Không tìm thấy khách hàng")

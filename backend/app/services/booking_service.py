@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta, time
+import random
+import string
 from typing import List, Optional, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
@@ -245,10 +247,20 @@ class BookingService:
         duration_minutes, total_price, services = BookingService.calculate_booking_duration_and_price(db, booking_data.service_ids)
         end_time = booking_data.appointment_date + timedelta(minutes=duration_minutes)
 
-        # 4. Create appointment
+        # 4. Generate Booking Code
+        def generate_code():
+            chars = string.ascii_uppercase + string.digits
+            return f"BKG-{''.join(random.choices(chars, k=6))}"
+        
+        b_code = generate_code()
+        while db.query(Appointment).filter(Appointment.booking_code == b_code).first():
+            b_code = generate_code()
+
+        # 5. Create appointment
         appointment = Appointment(
             customer_id=customer.id,
             hairdresser_id=booking_data.hairdresser_id,
+            booking_code=b_code,
             appointment_date=booking_data.appointment_date,
             end_time=end_time,
             status=AppointmentStatus.PENDING,
@@ -304,9 +316,18 @@ class BookingService:
         duration_minutes, total_price, services = BookingService.calculate_booking_duration_and_price(db, booking_data.service_ids)
         end_time = booking_data.appointment_date + timedelta(minutes=duration_minutes)
 
+        def generate_code():
+            chars = string.ascii_uppercase + string.digits
+            return f"BKG-{''.join(random.choices(chars, k=6))}"
+        
+        b_code = generate_code()
+        while db.query(Appointment).filter(Appointment.booking_code == b_code).first():
+            b_code = generate_code()
+
         appointment = Appointment(
             customer_id=customer.id,
             hairdresser_id=booking_data.hairdresser_id,
+            booking_code=b_code,
             appointment_date=booking_data.appointment_date,
             end_time=end_time,
             status=AppointmentStatus.CONFIRMED,

@@ -135,7 +135,7 @@ export function App() {
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={['admin', 'receptionist']}>
                   <AppLayout>
                     <AnalyticsPage />
                   </AppLayout>

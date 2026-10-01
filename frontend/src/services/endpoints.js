@@ -50,6 +50,12 @@ export const invoiceAPI = {
   create: (data) => api.post('/invoices/', data),
 };
 
+export const paymentAPI = {
+  getAll: (params) => api.get('/payments/', { params }),
+  getById: (id) => api.get(`/payments/${id}`),
+  create: (data) => api.post('/payments/', data),
+};
+
 export const analyticsAPI = {
   getOverview: () => api.get('/analytics/overview'),
   getRevenue: (days = 7) => api.get('/analytics/revenue', { params: { days } }),

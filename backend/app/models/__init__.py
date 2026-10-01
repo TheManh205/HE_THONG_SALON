@@ -5,6 +5,7 @@ from app.models.hairdresser import Hairdresser, Schedule
 from app.models.service import Service, AppointmentService
 from app.models.appointment import Appointment, AppointmentStatus
 from app.models.invoice import Invoice, PaymentMethod, PaymentStatus
+from app.models.payment import Payment
 from app.models.history import ServiceHistory
 from app.models.audit import AuditLog
 
@@ -22,6 +23,7 @@ __all__ = [
     "Invoice",
     "PaymentMethod",
     "PaymentStatus",
+    "Payment",
     "ServiceHistory",
     "AuditLog",
 ]

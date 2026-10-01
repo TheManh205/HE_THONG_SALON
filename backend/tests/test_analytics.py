@@ -29,7 +29,7 @@ def test_analytics_stylist_performance_admin(client: TestClient, admin_token: st
     assert "stylists" in data
     assert isinstance(data["stylists"], list)
 
-def test_analytics_forbidden_for_receptionist(client: TestClient, receptionist_token: str):
+def test_analytics_allowed_for_receptionist(client: TestClient, receptionist_token: str):
     start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
     end_date = datetime.now().strftime("%Y-%m-%d")
 
@@ -37,4 +37,4 @@ def test_analytics_forbidden_for_receptionist(client: TestClient, receptionist_t
         f"/api/v1/analytics/revenue-range?start_date={start_date}&end_date={end_date}",
         headers={"Authorization": f"Bearer {receptionist_token}"}
     )
-    assert res.status_code == 403
+    assert res.status_code == 200

@@ -13,14 +13,15 @@ from app.schemas.ai import (
     AISummaryResponse
 )
 from app.services.ai_service import AIService
-from app.services.auth_service import require_roles, get_current_user
+from app.services.auth_service import require_roles, get_current_user, get_optional_current_user
 
 router = APIRouter(prefix="/ai", tags=["AI Engine (Gemini Powered)"])
 
 @router.post("/recommend", response_model=AIRecommendationResponse)
 def get_ai_recommendation(
     request: AIRecommendationRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_optional_current_user)
 ):
     """
     AI Smart Hair Advisor:
@@ -28,6 +29,12 @@ def get_ai_recommendation(
     - Returns styling advice, combo of DB services, and home care tips.
     - Publicly accessible to enhance customer booking experience.
     """
+    if request.customer_id and not current_user:
+        # Public users cannot query customer history
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Không được phép truy cập lịch sử khách hàng nếu chưa đăng nhập."
+        )
     return AIService.get_recommendations(db, request)
 
 @router.post("/generate-care-message", response_model=AICareMessageResponse)
@@ -49,4 +56,4 @@ def summarize_customer_history(
     """
     Summarize a customer's hair treatment history and formulas for quick stylist glance.
     """
-    return AIService.summarize_customer_history(db, request)
+    return AIService.summarize_customer_history(db, request, current_user)

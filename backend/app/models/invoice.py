@@ -12,6 +12,7 @@ class PaymentMethod(str, enum.Enum):
 class PaymentStatus(str, enum.Enum):
     UNPAID = "UNPAID"
     PAID = "PAID"
+    FAILED = "FAILED"
     REFUNDED = "REFUNDED"
 
 class Invoice(Base):
@@ -24,8 +25,11 @@ class Invoice(Base):
     discount_amount = Column(Float, default=0.0)
     final_amount = Column(Float, nullable=False, default=0.0)
     payment_method = Column(Enum(PaymentMethod), default=PaymentMethod.CASH, nullable=False)
-    payment_status = Column(Enum(PaymentStatus), default=PaymentStatus.PAID, nullable=False)
+    payment_status = Column(Enum(PaymentStatus), default=PaymentStatus.UNPAID, nullable=False)
+    formula_or_color_code = Column(String(255), nullable=True)
+    technician_notes = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     appointment = relationship("Appointment", back_populates="invoice")
     customer = relationship("Customer", back_populates="invoices")
+    payments = relationship("Payment", back_populates="invoice", cascade="all, delete-orphan")

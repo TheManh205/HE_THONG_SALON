@@ -287,6 +287,7 @@ def seed_database():
             app1 = Appointment(
                 customer_id=customers_map["Nguyễn Bích Phương"].id,
                 hairdresser_id=hairdressers_map["Phạm Mai Linh"].id,
+                booking_code="BKG-SEED01",
                 appointment_date=app_time_past,
                 end_time=app_time_past + timedelta(minutes=135),
                 status=AppointmentStatus.COMPLETED,
@@ -311,6 +312,20 @@ def seed_database():
                 created_at=app_time_past + timedelta(minutes=140)
             )
             db.add(inv1)
+            db.flush()
+
+            # Payment
+            from app.models.payment import Payment
+            pay1 = Payment(
+                invoice_id=inv1.id,
+                amount=730000,
+                payment_method=PaymentMethod.BANK_TRANSFER,
+                payment_status=PaymentStatus.PAID,
+                transaction_code="TXN-SEED-001",
+                created_at=app_time_past + timedelta(minutes=140),
+                paid_at=app_time_past + timedelta(minutes=140)
+            )
+            db.add(pay1)
 
             # Service history
             hist1 = ServiceHistory(
@@ -333,6 +348,7 @@ def seed_database():
             app2 = Appointment(
                 customer_id=customers_map["Trần Đức Anh"].id,
                 hairdresser_id=hairdressers_map["Đỗ Hoàng An"].id,
+                booking_code="BKG-SEED02",
                 appointment_date=today_time,
                 end_time=today_time + timedelta(minutes=95),
                 status=AppointmentStatus.CONFIRMED,

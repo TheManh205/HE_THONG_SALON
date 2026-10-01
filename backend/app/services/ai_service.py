@@ -49,6 +49,24 @@ class AIService:
         return text.strip()
 
     @staticmethod
+    def _generate_with_retry(client, model, contents, config, max_retries=2) -> Optional[str]:
+        import time
+        for attempt in range(max_retries + 1):
+            try:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=contents,
+                    config=config
+                )
+                return response.text
+            except Exception as e:
+                print(f"[AI Retry] Lỗi Gemini API (Attempt {attempt+1}/{max_retries+1}): {e}")
+                if attempt < max_retries:
+                    time.sleep(1) # Delay before retry
+                else:
+                    return None
+
+    @staticmethod
     def get_recommendations(db: Session, request: AIRecommendationRequest) -> AIRecommendationResponse:
         """
         AI Hair Advisor with Strict Prompt Guard & Anti-Hallucination:
@@ -125,20 +143,16 @@ Trả về định dạng JSON DUY NHẤT:
         raw_json_str = None
 
         if client:
-            try:
-                response = client.models.generate_content(
-                    model=settings.GEMINI_MODEL,
-                    contents=user_prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction=system_instruction,
-                        temperature=settings.AI_TEMPERATURE,
-                        response_mime_type="application/json"
-                    )
+            raw_json_str = AIService._generate_with_retry(
+                client=client,
+                model=settings.GEMINI_MODEL,
+                contents=user_prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    temperature=settings.AI_TEMPERATURE,
+                    response_mime_type="application/json"
                 )
-                raw_json_str = response.text
-            except Exception as e:
-                # Log and fallback to local expert engine
-                raw_json_str = None
+            )
 
         # Fallback intelligent rule-based engine if Gemini client unavailable or offline
         if not raw_json_str:
@@ -263,19 +277,16 @@ Trả về JSON duy nhất:
         raw_json_str = None
 
         if client:
-            try:
-                response = client.models.generate_content(
-                    model=settings.GEMINI_MODEL,
-                    contents=user_prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction=system_instruction,
-                        temperature=0.3,
-                        response_mime_type="application/json"
-                    )
+            raw_json_str = AIService._generate_with_retry(
+                client=client,
+                model=settings.GEMINI_MODEL,
+                contents=user_prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    temperature=0.3,
+                    response_mime_type="application/json"
                 )
-                raw_json_str = response.text
-            except Exception:
-                raw_json_str = None
+            )
 
         if not raw_json_str:
             # Fallback smart generator
@@ -309,7 +320,7 @@ Trả về JSON duy nhất:
             )
 
     @staticmethod
-    def summarize_customer_history(db: Session, request: AISummaryRequest) -> AISummaryResponse:
+    def summarize_customer_history(db: Session, request: AISummaryRequest, current_user=None) -> AISummaryResponse:
         """Summarize customer's hair treatment history, preferred stylist, and formulas for quick stylist glance."""
         customer = db.query(Customer).filter(Customer.id == request.customer_id).first()
         if not customer:
@@ -322,9 +333,17 @@ Trả về JSON duy nhất:
                 technical_notes=[]
             )
 
-        histories = db.query(ServiceHistory).filter(
-            ServiceHistory.customer_id == customer.id
-        ).order_by(ServiceHistory.completed_at.desc()).all()
+        query = db.query(ServiceHistory).filter(ServiceHistory.customer_id == customer.id)
+        
+        # Enforce Data-Level Scoping for Hairdresser
+        from app.models.user import RoleEnum
+        if current_user and getattr(current_user.role, 'name', '') == RoleEnum.HAIRDRESSER.value:
+            if getattr(current_user, 'hairdresser', None):
+                query = query.filter(ServiceHistory.hairdresser_id == current_user.hairdresser.id)
+            else:
+                query = query.filter(ServiceHistory.id == -1) # empty query if no profile
+
+        histories = query.order_by(ServiceHistory.completed_at.desc()).all()
 
         if not histories:
             return AISummaryResponse(
@@ -375,19 +394,16 @@ Trả về JSON duy nhất:
         raw_json_str = None
 
         if client:
-            try:
-                response = client.models.generate_content(
-                    model=settings.GEMINI_MODEL,
-                    contents=user_prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction="Bạn là Trợ lý Kỹ thuật Salon Tóc giúp tóm tắt nhanh lịch sử khách cho thợ làm tóc.",
-                        temperature=0.2,
-                        response_mime_type="application/json"
-                    )
+            raw_json_str = AIService._generate_with_retry(
+                client=client,
+                model=settings.GEMINI_MODEL,
+                contents=user_prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction="Bạn là Trợ lý Kỹ thuật Salon Tóc giúp tóm tắt nhanh lịch sử khách cho thợ làm tóc.",
+                    temperature=0.2,
+                    response_mime_type="application/json"
                 )
-                raw_json_str = response.text
-            except Exception:
-                raw_json_str = None
+            )
 
         if raw_json_str:
             try:

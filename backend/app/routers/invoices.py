@@ -19,7 +19,7 @@ def get_invoices(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST, RoleEnum.HAIRDRESSER]))
 ):
     """List invoices with pagination and customer filter."""
     query = db.query(Invoice)
@@ -31,7 +31,7 @@ def get_invoices(
 def get_invoice(
     invoice_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST, RoleEnum.HAIRDRESSER]))
 ):
     invoice = db.query(Invoice).filter(Invoice.id == invoice_id).first()
     if not invoice:
@@ -39,10 +39,10 @@ def get_invoice(
     return invoice
 
 @router.post("/", response_model=InvoiceResponse, status_code=status.HTTP_201_CREATED)
-def create_invoice_and_checkout(
+def create_invoice(
     invoice_in: InvoiceCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
 ):
-    """Generate invoice from completed appointment, calculate total & record service history."""
-    return InvoiceService.create_invoice_and_checkout(db, invoice_in, user_id=current_user.id)
+    """Generate invoice from completed appointment (status: UNPAID)."""
+    return InvoiceService.create_invoice(db, invoice_in, user_id=current_user.id)

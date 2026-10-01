@@ -42,12 +42,11 @@ def test_invoice_creation_and_service_history(client: TestClient, receptionist_t
     app_id = app_data["id"]
     cust_id = app_data["customer_id"]
 
-    # Checkout & create invoice
+    # 1. Create invoice (UNPAID)
     inv_payload = {
         "appointment_id": app_id,
         "discount_amount": 20000,
         "payment_method": "CASH",
-        "payment_status": "PAID",
         "formula_or_color_code": "Cắt fade 0.5mm, sấy tạo nếp tự nhiên",
         "technician_notes": "Khách hài lòng"
     }
@@ -59,15 +58,40 @@ def test_invoice_creation_and_service_history(client: TestClient, receptionist_t
     assert inv_res.status_code == 201
     inv_data = inv_res.json()
     assert inv_data["final_amount"] == 130000 # 150000 - 20000
+    assert inv_data["payment_status"] == "UNPAID"
 
-    # Check appointment status updated to COMPLETED
+    # Check appointment is NOT completed yet
+    app_check = client.get(
+        f"/api/v1/appointments/{app_id}",
+        headers={"Authorization": f"Bearer {receptionist_token}"}
+    )
+    assert app_check.json()["status"] != "COMPLETED"
+
+    # 2. Process Payment (PAID)
+    pay_payload = {
+        "invoice_id": inv_data["id"],
+        "amount": 130000,
+        "payment_method": "CASH",
+        "payment_status": "PAID"
+    }
+    pay_res = client.post(
+        "/api/v1/payments/",
+        json=pay_payload,
+        headers={"Authorization": f"Bearer {receptionist_token}"}
+    )
+    assert pay_res.status_code == 201
+    pay_data = pay_res.json()
+    assert pay_data["payment_status"] == "PAID"
+    assert pay_data["amount"] == 130000
+
+    # 3. Check appointment status updated to COMPLETED
     app_check = client.get(
         f"/api/v1/appointments/{app_id}",
         headers={"Authorization": f"Bearer {receptionist_token}"}
     )
     assert app_check.json()["status"] == "COMPLETED"
 
-    # Check customer history
+    # 4. Check customer history
     hist_res = client.get(
         f"/api/v1/customers/{cust_id}/history",
         headers={"Authorization": f"Bearer {receptionist_token}"}

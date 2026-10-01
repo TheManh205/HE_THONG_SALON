@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import {
-  appointmentAPI, hairdresserAPI, serviceAPI, customerAPI, invoiceAPI
+  appointmentAPI, hairdresserAPI, serviceAPI, customerAPI, invoiceAPI, paymentAPI
 } from '../services/endpoints';
 import { AppointmentBadge } from '../components/common/Badge';
 import { Modal } from '../components/common/Modal';
@@ -192,14 +192,25 @@ export const AppointmentsPage = () => {
     e.preventDefault();
     setCheckoutLoading(true);
     try {
-      await invoiceAPI.create({
+      // Step 1: Create Invoice
+      const invoiceRes = await invoiceAPI.create({
         appointment_id: selectedApp.id,
         discount_amount: parseFloat(checkoutDiscount) || 0,
-        payment_method: checkoutPaymentMethod,
-        formula_used: checkoutFormula || null,
-        notes: checkoutNotes || null,
+        formula_or_color_code: checkoutFormula || null,
+        technician_notes: checkoutNotes || null,
       });
-      addToast('Thanh toán thành công! Hóa đơn đã được tạo.', 'success');
+      
+      const invoice = invoiceRes.data;
+
+      // Step 2: Process Payment
+      await paymentAPI.create({
+        invoice_id: invoice.id,
+        amount: invoice.final_amount,
+        payment_method: checkoutPaymentMethod,
+        payment_status: 'PAID'
+      });
+
+      addToast('Thanh toán thành công! Hóa đơn đã được ghi nhận.', 'success');
       setIsCheckoutOpen(false);
       fetchData();
     } catch (err) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { aiAPI, customerAPI } from '../services/endpoints';
 import { useToast } from '../contexts/ToastContext';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Sparkles,
   Bot,
@@ -19,6 +20,7 @@ import {
 
 export const AIAssistantPage = () => {
   const { addToast } = useToast();
+  const { role } = useAuth();
 
   const [activeTab, setActiveTab] = useState('advisor'); // 'advisor' | 'messaging' | 'summary'
   const [customers, setCustomers] = useState([]);
@@ -159,16 +161,18 @@ export const AIAssistantPage = () => {
           <Scissors className="w-4 h-4" /> 1. Tư Vấn Kiểu Tóc & Combo (Style Advisor)
         </button>
 
-        <button
-          onClick={() => setActiveTab('messaging')}
-          className={`px-5 py-3 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
-            activeTab === 'messaging'
-              ? 'bg-purple-600 text-white shadow-glow-accent'
-              : 'glass-panel text-slate-300 hover:bg-slate-800 border border-salon-border'
-          }`}
-        >
-          <MessageSquare className="w-4 h-4" /> 2. Sinh Tin Nhắn CSKH / Nhắc Hẹn
-        </button>
+        {['admin', 'receptionist'].includes(role) && (
+          <button
+            onClick={() => setActiveTab('messaging')}
+            className={`px-5 py-3 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
+              activeTab === 'messaging'
+                ? 'bg-purple-600 text-white shadow-glow-accent'
+                : 'glass-panel text-slate-300 hover:bg-slate-800 border border-salon-border'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" /> 2. Sinh Tin Nhắn CSKH / Nhắc Hẹn
+          </button>
+        )}
 
         <button
           onClick={() => setActiveTab('summary')}
@@ -323,7 +327,7 @@ export const AIAssistantPage = () => {
       )}
 
       {/* Tab 2: AI Customer Care Messaging */}
-      {activeTab === 'messaging' && (
+      {activeTab === 'messaging' && ['admin', 'receptionist'].includes(role) && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <form onSubmit={handleMessageSubmit} className="glass-panel p-6 sm:p-8 rounded-3xl border border-salon-border/60 space-y-4">
             <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2 font-serif-salon">

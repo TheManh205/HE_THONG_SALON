@@ -20,5 +20,7 @@ class InvoiceResponse(BaseModel):
     final_amount: float
     payment_method: PaymentMethod
     payment_status: PaymentStatus
+    formula_or_color_code: Optional[str] = None
+    technician_notes: Optional[str] = None
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)

@@ -31,7 +31,7 @@ def get_dashboard_overview(
 def get_revenue_statistics(
     days: int = Query(7, ge=1, le=90, description="Số ngày cần thống kê"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
 ):
     """Get daily revenue breakdown and average order value (Admin only)."""
     return AnalyticsService.get_revenue_stats(db, days=days)
@@ -48,7 +48,7 @@ def get_popular_services(
 @router.get("/customer-retention", response_model=ReturningCustomersResponse)
 def get_customer_retention(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
 ):
     """Calculate customer return and retention rates."""
     return AnalyticsService.get_customer_retention(db)
@@ -59,9 +59,9 @@ def get_revenue_by_range(
     start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
     end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
 ):
-    """Get revenue breakdown for custom date range A -> B (Admin only)."""
+    """Get revenue breakdown for custom date range A -> B."""
     try:
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
@@ -79,9 +79,9 @@ def get_stylist_performance(
     start_date: str = Query(..., description="Start date (YYYY-MM-DD)"),
     end_date: str = Query(..., description="End date (YYYY-MM-DD)"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN, RoleEnum.RECEPTIONIST]))
 ):
-    """Get stylist performance metrics within date range A -> B (Admin only)."""
+    """Get stylist performance metrics within date range A -> B."""
     try:
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")

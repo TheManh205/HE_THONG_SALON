@@ -213,6 +213,9 @@ export const PublicBookingPage = () => {
     } catch (err) {
       console.error(err);
       addToast(err.response?.data?.detail || 'Đặt lịch thất bại, vui lòng thử lại!', 'error');
+      if (err.response?.status === 409) {
+        fetchSlots();
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -554,7 +557,7 @@ export const PublicBookingPage = () => {
                       Cảm Ơn Quý Khách Đã Đặt Hẹn
                     </h3>
                     <p className="text-sm text-slate-300 mt-2">
-                      Mã lịch hẹn của bạn là <span className="font-bold text-amber-400 font-mono text-base">#{bookingSuccess.id}</span>.
+                      Mã lịch hẹn của bạn là <span className="font-bold text-amber-400 font-mono text-base">#{bookingSuccess.booking_code}</span>.
                       Salon đã gửi thông báo đến Stylist và sẽ liên hệ hỗ trợ bạn sớm nhất!
                     </p>
                   </div>
@@ -1142,7 +1145,7 @@ export const PublicBookingPage = () => {
                           <div className="space-y-2">
                             <div className="flex items-center gap-2.5">
                               <span className="font-mono text-sm font-bold text-amber-400">
-                                #{b.id}
+                                #{b.booking_code || b.id}
                               </span>
                               <AppointmentBadge status={b.status} />
                             </div>

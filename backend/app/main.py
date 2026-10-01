@@ -12,6 +12,7 @@ from app.routers import (
     services_router,
     appointments_router,
     invoices_router,
+    payments_router,
     analytics_router,
     ai_router
 )
@@ -58,6 +59,7 @@ app.include_router(hairdressers_router, prefix=settings.API_V1_STR)
 app.include_router(services_router, prefix=settings.API_V1_STR)
 app.include_router(appointments_router, prefix=settings.API_V1_STR)
 app.include_router(invoices_router, prefix=settings.API_V1_STR)
+app.include_router(payments_router, prefix=settings.API_V1_STR)
 app.include_router(analytics_router, prefix=settings.API_V1_STR)
 app.include_router(ai_router, prefix=settings.API_V1_STR)
 

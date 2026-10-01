@@ -16,5 +16,5 @@ class Customer(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     appointments = relationship("Appointment", back_populates="customer", cascade="all, delete-orphan")
-    invoices = relationship("Invoice", back_populates="customer")
+    invoices = relationship("Invoice", back_populates="customer", cascade="all, delete-orphan")
     service_histories = relationship("ServiceHistory", back_populates="customer", cascade="all, delete-orphan")

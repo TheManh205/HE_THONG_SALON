@@ -61,6 +61,7 @@ class AppointmentResponse(BaseModel):
     id: int
     customer_id: int
     hairdresser_id: int
+    booking_code: Optional[str] = None
     appointment_date: datetime
     end_time: datetime
     status: AppointmentStatus

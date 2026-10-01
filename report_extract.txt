@@ -1,0 +1,1834 @@
+MỤC 1: KẾ HOẠCH THỰC HIỆN – PHÁT TRIỂN ỨNG DỤNG CHUYÊN SÂU
+Nhóm 08 - Thành viên nhóm:
+Lương Việt Anh (Trưởng nhóm)
+Lương Thế Mạnh
+Tên ứng dụng: Hệ thống quản lý đặt lịch salon tóc có tích hợp AI
+Thời gian thực hiện: Từ 27/07/2026 đến 27/09/2026 (9 tuần)
+Kế hoạch chi tiết
+Tuần
+Công việc
+Thành viên thực hiện
+Ghi chú
+Tuần 01(27/07/2026 – 02/08/2026)
+- Khảo sát bài toán Hệ thống quản lý đặt lịch salon tóc có tích hợp AI.- Phỏng vấn quản lý salon, lễ tân và thợ làm tóc.- Xác định phạm vi dự án và thu thập tài liệu nghiệp vụ.
+Lương Việt AnhLương Thế Mạnh
+Biên bản khảo sát bài toán thực tế (Giai đoạn KT1 - SDLC).
+Tuần 02(03/08/2026 – 09/08/2026)
+- Xây dựng bộ câu hỏi làm rõ yêu cầu (Requirements Q&A).- Phân tích yêu cầu chức năng (FR01–FR09) và phi chức năng (NFR01–NFR05).- Xây dựng Sơ đồ phân rã chức năng (BFD) và Mô hình Use Case tổng quan.
+Lương Việt AnhLương Thế Mạnh
+Tài liệu Requirements Q&A và SRS V1.0 (Giai đoạn KT1 - SDLC).
+Tuần 03(10/08/2026 – 16/08/2026)
+- Thiết kế Phân luồng màn hình (Screen Flow).- Thiết kế Cơ sở dữ liệu quan hệ (ERD).- Định nghĩa các bảng, khóa chính/khóa ngoại và ràng buộc toàn vẹn chống trùng lịch.
+Lương Việt Anh (Chủ trì CSDL)Lương Thế Mạnh (Chủ trì Screen Flow)
+Tài liệu Thiết kế CSDL và Screen Flow (Giai đoạn KT2 - SDLC).
+Tuần 04(17/08/2026 – 23/08/2026)
+- Thiết kế hướng đối tượng: Mô hình lớp (Class Diagram).- Đặc tả chi tiết thuộc tính, phương thức và luồng xử lý các Class.- Khởi tạo Boilerplate dự án (FastAPI + ReactJS).
+Lương Thế Mạnh (Chủ trì OOD)Lương Việt Anh (Repository khung)
+Tài liệu Thiết kế Mô hình Lớp và Repository mã nguồn khung (Giai đoạn KT2 - SDLC).
+Tuần 05(24/08/2026 – 30/08/2026)
+- Lập trình Backend/Frontend quản lý Tài khoản, Khách hàng, Thợ làm tóc, Dịch vụ và Lịch làm việc.- Lập trình chức năng Đăng nhập (Auth) và Phân quyền người dùng (RBAC).- Thực hiện Unit Test cho các API CRUD.
+Lương Việt Anh (Backend API)Lương Thế Mạnh (Frontend UI)
+Module CRUD và Luồng quản lý (Giai đoạn KT3 - SDLC).
+Tuần 06(31/08/2026 – 06/09/2026)
+- Lập trình chức năng Đặt lịch, Thay đổi/Hủy lịch và Kiểm tra trùng lịch.- Lập trình chức năng Quản lý hóa đơn, thanh toán và lịch sử sử dụng dịch vụ.- Xây dựng chức năng tìm kiếm lịch hẹn theo ngày, thợ làm tóc và khách hàng.- Tích hợp Google Gemini API và xây dựng các endpoint AI cho gợi ý dịch vụ, tạo nội dung nhắc lịch/chăm sóc và tóm tắt lịch sử dịch vụ.
+Lương Việt AnhLương Thế Mạnh
+Module Đặt lịch, Hóa đơn, Tra cứu và AI (Giai đoạn KT3 - SDLC).
+Tuần 07(07/09/2026 – 13/09/2026)
+- Thiết kế Prompt Engineering cho các chức năng AI.- Chuẩn hóa Prompt và bổ sung các quy tắc hạn chế AI tạo thông tin không có trong dữ liệu.- Xây dựng Test Cases cho chức năng nghiệp vụ và AI.- Chuẩn bị dữ liệu kiểm thử, bao gồm các trường hợp thiếu dữ liệu và yêu cầu không rõ ràng.
+Lương Việt Anh (Prompt Engineering)Lương Thế Mạnh (Test Cases)
+Bộ Prompt chuẩn hóa và Tài liệu Test Cases.
+Tuần 08(14/09/2026 – 20/09/2026)
+- Thực thi Kiểm thử chức năng (Functional Testing).- Ghi nhận lỗi vào Báo cáo kết quả kiểm thử (Test Report) và sửa lỗi.- Kiểm tra kết quả AI, phát hiện nội dung không phù hợp và tinh chỉnh Prompt khi cần.
+Lương Thế Mạnh (Tester)Lương Việt Anh (Fix bugs)
+Báo cáo kết quả kiểm thử (Test Report).
+Tuần 09(21/09/2026 – 27/09/2026)
+- Hoàn thiện chức năng thống kê doanh thu, dịch vụ phổ biến và khách hàng quay lại.- Soạn thảo Tài liệu Hướng dẫn sử dụng (User Manual V1.0).- Biên soạn Báo cáo tổng kết, Slide thuyết trình và README.- Triển khai thử nghiệm, chuẩn bị Video Demo và nghiệm thu cuối kỳ.
+Lương Việt AnhLương Thế Mạnh
+Báo cáo cuối kỳ, Slide, Video Demo và triển khai thử nghiệm.
+MỤC 2: THU THẬP, LÀM RÕ YÊU CẦU CỦA HỆ THỐNG
+Yêu cầu chức năng của một hệ thống là quan trọng vì yêu cầu cung cấp các cơ sở cho tất cả công việc phát triển hệ thống sau đó. Việc thu thập và làm rõ yêu cầu giúp xác định nhu cầu của người sử dụng, các nghiệp vụ cần quản lý và phạm vi chức năng của hệ thống.
+1. Bảng câu hỏi và trả lời
+Để xác định các yêu cầu của hệ thống, nhóm tiến hành khảo sát các nghiệp vụ liên quan đến hoạt động quản lý khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn và chăm sóc khách hàng tại salon.
+STT
+Câu hỏi khảo sát
+Mục đích
+Kết quả trả lời
+1
+Salon cần quản lý những thông tin nào trong quá trình hoạt động?
+Xác định phạm vi dữ liệu cần quản lý
+Cần quản lý thông tin khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn và lịch sử dịch vụ.
+2
+Những đối tượng nào tham gia sử dụng hệ thống?
+Xác định các đối tượng sử dụng hệ thống
+Hệ thống phục vụ Quản lý, Lễ tân, Thợ làm tóc và Khách hàng.
+3
+Khách hàng có cần đăng nhập tài khoản để đặt lịch không?
+Xác định phương thức đặt lịch của khách hàng
+Khách hàng có thể đặt lịch trên website mà không cần đăng nhập tài khoản, chỉ cần cung cấp họ tên và số điện thoại.
+4
+Khi đặt lịch, khách hàng cần cung cấp những thông tin gì?
+Xác định dữ liệu đầu vào của chức năng đặt lịch
+Khách hàng cung cấp họ tên, số điện thoại, dịch vụ, thợ làm tóc, ngày giờ mong muốn và nhu cầu nếu có.
+5
+Lễ tân có thể đặt lịch thay cho khách hàng không?
+Xác định nghiệp vụ đặt lịch tại salon
+Có. Lễ tân có thể tạo lịch hẹn cho khách hàng trên hệ thống khi khách gọi điện hoặc đến trực tiếp.
+6
+Hệ thống cần xử lý như thế nào khi thợ đã có lịch vào thời gian khách lựa chọn?
+Xác định yêu cầu kiểm tra trùng lịch
+Hệ thống cần kiểm tra lịch làm việc và lịch hẹn của thợ để phát hiện và ngăn chặn tình trạng trùng lịch.
+7
+Khách hàng có thể thay đổi hoặc hủy lịch hẹn không?
+Xác định nghiệp vụ quản lý lịch hẹn
+Có. Hệ thống hỗ trợ thay đổi và hủy lịch hẹn theo quy định của hệ thống, đồng thời kiểm tra lại lịch làm việc và tình trạng trùng lịch khi thay đổi lịch.
+8
+Salon cần quản lý lịch làm việc của thợ như thế nào?
+Xác định yêu cầu quản lý lịch làm việc
+Cần quản lý thông tin thợ, ca làm việc theo ngày và ngày nghỉ để phục vụ việc sắp xếp lịch hẹn.
+9
+Thông tin của một dịch vụ cần quản lý những gì?
+Xác định dữ liệu danh mục dịch vụ
+Cần quản lý mã dịch vụ, tên dịch vụ, đơn giá, danh mục và thời lượng thực hiện ước tính (phút).
+10
+Sau khi khách hàng hoàn thành dịch vụ, hệ thống cần lưu những thông tin gì?
+Xác định nghiệp vụ sau khi sử dụng dịch vụ
+Hệ thống cần tạo hóa đơn, cập nhật trạng thái thanh toán và lưu lịch sử sử dụng dịch vụ của khách hàng.
+11
+Salon có cần tra cứu lịch hẹn theo nhiều tiêu chí không?
+Xác định yêu cầu tra cứu
+Có. Có thể tra cứu lịch hẹn theo ngày, theo khách hàng và theo thợ làm tóc.
+12
+Salon cần những thông tin thống kê nào?
+Xác định yêu cầu thống kê
+Cần thống kê doanh thu theo mốc thời gian, dịch vụ phổ biến và khách hàng quay lại.
+13
+AI được sử dụng để hỗ trợ những công việc nào?
+Xác định phạm vi tích hợp AI
+AI hỗ trợ gợi ý dịch vụ phù hợp, tạo nội dung tin nhắn nhắc lịch và chăm sóc sau dịch vụ, đồng thời tóm tắt lịch sử dịch vụ.
+14
+AI cần sử dụng những dữ liệu nào để đưa ra kết quả?
+Xác định dữ liệu đầu vào cho AI
+AI sử dụng nhu cầu của khách hàng, lịch sử dịch vụ và danh sách dịch vụ hiện có của salon.
+15
+Làm thế nào để hạn chế AI đưa ra thông tin không phù hợp?
+Xác định yêu cầu kiểm soát kết quả AI
+AI chỉ được gợi ý các dịch vụ có trong danh sách của salon, không được tự tạo thông tin hoặc đưa ra các cam kết ngoài dữ liệu được cung cấp.
+16
+Hệ thống có cần phân quyền người sử dụng không?
+Xác định yêu cầu bảo mật và phân quyền
+Có. Hệ thống tách biệt chức năng Đăng nhập xác thực và Phân quyền RBAC cho Quản lý, Lễ tân và Thợ làm tóc.
+17
+Hệ thống cần đáp ứng những yêu cầu chung nào?
+Xác định yêu cầu phi chức năng
+Hệ thống cần dễ sử dụng, có thời gian phản hồi phù hợp, bảo mật thông tin, đảm bảo dữ liệu chính xác và thuận tiện cho việc bảo trì.
+18
+Nhân viên salon cần xem những thông tin gì khi xử lý một lịch hẹn?
+Xác định thông tin cần hiển thị khi xử lý lịch hẹn
+Nhân viên cần xem thông tin khách hàng, dịch vụ, thợ làm tóc, ngày giờ hẹn, trạng thái lịch hẹn và ghi chú của khách hàng để thuận tiện xử lý lịch.
+19
+Lịch sử sử dụng dịch vụ của khách hàng cần lưu những thông tin gì?
+Xác định dữ liệu cần lưu trong lịch sử dịch vụ
+Hệ thống cần lưu khách hàng, thợ thực hiện, lịch hẹn liên quan, ghi chú về quá trình thực hiện và thời điểm ghi nhận để phục vụ tra cứu và chăm sóc khách hàng.
+20
+Hệ thống cần đáp ứng yêu cầu phản hồi đối với các chức năng AI như thế nào?
+Xác định yêu cầu hiệu năng đối với chức năng AI
+Các chức năng AI cần có thời gian phản hồi phù hợp trong điều kiện kết nối mạng và dịch vụ Gemini hoạt động bình thường; hệ thống hiển thị trạng thái chờ để người dùng biết yêu cầu đang được xử lý.
+2. Đánh giá thực trạng quản lý hiện nay
+Qua quá trình khảo sát và làm rõ nghiệp vụ, có thể nhận thấy hoạt động quản lý tại salon có những điểm thuận lợi và một số hạn chế cần được giải quyết khi xây dựng hệ thống.
+Ưu điểm
+Các thông tin về khách hàng, dịch vụ và lịch hẹn có thể được quản lý và theo dõi trong quá trình hoạt động.
+Có thể chủ động sắp xếp lịch làm việc của thợ làm tóc.
+Khách hàng có thể đặt lịch trước để salon chuẩn bị và sắp xếp nhân sự.
+Thông tin về hóa đơn và lịch sử sử dụng dịch vụ có thể được lưu lại để phục vụ việc chăm sóc khách hàng.
+Hạn chế
+Việc quản lý thông tin và lịch hẹn có thể còn phụ thuộc nhiều vào thao tác thủ công hoặc các phương pháp quản lý riêng lẻ.
+Khó kiểm soát tình trạng trùng lịch của thợ khi có nhiều lịch hẹn cùng lúc.
+Việc tra cứu lịch sử sử dụng dịch vụ của khách hàng có thể mất nhiều thời gian.
+Khó tổng hợp nhanh các thông tin về doanh thu, dịch vụ phổ biến và khách hàng quay lại.
+Chưa có chức năng AI hỗ trợ gợi ý dịch vụ dựa trên nhu cầu và lịch sử của khách hàng.
+Chưa có công cụ hỗ trợ tạo nội dung tin nhắn nhắc lịch và chăm sóc khách hàng sau dịch vụ.
+Chưa hỗ trợ tóm tắt nhanh lịch sử dịch vụ để thợ làm tóc dễ dàng nắm bắt thông tin của khách hàng.
+3. Yêu cầu chức năng (FR)
+Mã
+Tên chức năng
+Tác nhân
+Mô tả
+FR01
+Đăng nhập hệ thống
+Quản lý, Lễ tân, Thợ làm tóc
+Cho phép người dùng nội bộ đăng nhập bằng tài khoản và mật khẩu để truy cập hệ thống theo vai trò được cấp.
+FR02
+Quản lý phân quyền
+Quản lý
+Cho phép Quản lý thiết lập và quản lý vai trò, quyền truy cập của người dùng trong hệ thống theo cơ chế RBAC.
+FR03
+Quản lý khách hàng
+Quản lý, Lễ tân
+Cho phép thêm, sửa, xóa, tìm kiếm và xem thông tin khách hàng; đồng thời tra cứu lịch sử sử dụng dịch vụ của khách hàng.
+FR04
+Quản lý thợ làm tóc & lịch làm việc
+Quản lý, Thợ làm tóc
+Cho phép Quản lý quản lý thông tin thợ và lịch làm việc; Thợ làm tóc có thể xem lịch làm việc và các lịch hẹn được phân công.
+FR05
+Quản lý dịch vụ
+Quản lý
+Cho phép Quản lý thêm, sửa, xóa và cập nhật thông tin dịch vụ, bao gồm tên dịch vụ, giá và thời lượng thực hiện.
+FR06
+Quản lý lịch hẹn
+Khách hàng, Lễ tân, Quản lý, Thợ làm tóc
+Cho phép khách hàng đặt lịch trên website; Lễ tân hoặc Quản lý có thể hỗ trợ đặt lịch; hệ thống hỗ trợ đổi, hủy và kiểm tra trùng lịch.
+FR07
+Quản lý hóa đơn & lịch sử dịch vụ
+Quản lý, Lễ tân, Thợ làm tóc
+Cho phép lập hóa đơn, cập nhật trạng thái thanh toán và lưu thông tin lịch sử dịch vụ của khách hàng để phục vụ tra cứu và chăm sóc khách hàng.
+FR08
+Tra cứu & thống kê
+Quản lý, Lễ tân
+Cho phép tra cứu lịch hẹn theo ngày, khách hàng và thợ làm tóc; đồng thời thống kê doanh thu, dịch vụ phổ biến và khách hàng quay lại.
+FR09
+AI hỗ trợ salon & khách hàng
+Quản lý, Lễ tân, Thợ làm tóc, Khách hàng
+Ứng dụng AI để gợi ý dịch vụ phù hợp cho khách hàng, tạo nội dung tin nhắn nhắc lịch và chăm sóc sau dịch vụ, đồng thời tóm tắt lịch sử dịch vụ để hỗ trợ nhân viên salon.
+4. Yêu cầu phi chức năng (NFR)
+Mã
+Tên yêu cầu
+Mô tả
+NFR01
+Khả năng sử dụng
+Giao diện rõ ràng, dễ hiểu và thuận tiện cho Quản lý, Lễ tân, Thợ làm tóc và Khách hàng sử dụng trên nền tảng Web.
+NFR02
+Hiệu năng
+Hệ thống cần có thời gian phản hồi phù hợp đối với các thao tác thông thường trong điều kiện vận hành bình thường. Thời gian phản hồi của các chức năng AI phụ thuộc vào kết nối mạng và dịch vụ Gemini.
+NFR03
+Bảo mật
+Bảo vệ thông tin người dùng và dữ liệu hệ thống; kiểm soát quyền truy cập theo vai trò (RBAC); mật khẩu được mã hóa bằng Bcrypt; API Key của Gemini chỉ được lưu trữ và sử dụng tại Backend.
+NFR04
+Độ tin cậy
+Đảm bảo dữ liệu lịch hẹn, hóa đơn và lịch sử dịch vụ được xử lý chính xác; hệ thống kiểm tra lịch làm việc và thời gian đã đặt để ngăn tạo các lịch hẹn bị trùng của cùng một thợ.
+NFR05
+Khả năng bảo trì
+Hệ thống được tổ chức rõ ràng theo mô hình Client–Server, các thành phần được phân tách hợp lý, thuận tiện cho việc sửa lỗi, bảo trì và phát triển thêm chức năng trong tương lai.
+5. Sơ đồ phân rã chức năng của hệ thống (BFD Diagram)
+HỆ THỐNG QUẢN LÝ ĐẶT LỊCH SALON TÓC TÍCH HỢP AI
+│
+├── 1. QUẢN LÝ TÀI KHOẢN
+│   ├── 1.1. Đăng nhập hệ thống
+│   └── 1.2. Quản lý phân quyền
+│
+├── 2. QUẢN LÝ THÔNG TIN
+│   ├── 2.1. Quản lý khách hàng
+│   ├── 2.2. Quản lý thợ làm tóc
+│   ├── 2.3. Quản lý lịch làm việc
+│   └── 2.4. Quản lý dịch vụ
+│
+├── 3. QUẢN LÝ LỊCH HẸN & DỊCH VỤ
+│   ├── 3.1. Đặt lịch hẹn
+│   ├── 3.2. Đổi lịch hẹn
+│   ├── 3.3. Hủy lịch hẹn
+│   ├── 3.4. Kiểm tra lịch làm việc & trùng lịch
+│   ├── 3.5. Quản lý hóa đơn & thanh toán
+│   └── 3.6. Quản lý lịch sử dịch vụ
+│
+├── 4. TRA CỨU & THỐNG KÊ
+│   ├── 4.1. Tra cứu lịch hẹn
+│   ├── 4.2. Thống kê doanh thu
+│   ├── 4.3. Thống kê dịch vụ phổ biến
+│   └── 4.4. Thống kê khách hàng quay lại
+│
+└── 5. HỖ TRỢ TRÍ TUỆ NHÂN TẠO
+    ├── 5.1. AI tư vấn & gợi ý dịch vụ cho khách hàng
+    ├── 5.2. AI tạo nội dung nhắc lịch
+    │       & chăm sóc sau dịch vụ
+    └── 5.3. AI tóm tắt lịch sử dịch vụ
+Hình 1 : Sơ đồ phân rã chức năng của hệ thống
+MỤC 3: ĐẶC TẢ YÊU CẦU ỨNG DỤNG (SRS – V1.0)
+1. GIỚI THIỆU CHUNG
+1.1. Mục đích
+Tài liệu Đặc tả yêu cầu phần mềm (SRS) nhằm cung cấp mô tả chi tiết và đầy đủ về các yêu cầu chức năng, yêu cầu phi chức năng, các ràng buộc kỹ thuật, mô hình Use Case và quy trình xử lý của Hệ thống quản lý đặt lịch salon tóc có tích hợp AI.
+Tài liệu là cơ sở để các thành viên trong nhóm thực hiện việc phân tích, thiết kế, lập trình, kiểm thử và hoàn thiện hệ thống. Đồng thời, tài liệu giúp đảm bảo các chức năng được xây dựng phù hợp với yêu cầu nghiệp vụ của salon và phạm vi của đề tài.
+1.2. Phạm vi
+Ứng dụng phục vụ công tác quản lý hoạt động đặt lịch và cung cấp dịch vụ tại salon tóc. Hệ thống bao gồm các chức năng quản lý khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn, thanh toán và lịch sử dịch vụ.
+Hệ thống cho phép khách hàng đặt lịch trực tiếp trên website bằng cách nhập thông tin cá nhân, lựa chọn dịch vụ, thợ làm tóc, ngày và giờ phù hợp. Lễ tân hoặc Quản lý có thể hỗ trợ tạo lịch hẹn cho khách hàng tại salon.
+Đối với nhân viên salon, hệ thống hỗ trợ quản lý thông tin khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn, thanh toán và lịch sử dịch vụ. Hệ thống cũng hỗ trợ tra cứu lịch hẹn theo ngày, khách hàng và thợ làm tóc, đồng thời cung cấp các thống kê về doanh thu, dịch vụ phổ biến và khách hàng quay lại.
+Hệ thống tích hợp AI thông qua Gemini API nhằm hỗ trợ ba nhóm chức năng chính:
+Gợi ý dịch vụ phù hợp với nhu cầu của khách hàng.
+Tạo nội dung nhắc lịch và chăm sóc sau dịch vụ.
+Tóm tắt lịch sử dịch vụ của khách hàng.
+Đối tượng sử dụng hệ thống gồm Quản lý, Lễ tân, Thợ làm tóc và Khách hàng. Trong đó, Quản lý, Lễ tân và Thợ làm tóc đăng nhập hệ thống theo quyền được phân công; Khách hàng sử dụng chức năng đặt lịch trên website mà không cần tài khoản đăng nhập.
+1.3. Các định nghĩa, thuật ngữ, từ viết tắt
+STT
+Thuật ngữ, từ viết tắt
+Giải thích
+Ghi chú
+1
+SRS
+Software Requirements Specification – Tài liệu đặc tả yêu cầu phần mềm
+2
+SDLC
+Software Development Life Cycle – Chu kỳ phát triển phần mềm
+3
+AI
+Artificial Intelligence – Trí tuệ nhân tạo
+4
+LLM
+Large Language Model – Mô hình ngôn ngữ lớn được sử dụng để xử lý và sinh nội dung bằng AI
+Gemini thuộc nhóm mô hình AI/LLM
+5
+RBAC
+Role-Based Access Control – Cơ chế phân quyền truy cập dựa trên vai trò người dùng
+6
+JSON
+JavaScript Object Notation – Định dạng dữ liệu được sử dụng để trao đổi dữ liệu giữa Backend và AI Engine
+7
+API
+Application Programming Interface – Giao diện lập trình ứng dụng cho phép các hệ thống giao tiếp với nhau
+8
+UC
+Use Case – Ca sử dụng mô tả một chức năng hoặc nghiệp vụ mà tác nhân thực hiện với hệ thống
+9
+Stylist
+Thợ làm tóc chuyên nghiệp tại salon
+Tác nhân trong hệ thống
+10
+Gemini API
+Giao diện lập trình cho phép hệ thống gửi dữ liệu và yêu cầu xử lý đến dịch vụ Gemini
+AI Engine được sử dụng trong đề tài
+1.4. Tài liệu tham khảo
+STT
+Tên tài liệu
+Ghi chú
+1
+Tài liệu yêu cầu đề tài “Hệ thống quản lý đặt lịch salon tóc có tích hợp AI”
+Tài liệu yêu cầu nghiệp vụ
+2
+Tài liệu thu thập, làm rõ yêu cầu của ứng dụng
+Cơ sở xác định yêu cầu chức năng và phi chức năng
+3
+Tài liệu Đặc tả yêu cầu ứng dụng – SRS V1.0
+Tài liệu đặc tả yêu cầu
+4
+Tài liệu kỹ thuật Google Gemini API
+Tài liệu kỹ thuật AI Engine
+2. MÔ TẢ TỔNG QUAN ỨNG DỤNG
+2.1. Mô hình Use Case tổng quát
+Hệ thống kết nối bốn tác nhân chính gồm Quản lý, Lễ tân, Thợ làm tóc và Khách hàng với các nhóm chức năng: Quản lý tài khoản, Quản lý thông tin, Quản lý lịch hẹn và dịch vụ, Tra cứu và thống kê, Hỗ trợ trí tuệ nhân tạo.
+Quản lý thực hiện các chức năng quản lý tài khoản, phân quyền, khách hàng, thợ làm tóc, lịch làm việc, dịch vụ, lịch hẹn, hóa đơn, lịch sử dịch vụ, tra cứu, thống kê và các chức năng AI theo quyền được cấp.
+Lễ tân thực hiện các nghiệp vụ hỗ trợ khách hàng, quản lý thông tin khách hàng, hỗ trợ đặt và xử lý lịch hẹn, kiểm tra lịch làm việc, lập hóa đơn, cập nhật trạng thái thanh toán, tra cứu và sử dụng các chức năng AI phù hợp.
+Thợ làm tóc theo dõi lịch làm việc và các lịch hẹn được phân công, đồng thời tra cứu thông tin và lịch sử dịch vụ của khách hàng và sử dụng chức năng AI để hỗ trợ tóm tắt lịch sử dịch vụ.
+Khách hàng sử dụng website để nhập thông tin, lựa chọn dịch vụ, thợ làm tóc, ngày và giờ phù hợp để đặt lịch; đồng thời có thể sử dụng chức năng AI để được gợi ý dịch vụ phù hợp với nhu cầu.
+Quản lý, Lễ tân và Thợ làm tóc đăng nhập hệ thống bằng tài khoản được cấp. Khách hàng sử dụng chức năng đặt lịch và tư vấn dịch vụ trên website mà không cần tài khoản đăng nhập.
+Hình 2: Sơ đồ Use Case Tổng Quát
+2.2. Danh sách các tác nhân và mô tả
+Tác nhân
+Mô tả tác nhân
+Ghi chú
+Quản lý (Manager)
+Quản lý hoạt động của salon, bao gồm quản lý tài khoản và phân quyền, khách hàng, thợ làm tóc, lịch làm việc, dịch vụ, lịch hẹn, hóa đơn, lịch sử dịch vụ, tra cứu, thống kê và sử dụng các chức năng AI theo quyền được cấp.
+Quyền quản lý cao nhất
+Lễ tân (Receptionist)
+Hỗ trợ khách hàng, quản lý thông tin khách hàng, hỗ trợ đặt, đổi và hủy lịch hẹn, kiểm tra lịch làm việc, lập hóa đơn, cập nhật trạng thái thanh toán, tra cứu và sử dụng các chức năng AI phù hợp.
+Người dùng nghiệp vụ chính
+Thợ làm tóc (Stylist)
+Theo dõi lịch làm việc và các lịch hẹn được phân công, tra cứu thông tin và lịch sử dịch vụ của khách hàng, đồng thời sử dụng chức năng AI để tóm tắt lịch sử dịch vụ.
+Người thực hiện dịch vụ
+Khách hàng (Customer)
+Sử dụng website để nhập thông tin, lựa chọn dịch vụ, thợ làm tóc, ngày và giờ phù hợp để đặt lịch; đồng thời sử dụng AI để được gợi ý dịch vụ phù hợp với nhu cầu.
+Không cần đăng nhập
+2.3. Danh sách Use Case và Bảng Mapping Yêu cầu chức năng
+ID
+Tên Use Case
+Mô tả ngắn gọn Use Case
+Chức năng tương ứng
+Tác nhân thực hiện
+UC001
+Đăng nhập hệ thống
+Cho phép người dùng nội bộ đăng nhập bằng tài khoản và mật khẩu để truy cập hệ thống theo vai trò được cấp.
+FR01
+Quản lý, Lễ tân, Thợ làm tóc
+UC002
+Quản lý phân quyền
+Cho phép Quản lý thiết lập và quản lý vai trò, quyền truy cập của người dùng theo cơ chế RBAC.
+FR02
+Quản lý
+UC003
+Quản lý khách hàng
+Cho phép thêm, sửa, xóa, tìm kiếm và xem thông tin khách hàng; đồng thời tra cứu lịch sử sử dụng dịch vụ của khách hàng.
+FR03
+Quản lý, Lễ tân
+UC004
+Quản lý thợ làm tóc & lịch làm việc
+Cho phép Quản lý quản lý thông tin thợ và lịch làm việc; Thợ làm tóc xem lịch làm việc và các lịch hẹn được phân công.
+FR04
+Quản lý, Thợ làm tóc
+UC005
+Quản lý dịch vụ
+Cho phép Quản lý thêm, sửa, xóa và cập nhật thông tin dịch vụ, bao gồm tên dịch vụ, giá và thời lượng thực hiện.
+FR05
+Quản lý
+UC006
+Quản lý lịch hẹn
+Cho phép đặt, đổi, hủy lịch hẹn; đồng thời kiểm tra lịch làm việc và trùng lịch của thợ làm tóc.
+FR06
+Khách hàng, Lễ tân, Quản lý, Thợ làm tóc
+UC007
+Quản lý hóa đơn & lịch sử dịch vụ
+Cho phép lập hóa đơn, cập nhật trạng thái thanh toán và lưu thông tin lịch sử dịch vụ của khách hàng.
+FR07
+Quản lý, Lễ tân, Thợ làm tóc
+UC008
+Tra cứu & thống kê
+Cho phép tra cứu lịch hẹn theo ngày, khách hàng và thợ làm tóc; đồng thời thống kê doanh thu, dịch vụ phổ biến và khách hàng quay lại.
+FR08
+Quản lý, Lễ tân
+UC009
+AI hỗ trợ salon & khách hàng
+Sử dụng AI để gợi ý dịch vụ phù hợp cho khách hàng, tạo nội dung nhắc lịch và chăm sóc sau dịch vụ, đồng thời tóm tắt lịch sử dịch vụ.
+FR09
+Quản lý, Lễ tân, Thợ làm tóc, Khách hàng
+Phân quyền sử dụng các chức năng AI trong UC009:
+Khách hàng: sử dụng AI để tư vấn và gợi ý dịch vụ.
+Quản lý và Lễ tân: sử dụng AI để tạo nội dung nhắc lịch và chăm sóc sau dịch vụ.
+Quản lý, Lễ tân và Thợ làm tóc: sử dụng AI để tóm tắt lịch sử dịch vụ của khách hàng.
+2.4. Các điều kiện phụ thuộc kỹ thuật
+Phần cứng: Máy tính hoặc laptop phục vụ Quản lý, Lễ tân và Thợ làm tóc; thiết bị của khách hàng có trình duyệt Web và kết nối Internet.
+Môi trường phát triển: Python 3.x, FastAPI, ReactJS, MySQL, SQLAlchemy và Pytest.
+Cơ sở dữ liệu: Hệ thống sử dụng MySQL để lưu trữ thông tin khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn và lịch sử dịch vụ.
+Kết nối mạng: Hệ thống yêu cầu kết nối Internet để khách hàng sử dụng website đặt lịch và Backend giao tiếp với dịch vụ AI.
+Dịch vụ bên thứ ba: Hệ thống kết nối với Google Gemini API để thực hiện các chức năng AI.
+AI Engine: Gemini API tiếp nhận dữ liệu đầu vào do Backend cung cấp, bao gồm nhu cầu của khách hàng, lịch sử dịch vụ và danh sách dịch vụ của salon để tạo kết quả phù hợp.
+Bảo mật: API Key của Gemini được lưu trữ và sử dụng tại Backend, không đưa trực tiếp vào mã nguồn Frontend hoặc giao diện người dùng.
+3. ĐẶC TẢ CÁC YÊU CẦU CHỨC NĂNG (FUNCTIONAL)
+3.1. UC001 – Đăng nhập hệ thống (Authentication)
+3.1.1. Mô tả Use Case UC001
+Mục
+Nội dung
+Use Case
+UC001 – Đăng nhập hệ thống
+Mục đích
+Xác thực danh tính người dùng nội bộ gồm Quản lý, Lễ tân và Thợ làm tóc để cấp quyền truy cập hệ thống theo vai trò.
+Mô tả
+Người dùng nhập tên đăng nhập và mật khẩu vào form đăng nhập. Hệ thống kiểm tra tài khoản và xác thực mật khẩu, sau đó tạo JWT Token và cho phép người dùng truy cập các chức năng phù hợp với vai trò được cấp.
+Tác nhân
+Quản lý, Lễ tân, Thợ làm tóc
+Điều kiện trước
+Tài khoản người dùng đã được tạo trên hệ thống và đang ở trạng thái hoạt động.
+Điều kiện sau
+Nếu đăng nhập thành công, hệ thống tạo JWT Token và chuyển người dùng đến giao diện làm việc tương ứng với vai trò. Nếu đăng nhập không thành công, hệ thống hiển thị thông báo lỗi và người dùng vẫn ở màn hình đăng nhập.
+Luồng sự kiện chính (Basic Flows)
+1. Người dùng truy cập hệ thống.2. Hệ thống hiển thị màn hình đăng nhập.3. Người dùng nhập tên đăng nhập và mật khẩu.4. Người dùng nhấn “Đăng nhập”.5. Hệ thống kiểm tra tài khoản trong cơ sở dữ liệu.6. Hệ thống xác thực mật khẩu với thông tin xác thực đã lưu.7. Hệ thống xác định vai trò của người dùng và tạo JWT Token.8. Hệ thống chuyển người dùng đến giao diện tương ứng với vai trò.9. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Sai tên đăng nhập hoặc mật khẩu: Hệ thống thông báo thông tin đăng nhập không chính xác và yêu cầu người dùng nhập lại.A2. Tài khoản bị vô hiệu hóa: Hệ thống thông báo tài khoản không hoạt động và từ chối đăng nhập.A3. Thiếu thông tin đăng nhập: Hệ thống thông báo yêu cầu nhập đầy đủ tên đăng nhập và mật khẩu.A4. Lỗi hệ thống: Khi xảy ra lỗi trong quá trình xác thực hoặc kết nối cơ sở dữ liệu, hệ thống thông báo lỗi và yêu cầu người dùng thử lại.
+3.1.2. Biểu đồ (UC001)
+Hình 3 Activity Diagram - UC001: Đăng nhập hệ thống
+Hình 4 Sequence Diagram - UC001: Đăng nhập hệ thống
+3.2. UC002 – Quản lý Phân quyền người dùng (Authorization / RBAC)
+3.2.1. Mô tả Use Case UC002
+Mục
+Nội dung
+Use Case
+UC002 – Quản lý phân quyền người dùng
+Mục đích
+Cho phép Quản lý thiết lập và quản lý vai trò, quyền truy cập của người dùng trong hệ thống theo cơ chế RBAC.
+Mô tả
+Quản lý xem danh sách tài khoản người dùng nội bộ và thiết lập vai trò, quyền truy cập phù hợp cho từng người dùng. Hệ thống kiểm soát quyền truy cập vào các chức năng dựa trên vai trò được phân công.
+Tác nhân
+Quản lý
+Điều kiện trước
+Quản lý đã đăng nhập thành công và có quyền thực hiện chức năng quản lý phân quyền.
+Điều kiện sau
+Vai trò và quyền truy cập của người dùng được cập nhật trong hệ thống và được áp dụng khi người dùng truy cập các chức năng tương ứng.
+Luồng sự kiện chính (Basic Flows)
+1. Quản lý chọn chức năng “Quản lý phân quyền”.2. Hệ thống hiển thị danh sách người dùng nội bộ và vai trò hiện tại.3. Quản lý chọn tài khoản cần thiết lập hoặc thay đổi vai trò.4. Quản lý lựa chọn vai trò phù hợp cho tài khoản.5. Hệ thống kiểm tra thông tin và cập nhật quyền truy cập của tài khoản.6. Hệ thống thông báo cập nhật phân quyền thành công.7. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Vai trò không hợp lệ: Hệ thống thông báo vai trò được chọn không hợp lệ và yêu cầu Quản lý lựa chọn lại.A2. Tài khoản không tồn tại: Hệ thống thông báo tài khoản không tồn tại hoặc đã bị xóa và yêu cầu Quản lý thực hiện lại thao tác.A3. Không đủ quyền thực hiện: Hệ thống từ chối thao tác và thông báo người dùng không có quyền quản lý phân quyền.A4. Lỗi cập nhật: Khi xảy ra lỗi trong quá trình cập nhật dữ liệu, hệ thống thông báo cập nhật không thành công và yêu cầu thực hiện lại.
+3.2.2. Biểu đồ (UC002)
+Hình 5: Activity Diagram - UC002: Quản lý Phân quyền
+Hình 6: Sequence Diagram - UC002: Quản lý Phân quyền
+3.3. UC003 – Quản lý Khách hàng
+3.3.1. Mô tả Use Case UC003
+Mục
+Nội dung
+Use Case
+UC003 – Quản lý khách hàng
+Mục đích
+Quản lý thông tin khách hàng và lịch sử sử dụng dịch vụ tại salon, phục vụ việc đặt lịch, chăm sóc và hỗ trợ khách hàng.
+Mô tả
+Cho phép người dùng có quyền quản lý khách hàng thực hiện thêm, sửa, xóa, tìm kiếm và xem thông tin khách hàng; đồng thời tra cứu lịch sử sử dụng dịch vụ của khách hàng.
+Tác nhân
+Quản lý, Lễ tân
+Điều kiện trước
+- Người dùng đã đăng nhập thành công.- Người dùng có quyền quản lý khách hàng.- Hệ thống có kết nối với cơ sở dữ liệu.
+Điều kiện sau
+Thông tin khách hàng được thêm mới, cập nhật hoặc xóa theo thao tác của người dùng; thông tin tìm kiếm và lịch sử dịch vụ được hiển thị phù hợp với dữ liệu trong hệ thống.
+Luồng sự kiện chính (Basic Flows)
+1. Người dùng chọn chức năng “Quản lý khách hàng”.2. Hệ thống hiển thị danh sách khách hàng.3. Người dùng lựa chọn thao tác thêm, sửa, xóa, tìm kiếm hoặc xem thông tin khách hàng.4. Nếu thêm hoặc sửa, người dùng nhập hoặc cập nhật thông tin khách hàng.5. Hệ thống kiểm tra tính hợp lệ của dữ liệu.6. Hệ thống lưu hoặc cập nhật dữ liệu khách hàng trong cơ sở dữ liệu.7. Nếu người dùng tìm kiếm hoặc xem lịch sử dịch vụ, hệ thống truy xuất và hiển thị thông tin tương ứng.8. Nếu người dùng thực hiện xóa, hệ thống kiểm tra dữ liệu liên quan và thực hiện xóa theo quy định của hệ thống.9. Hệ thống thông báo kết quả thao tác.10. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Thiếu thông tin bắt buộc: Hệ thống thông báo các trường thông tin còn thiếu và yêu cầu người dùng bổ sung.A2. Số điện thoại đã tồn tại: Hệ thống thông báo thông tin khách hàng đã tồn tại và yêu cầu người dùng kiểm tra lại dữ liệu.A3. Không tìm thấy khách hàng: Hệ thống thông báo không tìm thấy khách hàng phù hợp với điều kiện tìm kiếm.A4. Xóa khách hàng có dữ liệu liên quan: Hệ thống cảnh báo khách hàng đang có dữ liệu liên quan và yêu cầu người dùng xác nhận hoặc không thực hiện xóa.
+3.3.2. Biểu đồ (UC003)
+Hình 7: UC003 – Quản lý khách hàng
+Hình 8: Activity Diagram - UC003: Quản lý Khách hàng
+Hình 9: Sequence Diagram - UC003: Quản lý Khách hàng
+3.4. UC004 – Quản lý Thợ làm tóc & Lịch làm việc
+3.4.1. Mô tả use case UC004
+Mục
+Nội dung
+Use Case
+UC004 – Quản lý Thợ làm tóc & Lịch làm việc
+Mục đích
+Quản lý thông tin thợ làm tóc và lịch làm việc nhằm phục vụ việc phân công, đặt lịch và kiểm tra khả năng phục vụ của thợ.
+Mô tả
+Cho phép Quản lý quản lý thông tin thợ làm tóc và lịch làm việc. Thợ làm tóc có thể xem lịch làm việc của bản thân và các lịch hẹn được phân công.
+Tác nhân
+Quản lý, Thợ làm tóc
+Điều kiện trước
+- Người dùng đã đăng nhập hệ thống.- Người dùng có quyền truy cập chức năng tương ứng.- Thông tin thợ làm tóc đã được tạo hoặc có thể được tạo mới.
+Điều kiện sau
+Thông tin thợ làm tóc và lịch làm việc được lưu hoặc cập nhật chính xác trong hệ thống; Thợ làm tóc có thể xem lịch làm việc và các lịch hẹn được phân công.
+Luồng sự kiện chính (Basic Flows)
+1. Người dùng chọn chức năng quản lý thợ làm tóc và lịch làm việc.2. Hệ thống hiển thị danh sách thợ làm tóc và thông tin lịch làm việc.3. Quản lý chọn thêm, sửa thông tin thợ hoặc cập nhật lịch làm việc.4. Quản lý nhập hoặc cập nhật các thông tin cần thiết.5. Hệ thống kiểm tra tính hợp lệ của dữ liệu và thời gian làm việc.6. Hệ thống lưu dữ liệu vào cơ sở dữ liệu và thông báo kết quả.7. Thợ làm tóc truy cập chức năng để xem lịch làm việc của bản thân và các lịch hẹn được phân công.8. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Thiếu thông tin: Hệ thống yêu cầu người dùng nhập đầy đủ các thông tin bắt buộc.A2. Thời gian làm việc không hợp lệ: Hệ thống thông báo lỗi và yêu cầu điều chỉnh thời gian làm việc.A3. Lịch làm việc bị trùng: Hệ thống cảnh báo lịch làm việc bị trùng và yêu cầu Quản lý điều chỉnh.A4. Thợ làm tóc không tồn tại: Hệ thống thông báo dữ liệu không hợp lệ và yêu cầu kiểm tra lại thông tin.
+3.4.2. Biểu đồ (UC004)
+Hình 10:  UC004 – Quản lý thợ làm tóc & lịch làm việc
+Hình 11: Activity Diagram - UC004: Quản lý Thợ & Lịch làm việc
+Hình 12: Sequence Diagram - UC004: Quản lý Thợ & Lịch làm việc
+3.5. UC005 – Quản lý Dịch vụ
+3.5.1. Mô tả use case UC005
+Mục
+Nội dung
+Use Case
+UC005 – Quản lý Dịch vụ
+Mục đích
+Quản lý danh sách các dịch vụ của salon, bao gồm tên dịch vụ, giá và thời lượng thực hiện.
+Mô tả
+Cho phép Quản lý thêm mới, chỉnh sửa, xóa và cập nhật thông tin các dịch vụ được cung cấp tại salon.
+Tác nhân
+Quản lý
+Điều kiện trước
+- Quản lý đã đăng nhập thành công.- Quản lý có quyền truy cập chức năng quản lý dịch vụ.
+Điều kiện sau
+Thông tin dịch vụ được lưu trữ hoặc cập nhật chính xác trong cơ sở dữ liệu.
+Luồng sự kiện chính (Basic Flows)
+1. Quản lý chọn chức năng “Quản lý dịch vụ”.2. Hệ thống hiển thị danh sách dịch vụ.3. Quản lý chọn thao tác thêm, sửa hoặc xóa dịch vụ.4. Quản lý nhập hoặc cập nhật tên dịch vụ, giá và thời lượng thực hiện.5. Hệ thống kiểm tra tính hợp lệ của dữ liệu.6. Hệ thống lưu hoặc cập nhật thông tin dịch vụ trong cơ sở dữ liệu.7. Hệ thống thông báo kết quả thao tác.8. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Tên dịch vụ đã tồn tại: Hệ thống thông báo và yêu cầu nhập tên khác.A2. Giá dịch vụ không hợp lệ: Hệ thống thông báo lỗi và yêu cầu nhập lại.A3. Thời lượng thực hiện không hợp lệ: Hệ thống thông báo lỗi và yêu cầu điều chỉnh lại.A4. Xóa dịch vụ đang được sử dụng: Hệ thống cảnh báo dịch vụ đang có dữ liệu liên quan và yêu cầu Quản lý xác nhận hoặc xử lý theo quy tắc của hệ thống.
+3.5.2. Biểu đồ (UC005)
+Hình 13:  UC005 – Quản lý dịch vụ
+Hình 14: Activity Diagram - UC005: Quản lý Dịch vụ 
+Hình 15: Sequence Diagram - UC005: Quản lý Dịch vụ 
+3.6. UC006 – Quản lý Lịch hẹn
+3.6.1. Mô tả use case UC006
+Mục
+Nội dung
+Use Case
+UC006 – Quản lý Lịch hẹn
+Mục đích
+Cho phép khách hàng đặt lịch và cho phép Quản lý, Lễ tân quản lý lịch hẹn; đồng thời hỗ trợ đổi, hủy và kiểm tra trùng lịch trước khi tạo hoặc thay đổi lịch hẹn.
+Mô tả
+Khách hàng đặt lịch trực tiếp trên website bằng cách nhập thông tin cá nhân, chọn dịch vụ, thợ làm tóc, ngày và giờ. Lễ tân hoặc Quản lý có thể tạo lịch giúp khách hàng. Thợ làm tóc có thể xem các lịch hẹn được phân công. Hệ thống kiểm tra lịch làm việc của thợ và tình trạng trùng lịch trước khi tạo hoặc thay đổi lịch hẹn.
+Tác nhân
+Khách hàng, Quản lý, Lễ tân, Thợ làm tóc
+Điều kiện trước
+- Dịch vụ đã tồn tại trong hệ thống.- Thợ làm tóc và lịch làm việc đã được thiết lập.- Hệ thống đang hoạt động.- Đối với Quản lý/Lễ tân/Thợ làm tóc: đã đăng nhập thành công và có quyền truy cập chức năng tương ứng.
+Điều kiện sau
+- Lịch hẹn được tạo, thay đổi hoặc hủy thành công.- Thông tin lịch hẹn được lưu hoặc cập nhật trong cơ sở dữ liệu.- Hệ thống không tạo lịch hẹn bị trùng thời gian của cùng một thợ.
+Luồng sự kiện chính (Basic Flows)
+1. Người dùng truy cập chức năng quản lý/đặt lịch hẹn.2. Khách hàng nhập họ tên và số điện thoại; đối với Lễ tân/Quản lý, có thể nhập hoặc chọn thông tin khách hàng.3. Người dùng chọn dịch vụ.4. Người dùng chọn thợ làm tóc.5. Người dùng chọn ngày và giờ mong muốn.6. Người dùng có thể nhập nhu cầu hoặc ghi chú cho lịch hẹn.7. Hệ thống kiểm tra lịch làm việc của thợ.8. Hệ thống kiểm tra trùng lịch dựa trên thời gian thực hiện của dịch vụ và các lịch hẹn hiện có.9. Nếu thời gian hợp lệ, hệ thống tạo lịch hẹn và lưu thông tin vào cơ sở dữ liệu.10. Hệ thống thông báo đặt lịch thành công.11. Thợ làm tóc có thể xem lịch hẹn được phân công.12. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Thời gian đã có lịch: Hệ thống thông báo khung giờ đã được đặt và yêu cầu chọn thời gian khác.A2. Thợ không làm việc tại thời gian đã chọn: Hệ thống thông báo và yêu cầu chọn thợ hoặc thời gian khác.A3. Thiếu thông tin khách hàng: Hệ thống yêu cầu nhập đầy đủ các thông tin bắt buộc.A4. Đổi lịch: Người dùng chọn lịch hẹn cần thay đổi; hệ thống kiểm tra lịch làm việc và trùng lịch tại thời gian mới trước khi cập nhật.A5. Hủy lịch: Người dùng chọn lịch hẹn cần hủy; hệ thống yêu cầu xác nhận và cập nhật trạng thái lịch hẹn sau khi xác nhận.
+3.6.2. Biểu đồ (UC006)
+Hình 16: UC006 – Quản lý lịch hẹn
+Hình 17: Activity Diagram - UC006: Đặt lịch hẹn trực tuyến
+Hình 18: Sequence Diagram - UC006: Đặt lịch hẹn 
+3.7. UC007 – Quản lý Hóa đơn & Lịch sử dịch vụ
+3.7.1. Mô tả use case UC007
+Mục
+Nội dung
+Use Case
+UC007 – Quản lý Hóa đơn & Lịch sử dịch vụ
+Mục đích
+Quản lý hóa đơn, trạng thái thanh toán và lưu lại lịch sử sử dụng dịch vụ của khách hàng.
+Mô tả
+Sau khi khách hàng hoàn thành dịch vụ, hệ thống cho phép người dùng có quyền lập hóa đơn, tính tổng tiền, cập nhật trạng thái thanh toán và lưu thông tin dịch vụ vào lịch sử của khách hàng.
+Tác nhân
+Quản lý, Lễ tân, Thợ làm tóc
+Điều kiện trước
+- Người dùng đã đăng nhập và có quyền truy cập chức năng tương ứng.- Khách hàng có lịch hẹn trong hệ thống.- Dịch vụ đã được thực hiện hoặc lịch hẹn đã hoàn thành.
+Điều kiện sau
+- Hóa đơn được tạo và lưu thành công.- Trạng thái thanh toán được cập nhật.- Lịch sử dịch vụ của khách hàng được lưu lại để phục vụ tra cứu và chăm sóc khách hàng.
+Luồng sự kiện chính (Basic Flows)
+1. Người dùng chọn lịch hẹn đã hoàn thành.2. Hệ thống hiển thị thông tin khách hàng và các dịch vụ đã thực hiện.3. Hệ thống tính tổng tiền dựa trên các dịch vụ trong lịch hẹn.4. Người dùng kiểm tra và xác nhận tạo hóa đơn.5. Hệ thống lưu thông tin hóa đơn vào cơ sở dữ liệu.6. Người dùng cập nhật trạng thái thanh toán.7. Hệ thống lưu thông tin dịch vụ đã thực hiện vào lịch sử dịch vụ của khách hàng.8. Hệ thống thông báo thao tác hoàn tất.9. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Lịch hẹn chưa hoàn thành: Hệ thống không cho phép tạo hóa đơn cho lịch hẹn chưa hoàn thành theo quy tắc của hệ thống.A2. Không tìm thấy thông tin dịch vụ: Hệ thống thông báo lỗi dữ liệu và yêu cầu kiểm tra lại thông tin lịch hẹn.A3. Lỗi khi lưu hóa đơn: Hệ thống thông báo lỗi và yêu cầu thực hiện lại thao tác.A4. Thông tin thanh toán chưa đầy đủ: Hệ thống yêu cầu người dùng bổ sung thông tin cần thiết trước khi cập nhật trạng thái thanh toán.
+3.7.2. Biểu đồ (UC007)
+Hình 19: UC007 – Quản lý hóa đơn & lịch sử dịch vụ
+Hình 20: Activity Diagram - UC007: Hóa đơn & Lịch sử dịch vụ
+Hình 21: Sequence Diagram - UC007: Hóa đơn & Lịch sử dịch vụ
+3.8. UC008 – Tra cứu & Thống kê
+3.8.1. Mô tả use case UC008
+Mục
+Nội dung
+Use Case
+UC008 – Tra cứu & Thống kê
+Mục đích
+Hỗ trợ người dùng tra cứu lịch hẹn và cung cấp các số liệu thống kê phục vụ quản lý hoạt động salon.
+Mô tả
+Người dùng có quyền có thể tra cứu lịch hẹn theo ngày, khách hàng hoặc thợ làm tóc. Hệ thống cung cấp các số liệu thống kê về doanh thu, dịch vụ phổ biến và khách hàng quay lại.
+Tác nhân
+Quản lý, Lễ tân
+Điều kiện trước
+- Người dùng đã đăng nhập thành công và có quyền truy cập chức năng.- Dữ liệu lịch hẹn, hóa đơn và dịch vụ tồn tại trong hệ thống.
+Điều kiện sau
+Hệ thống hiển thị kết quả tra cứu hoặc số liệu thống kê theo tiêu chí được người dùng lựa chọn.
+Luồng sự kiện chính (Basic Flows)
+1. Người dùng chọn chức năng “Tra cứu & Thống kê”.2. Hệ thống hiển thị các tiêu chí tra cứu và các loại thống kê được hỗ trợ.3. Người dùng chọn tiêu chí tra cứu hoặc loại thống kê cần xem.4. Người dùng nhập khoảng thời gian hoặc điều kiện cần tìm.5. Hệ thống kiểm tra điều kiện tìm kiếm và truy vấn dữ liệu.6. Hệ thống xử lý và tổng hợp dữ liệu theo tiêu chí được chọn.7. Hệ thống hiển thị kết quả tra cứu hoặc số liệu thống kê.8. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Không có dữ liệu phù hợp: Hệ thống thông báo không tìm thấy kết quả theo điều kiện đã chọn.A2. Khoảng thời gian không hợp lệ: Hệ thống thông báo lỗi và yêu cầu người dùng nhập lại khoảng thời gian.A3. Lỗi truy vấn dữ liệu: Hệ thống thông báo lỗi và yêu cầu người dùng thử lại.
+3.8.2. Biểu đồ (UC008)
+Hình 22: UC008 – Tra cứu & thống kê
+Hình 23: Activity Diagram - UC008: Tra cứu & Thống kê
+Hình 24: Sequence Diagram - UC008: Tra cứu & Thống kê
+3.9. UC009 – AI Hỗ trợ Salon
+3.9.1. Mô tả use case UC009
+Mục
+Nội dung
+Use Case
+UC009 – AI Hỗ trợ Salon
+Mục đích
+Sử dụng AI để hỗ trợ salon trong việc gợi ý dịch vụ phù hợp cho khách hàng, tạo nội dung tin nhắn nhắc lịch và chăm sóc sau dịch vụ, đồng thời tóm tắt lịch sử dịch vụ của khách hàng.
+Mô tả
+Người dùng cung cấp hoặc lựa chọn dữ liệu khách hàng từ hệ thống. Backend lấy nhu cầu của khách hàng, lịch sử dịch vụ và danh sách dịch vụ của salon để xây dựng Prompt gửi đến Gemini API. AI xử lý dữ liệu được cung cấp và trả về kết quả. Backend kiểm tra kết quả trước khi hiển thị cho người dùng. AI không trực tiếp truy cập cơ sở dữ liệu và chỉ được phép gợi ý các dịch vụ có trong danh sách dịch vụ của salon.
+Tác nhân
+Quản lý, Lễ tân, Thợ làm tóc, Khách hàng
+Điều kiện trước
+- Người dùng có quyền sử dụng chức năng AI tương ứng.- Dữ liệu khách hàng và/hoặc lịch sử dịch vụ cần thiết tồn tại trong hệ thống.- Danh sách dịch vụ của salon đã được thiết lập.- Gemini API hoạt động và API Key đã được cấu hình tại Backend.
+Điều kiện sau
+- AI trả về kết quả hỗ trợ theo yêu cầu.- Kết quả được Backend kiểm tra và hiển thị trên giao diện.- Kết quả gợi ý dịch vụ chỉ sử dụng các dịch vụ có trong danh sách của salon.- AI không trực tiếp tạo hoặc thay đổi dữ liệu khách hàng trong cơ sở dữ liệu.
+Luồng sự kiện chính (Basic Flows)
+1. Người dùng chọn chức năng AI hỗ trợ salon.2. Người dùng chọn loại hỗ trợ phù hợp với quyền sử dụng: gợi ý dịch vụ, tạo nội dung nhắc lịch/chăm sóc sau dịch vụ hoặc tóm tắt lịch sử dịch vụ.3. Backend lấy các dữ liệu cần thiết từ cơ sở dữ liệu theo chức năng được chọn.4. Backend xây dựng Prompt theo mẫu đã thiết kế và đưa dữ liệu cần thiết vào Prompt.5. Backend gửi yêu cầu đến Gemini API.6. Gemini xử lý yêu cầu và trả kết quả về Backend.7. Backend kiểm tra kết quả nhận được theo các nguyên tắc đã thiết lập.8. Hệ thống hiển thị kết quả cho người dùng.9. Use Case kết thúc.
+Luồng sự kiện phụ (Alternative Flows)
+A1. Gemini API không khả dụng: Hệ thống thông báo AI tạm thời không hoạt động và cho phép người dùng thực hiện lại yêu cầu sau.A2. Thiếu dữ liệu đầu vào: Hệ thống thông báo dữ liệu chưa đầy đủ và yêu cầu bổ sung thông tin cần thiết.A3. API Key không hợp lệ: Backend phát hiện lỗi cấu hình và thông báo chức năng AI tạm thời không thể thực hiện.A4. AI đề xuất dịch vụ không có trong danh sách salon: Backend loại bỏ kết quả không hợp lệ hoặc yêu cầu xử lý lại theo nguyên tắc chỉ sử dụng các dịch vụ có trong danh sách của salon.A5. Kết quả AI không phù hợp: Người dùng có thể yêu cầu thực hiện lại với dữ liệu đầu vào hoặc yêu cầu phù hợp hơn.
+3.9.2. Biểu đồ (UC009)
+Hình 25: UC009 – AI hỗ trợ salon & khách hàng
+Hình 26: Activity Diagram - UC009: AI Hỗ trợ Salon
+Hình 27: Sequence Diagram - UC009: AI Hỗ trợ Salon
+4. CÁC THÔNG TIN HỖ TRỢ KHÁC
+Các thông tin hỗ trợ có vai trò làm rõ các yêu cầu về thiết kế, kiến trúc, bảo mật, phân quyền, giải pháp an toàn AI, xử lý lỗi và kế hoạch vận hành của Hệ thống quản lý đặt lịch salon tóc có tích hợp AI.
+4.1. RÀNG BUỘC THIẾT KẾ VÀ KIẾN TRÚC HỆ THỐNG
+Mô hình kiến trúc tổng thể: Hệ thống được thiết kế theo kiến trúc Client–Server tách biệt (Decoupled Architecture), các thành phần giao tiếp với nhau thông qua RESTful API.
+Frontend Layer: Xây dựng bằng ReactJS, chịu trách nhiệm cung cấp giao diện đặt lịch công khai cho khách hàng và giao diện quản lý dành cho Quản lý, Lễ tân và Thợ làm tóc.
+Backend Layer: Phát triển bằng FastAPI/Python, chịu trách nhiệm xử lý logic nghiệp vụ, xác thực, phân quyền, quản lý khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn, lịch sử dịch vụ và các chức năng AI.
+Database Layer: Sử dụng hệ quản trị cơ sở dữ liệu quan hệ MySQL để lưu trữ thông tin tài khoản, khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn và lịch sử dịch vụ.
+ORM Layer: Sử dụng SQLAlchemy để thực hiện ánh xạ đối tượng và thao tác với cơ sở dữ liệu MySQL.
+AI Service Layer: Kết nối với Google Gemini API thông qua Backend để thực hiện các chức năng gợi ý dịch vụ, tạo nội dung tin nhắn nhắc lịch/chăm sóc sau dịch vụ và tóm tắt lịch sử dịch vụ.
+Đóng gói và triển khai: Hệ thống được tổ chức thành các thành phần Frontend, Backend, Database và AI Service độc lập, thuận tiện cho quá trình phát triển, kiểm thử, bảo trì và mở rộng.
+4.2. YÊU CẦU BẢO MẬT VÀ PHÂN QUYỀN (SECURITY & RBAC)
+4.2.1. Cơ chế xác thực và bảo vệ thông tin
+Xác thực người dùng: Hệ thống yêu cầu Quản lý, Lễ tân và Thợ làm tóc đăng nhập bằng tài khoản và mật khẩu trước khi sử dụng các chức năng quản lý. Sau khi xác thực thành công, hệ thống xác định vai trò của người dùng và cấp quyền tương ứng.
+Băm mật khẩu: Mật khẩu người dùng được băm một chiều bằng thuật toán Bcrypt trước khi lưu vào cơ sở dữ liệu.
+Phân quyền: Hệ thống áp dụng cơ chế RBAC (Role-Based Access Control) để giới hạn quyền truy cập theo từng vai trò.
+Mã hóa truyền tải: Khi triển khai thực tế, hệ thống sử dụng HTTPS/TLS để bảo vệ dữ liệu trao đổi giữa Client, Backend và các dịch vụ bên ngoài.
+4.2.2. Bảo mật API Key của AI Engine
+Không hardcode API Key trong mã nguồn Frontend hoặc mã nguồn được công khai.
+API Key của Google Gemini API được lưu trữ trong biến môi trường hệ thống (.env) hoặc cơ chế quản lý thông tin bí mật và chỉ được Backend sử dụng khi thực hiện yêu cầu đến AI Service.
+API Key không được gửi xuống Frontend, hiển thị trên giao diện hoặc ghi trực tiếp vào log hệ thống.
+4.2.3. Ma trận phân quyền RBAC
+Nhóm chức năng / Resource
+Quản lý (Manager)
+Lễ tân (Receptionist)
+Thợ làm tóc (Hairdresser)
+Quản lý tài khoản & Phân quyền
+Full Access
+Denied
+Denied
+Quản lý Khách hàng
+Full Access
+Full Access
+Read-Only
+Quản lý Dịch vụ
+Full Access
+Read-Only
+Read-Only
+Quản lý Thợ làm tóc & Lịch làm việc
+Full Access
+Read-Only
+Read-Only
+Quản lý Lịch hẹn
+Full Access
+Full Access
+Read-Only
+Quản lý Hóa đơn & Thanh toán
+Full Access
+Full Access
+Read-Only
+Quản lý Lịch sử dịch vụ
+Full Access
+Full Access
+Read-Only
+Tra cứu & Thống kê
+Full Access
+Read-Only
+Denied
+AI hỗ trợ Salon
+Full Access
+Full Access
+Read-Only*
+* Quyền sử dụng AI của Thợ làm tóc tập trung vào chức năng tóm tắt lịch sử dịch vụ, theo phạm vi FR09/UC009.
+4.3. QUY TẮC AN TOÀN VÀ KỸ THUẬT PROMPT ENGINEERING CHO AI ENGINE
+4.3.1. Cơ chế chống ảo giác AI (Anti-Hallucination Constraints)
+Nhằm hạn chế AI tự tạo thông tin khách hàng hoặc đề xuất các dịch vụ không tồn tại trong salon, hệ thống áp dụng các quy tắc sau:
+1. Thiết lập tham số mô hình (Model Parameters):
+Sử dụng tham số phù hợp, ưu tiên mức temperature thấp, khoảng 0.2–0.3, nhằm tăng tính ổn định và hạn chế kết quả không nhất quán.
+2. System Prompt:
+System: Bạn là trợ lý AI hỗ trợ quản lý salon tóc.
+Nhiệm vụ của bạn:
+Gợi ý dịch vụ phù hợp với nhu cầu và lịch sử của khách hàng.
+Tạo tin nhắn nhắc lịch hoặc chăm sóc sau dịch vụ.
+Tóm tắt lịch sử dịch vụ của khách hàng.
+Quy tắc bắt buộc:
+Chỉ sử dụng thông tin được cung cấp trong dữ liệu đầu vào.
+Chỉ gợi ý dịch vụ có trong danh sách dịch vụ của salon.
+Không tự tạo thông tin khách hàng.
+Không tự tạo dịch vụ không có trong danh sách.
+Nếu dữ liệu bị thiếu hoặc không đầy đủ, phải thông báo rõ cho người dùng.
+Không cam kết kết quả ngoài dữ liệu được cung cấp.
+3. Cấu trúc dữ liệu gửi AI:
+Backend định dạng dữ liệu cần thiết thành cấu trúc JSON trước khi đưa vào User Prompt:
+{
+  "customer": {
+    "name": "Nguyễn Văn A",
+    "need": "Muốn thay đổi kiểu tóc"
+  },
+  "service_history": [
+    {
+      "service_name": "Cắt tóc nam",
+      "date": "2026-08-10"
+    },
+    {
+      "service_name": "Gội đầu",
+      "date": "2026-08-10"
+    }
+  ],
+  "available_services": [
+    {
+      "name": "Cắt tóc nam",
+      "price": 80000,
+      "duration": 45
+    },
+    {
+      "name": "Nhuộm tóc",
+      "price": 500000,
+      "duration": 120
+    },
+    {
+      "name": "Uốn tóc",
+      "price": 600000,
+      "duration": 150
+    }
+  ]
+}
+4. Kiểm tra kết quả AI:
+Đối với chức năng gợi ý dịch vụ, Backend đối chiếu các dịch vụ được AI đề xuất với danh sách dịch vụ hiện có trong hệ thống. Nếu AI trả về dịch vụ không tồn tại, Backend không sử dụng kết quả không hợp lệ và thực hiện xử lý lại theo quy tắc của hệ thống.
+4.3.2. Quy trình xử lý lỗi kết nối và ngoại lệ AI (AI Exception Handling)
+Lỗi Timeout / Rate Limit: Nếu Gemini API không phản hồi hoặc trả về lỗi giới hạn yêu cầu, Backend thực hiện cơ chế thử lại trong phạm vi cho phép. Nếu tiếp tục thất bại, hệ thống thông báo cho người dùng.
+Lỗi API Key không hợp lệ / Mất kết nối: Hệ thống bắt ngoại lệ và hiển thị thông báo:“Dịch vụ AI hiện không khả dụng, vui lòng thử lại sau.”
+Thiếu dữ liệu đầu vào: Nếu thông tin khách hàng, lịch sử dịch vụ hoặc danh sách dịch vụ không đầy đủ, hệ thống thông báo dữ liệu chưa đủ để tạo kết quả phù hợp.
+Validation đầu ra: Kết quả AI được kiểm tra trước khi hiển thị cho người dùng, đặc biệt đối với chức năng gợi ý dịch vụ nhằm đảm bảo dịch vụ được đề xuất tồn tại trong danh sách của salon.
+4.4. KẾ HOẠCH BẢO TRÌ, NHẬT KÝ VÀ SAO LƯU DỮ LIỆU
+4.4.1. Nhật ký hệ thống (Audit Trail / Logging)
+Các thao tác quan trọng làm thay đổi dữ liệu trong hệ thống được định hướng ghi nhận trong nhật ký hệ thống nhằm hỗ trợ kiểm tra và xử lý sự cố.
+Thông tin nhật ký dự kiến gồm:
+User_ID
+Timestamp
+Action_Type
+Target_ID
+Description
+Các thao tác có thể được ghi nhận gồm:
+LOGIN
+CREATE
+UPDATE
+DELETE
+BOOK_APPOINTMENT
+RESCHEDULE_APPOINTMENT
+CANCEL_APPOINTMENT
+CREATE_INVOICE
+UPDATE_PAYMENT
+AI_REQUEST
+Nhật ký giúp theo dõi lịch sử thao tác, hỗ trợ kiểm tra và xác định nguyên nhân khi xảy ra sự cố.
+4.4.2. Sao lưu và phục hồi cơ sở dữ liệu (Backup & Recovery)
+Sao lưu định kỳ: Cơ sở dữ liệu MySQL được định hướng sao lưu định kỳ nhằm hạn chế nguy cơ mất dữ liệu.
+Lưu trữ sao lưu: Bản sao lưu cơ sở dữ liệu được lưu trữ tại vị trí an toàn và hạn chế quyền truy cập.
+Khôi phục dữ liệu: Khi xảy ra sự cố, hệ thống có thể sử dụng bản sao lưu gần nhất để khôi phục dữ liệu khách hàng, thợ làm tóc, dịch vụ, lịch hẹn, hóa đơn và lịch sử dịch vụ.
+Kiểm tra sao lưu: Định kỳ kiểm tra khả năng phục hồi từ bản sao lưu nhằm đảm bảo dữ liệu có thể được sử dụng khi cần thiết.
+4.5. PHỤ LỤC: MẪU KẾT QUẢ AI ENGINE (SAMPLE AI OUTPUT)
+4.5.1. Mẫu AI gợi ý dịch vụ
+GỢI Ý DỊCH VỤ PHÙ HỢP
+Khách hàng: Nguyễn Văn A
+Nhu cầu: Muốn thay đổi kiểu tóc
+Lịch sử dịch vụ: Cắt tóc nam, Gội đầu
+Đề xuất:
+Uốn tóc: Phù hợp với nhu cầu thay đổi kiểu tóc của khách hàng.
+Nhuộm tóc: Có thể lựa chọn nếu khách hàng muốn thay đổi thêm màu tóc.
+Các dịch vụ được đề xuất phải nằm trong danh sách dịch vụ hiện có của salon.
+4.5.2. Mẫu tin nhắn nhắc lịch
+TIN NHẮN NHẮC LỊCH
+Chào anh/chị Nguyễn Văn A! Salon xin nhắc anh/chị có lịch hẹn vào lúc 14:00 ngày 20/08/2026 với dịch vụ Uốn tóc. Anh/chị vui lòng sắp xếp thời gian đến salon đúng giờ. Rất mong được phục vụ anh/chị!
+4.5.3. Mẫu tin nhắn chăm sóc sau dịch vụ
+TIN NHẮN CHĂM SÓC SAU DỊCH VỤ
+Chào anh/chị Nguyễn Văn A! Cảm ơn anh/chị đã sử dụng dịch vụ tại salon. Sau khi thực hiện dịch vụ Uốn tóc, anh/chị nên chú ý chăm sóc tóc phù hợp để duy trì tình trạng tóc. Nếu cần thêm thông tin, anh/chị có thể liên hệ với salon để được hỗ trợ.
+4.5.4. Mẫu tóm tắt lịch sử dịch vụ
+TÓM TẮT LỊCH SỬ DỊCH VỤ KHÁCH HÀNG
+Khách hàng: Nguyễn Văn A
+10/08/2026: Cắt tóc nam.
+10/08/2026: Gội đầu.
+20/08/2026: Uốn tóc.
+Tóm tắt: Khách hàng Nguyễn Văn A đã sử dụng các dịch vụ Cắt tóc nam và Gội đầu vào ngày 10/08/2026, sau đó sử dụng dịch vụ Uốn tóc vào ngày 20/08/2026. Thông tin tóm tắt được tạo dựa trên lịch sử dịch vụ được cung cấp cho AI.
+MỤC 4: SCREEN FLOW & TÀI LIỆU THIẾT KẾ CƠ SỞ DỮ LIỆU
+Nhóm 08 - Thành viên nhóm:
+Lương Việt Anh (Trưởng nhóm)
+Lương Thế Mạnh
+Tên ứng dụng:Hệ thống quản lý đặt lịch salon tóc có tích hợp AI
+Thời gian thực hiện: Từ 27/07/2026 đến 27/09/2026 (9 tuần)
+1. Screen Flow: Phân luồng màn hình của ứng dụng
+Sơ đồ phân luồng màn hình mô tả trực quan các tuyến điều hướng giữa các màn hình trong toàn bộ hệ thống, thể hiện mối liên hệ giữa các chức năng chính như đăng nhập, quản lý thông tin, quản lý lịch hẹn, hóa đơn, tra cứu – thống kê và các chức năng hỗ trợ AI.
+Hình 28: Phân luồng Màn hình Screen Flow
+2. Cơ sở dữ liệu
+2.1. Cơ sở dữ liệu quan hệ (ERD & Data Dictionary)
+Sơ đồ ERD mô tả các thực thể chính của hệ thống, các thuộc tính và mối quan hệ giữa các bảng dữ liệu phục vụ quản lý tài khoản, khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn, lịch sử dịch vụ và các chức năng AI.
+Hình 29: Sơ đồ Thực thể kết hợp ERD
+Cấu trúc chi tiết các bảng dữ liệu (Data Dictionary)
+Bảng 1: USERS (Tài khoản người dùng nội bộ)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mặc định
+Mô tả
+user_id
+INT
+-
+PK
+NOT NULL
+Auto Inc
+Khóa chính duy nhất của người dùng
+username
+VARCHAR
+50
+UK
+NOT NULL
+-
+Tên đăng nhập hệ thống
+password_hash
+VARCHAR
+255
+-
+NOT NULL
+-
+Mật khẩu được băm bằng Bcrypt
+full_name
+VARCHAR
+100
+-
+NOT NULL
+-
+Họ và tên đầy đủ
+phone
+VARCHAR
+15
+-
+NOT NULL
+-
+Số điện thoại liên hệ
+role
+VARCHAR
+20
+-
+NOT NULL
+-
+Vai trò: MANAGER, RECEPTIONIST, HAIRDRESSER
+created_at
+TIMESTAMP
+-
+-
+NOT NULL
+CURRENT_TIMESTAMP
+Thời điểm tạo tài khoản
+Ghi chú: Bảng USERS quản lý tài khoản của người dùng nội bộ. Vai trò được sử dụng để thực hiện phân quyền theo cơ chế RBAC.
+Bảng 2: CUSTOMERS (Hồ sơ khách hàng)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mặc định
+Mô tả
+customer_id
+INT
+-
+PK
+NOT NULL
+Auto Inc
+Khóa chính khách hàng
+phone
+VARCHAR
+15
+UK
+NOT NULL
+-
+Số điện thoại định danh khách hàng
+full_name
+VARCHAR
+100
+-
+NOT NULL
+-
+Họ tên khách hàng
+email
+VARCHAR
+100
+-
+NULL
+-
+Địa chỉ email của khách hàng
+hair_type_notes
+TEXT
+-
+-
+NULL
+-
+Ghi chú về đặc điểm tóc hoặc nhu cầu của khách hàng, nếu có
+total_visits
+INT
+-
+-
+NOT NULL
+0
+Tổng số lần khách hàng đã hoàn thành dịch vụ
+created_at
+TIMESTAMP
+-
+-
+NOT NULL
+CURRENT_TIMESTAMP
+Ngày đăng ký hồ sơ
+Ghi chú: Thông tin trong bảng CUSTOMERS được sử dụng để phục vụ quản lý khách hàng, đặt lịch và hỗ trợ các chức năng AI khi cần thiết. Hệ thống không yêu cầu khách hàng phải có tài khoản đăng nhập riêng.
+Bảng 3: SERVICES (Danh mục dịch vụ và bảng giá)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mặc định
+Mô tả
+service_id
+INT
+–
+PK
+NOT NULL
+Auto Inc
+Khóa chính của dịch vụ
+service_code
+VARCHAR
+20
+UK
+NOT NULL
+–
+Mã định danh dịch vụ (DV01, DV02, ...)
+name
+VARCHAR
+100
+–
+NOT NULL
+–
+Tên dịch vụ
+category
+VARCHAR
+30
+–
+NOT NULL
+–
+Danh mục dịch vụ, ví dụ: CUT, PERM, DYE, CARE
+price
+DECIMAL
+12,2
+–
+NOT NULL
+–
+Đơn giá niêm yết của dịch vụ (VNĐ)
+duration_minutes
+INT
+–
+–
+NOT NULL
+–
+Thời gian thực hiện ước tính của dịch vụ (phút)
+description
+TEXT
+–
+–
+NULL
+–
+Mô tả thông tin và nội dung dịch vụ
+is_active
+TINYINT
+1
+–
+NOT NULL
+1
+Trạng thái dịch vụ (1: Đang phục vụ, 0: Tạm ngưng)
+Bảng 4: WORK_SCHEDULES (Lịch làm việc và ca trực của thợ)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mặc định
+Mô tả
+schedule_id
+INT
+–
+PK
+NOT NULL
+Auto Inc
+Khóa chính của lịch làm việc
+stylist_id
+INT
+–
+FK
+NOT NULL
+–
+Khóa ngoại liên kết đến USERS(user_id) của thợ làm tóc
+work_date
+DATE
+–
+–
+NOT NULL
+–
+Ngày làm việc
+start_time
+TIME
+–
+–
+NOT NULL
+–
+Thời gian bắt đầu ca làm việc
+end_time
+TIME
+–
+–
+NOT NULL
+–
+Thời gian kết thúc ca làm việc
+is_day_off
+TINYINT
+1
+–
+NOT NULL
+0
+Trạng thái nghỉ (1: Nghỉ, 0: Đi làm)
+Bảng 5: APPOINTMENTS (Quản lý lịch hẹn làm tóc)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mặc định
+Mô tả
+appointment_id
+INT
+–
+PK
+NOT NULL
+Auto Inc
+Khóa chính của lịch hẹn
+booking_code
+VARCHAR
+30
+UK
+NOT NULL
+–
+Mã tra cứu lịch hẹn (ví dụ: AP-YYYYMMDD-XXXX)
+customer_id
+INT
+–
+FK
+NOT NULL
+–
+Khóa ngoại liên kết CUSTOMERS(customer_id)
+stylist_id
+INT
+–
+FK
+NOT NULL
+–
+Khóa ngoại liên kết USERS(user_id) của thợ làm tóc
+appointment_date
+DATE
+–
+–
+NOT NULL
+–
+Ngày hẹn làm tóc
+start_time
+TIME
+–
+–
+NOT NULL
+–
+Thời gian bắt đầu lịch hẹn
+end_time
+TIME
+–
+–
+NOT NULL
+–
+Thời gian kết thúc dự kiến của lịch hẹn
+status
+VARCHAR
+20
+–
+NOT NULL
+'PENDING'
+Trạng thái lịch hẹn: PENDING, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
+customer_note
+TEXT
+–
+–
+NULL
+–
+Ghi chú hoặc yêu cầu của khách hàng
+estimated_total
+DECIMAL
+12,2
+–
+NOT NULL
+0.00
+Tổng tiền tạm tính của lịch hẹn
+created_at
+TIMESTAMP
+–
+–
+NOT NULL
+CURRENT_TIMESTAMP
+Thời điểm tạo lịch hẹn
+Bảng 6: APPOINTMENT_DETAILS (Chi tiết dịch vụ trong lịch hẹn)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mô tả
+detail_id
+INT
+–
+PK
+NOT NULL
+Khóa chính của chi tiết lịch hẹn
+appointment_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết APPOINTMENTS(appointment_id)
+service_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết SERVICES(service_id)
+price
+DECIMAL
+12,2
+–
+NOT NULL
+Giá dịch vụ tại thời điểm đặt lịch
+duration_minutes
+INT
+–
+–
+NOT NULL
+Thời lượng thực hiện dự kiến của dịch vụ (phút)
+Bảng 7: SERVICE_HISTORIES (Nhật ký kỹ thuật chăm sóc tóc)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mô tả
+history_id
+INT
+–
+PK
+NOT NULL
+Khóa chính của lịch sử dịch vụ
+customer_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết CUSTOMERS(customer_id)
+stylist_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết USERS(user_id) của thợ thực hiện dịch vụ
+appointment_id
+INT
+–
+FK
+NULL
+Khóa ngoại liên kết APPOINTMENTS(appointment_id), nếu lịch sử được tạo từ một lịch hẹn
+technical_notes
+TEXT
+–
+–
+NOT NULL
+Ghi chú về quá trình thực hiện hoặc thông tin liên quan đến dịch vụ
+recorded_at
+TIMESTAMP
+–
+–
+NOT NULL
+Thời điểm ghi nhận lịch sử dịch vụ
+Bảng 8: INVOICES (Hóa đơn thanh toán)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mô tả
+invoice_id
+INT
+–
+PK
+NOT NULL
+Khóa chính của hóa đơn
+invoice_code
+VARCHAR
+30
+UK
+NOT NULL
+Mã hóa đơn (ví dụ: HD-YYYYMMDD-XXXX)
+appointment_id
+INT
+–
+FK
+NULL
+Khóa ngoại liên kết APPOINTMENTS(appointment_id), nếu hóa đơn được tạo từ lịch hẹn
+customer_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết CUSTOMERS(customer_id)
+cashier_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết USERS(user_id) của người lập hóa đơn
+subtotal
+DECIMAL
+12,2
+–
+NOT NULL
+Tổng tiền dịch vụ trước khi điều chỉnh
+discount_amount
+DECIMAL
+12,2
+–
+NOT NULL
+Số tiền giảm giá, nếu có
+final_amount
+DECIMAL
+12,2
+–
+NOT NULL
+Số tiền khách cần thanh toán
+payment_method
+VARCHAR
+20
+–
+NOT NULL
+Phương thức thanh toán được sử dụng
+payment_status
+VARCHAR
+20
+–
+NOT NULL
+Trạng thái thanh toán, ví dụ: PAID, REFUNDED
+paid_at
+TIMESTAMP
+–
+–
+NOT NULL
+Thời điểm hoàn tất thanh toán
+Bảng 9: INVOICE_DETAILS (Chi tiết các dòng thu trên hóa đơn)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mô tả
+item_id
+INT
+–
+PK
+NOT NULL
+Khóa chính của dòng chi tiết hóa đơn
+invoice_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết INVOICES(invoice_id)
+service_id
+INT
+–
+FK
+NOT NULL
+Khóa ngoại liên kết SERVICES(service_id)
+quantity
+INT
+–
+–
+NOT NULL
+Số lượng dịch vụ
+unit_price
+DECIMAL
+12,2
+–
+NOT NULL
+Đơn giá của dịch vụ tại thời điểm lập hóa đơn
+amount
+DECIMAL
+12,2
+–
+NOT NULL
+Thành tiền của dòng hóa đơn (quantity × unit_price)
+Bảng 10: AI_LOGS (Nhật ký giao tiếp và phản hồi AI)
+Tên cột
+Kiểu dữ liệu
+Kích thước
+Khóa
+Null
+Mô tả
+log_id
+INT
+–
+PK
+NOT NULL
+Khóa chính của nhật ký AI
+feature_type
+VARCHAR
+30
+–
+NOT NULL
+Loại chức năng AI: RECOMMENDATION, REMINDER, SUMMARY
+reference_id
+INT
+–
+–
+NULL
+ID tham chiếu đến dữ liệu liên quan, nếu có
+input_prompt
+TEXT
+–
+–
+NOT NULL
+Nội dung Prompt được gửi đến Gemini API
+ai_response
+TEXT
+–
+–
+NOT NULL
+Nội dung phản hồi nhận được từ Gemini API
+created_at
+TIMESTAMP
+–
+–
+NOT NULL
+Thời điểm ghi nhận yêu cầu AI
+2.2. Các ràng buộc toàn vẹn trong CSDL
+1. Ràng buộc Khóa chính & Khóa ngoại (Referential Integrity)
+Các bảng đều có khóa chính (Primary Key) để định danh duy nhất từng bản ghi; các khóa chính kiểu số nguyên được thiết kế tự tăng.
+APPOINTMENTS.stylist_id tham chiếu đến USERS(user_id) và chỉ được sử dụng với tài khoản có vai trò HAIRDRESSER.
+APPOINTMENTS.customer_id tham chiếu đến CUSTOMERS(customer_id).
+APPOINTMENT_DETAILS.appointment_id tham chiếu đến APPOINTMENTS(appointment_id).
+APPOINTMENT_DETAILS.service_id tham chiếu đến SERVICES(service_id).
+SERVICE_HISTORIES.customer_id tham chiếu đến CUSTOMERS(customer_id).
+SERVICE_HISTORIES.stylist_id tham chiếu đến USERS(user_id).
+SERVICE_HISTORIES.appointment_id tham chiếu đến APPOINTMENTS(appointment_id) khi lịch sử dịch vụ được tạo từ một lịch hẹn.
+INVOICES.appointment_id tham chiếu đến APPOINTMENTS(appointment_id) khi hóa đơn được lập từ một lịch hẹn.
+INVOICES.customer_id tham chiếu đến CUSTOMERS(customer_id).
+INVOICES.cashier_id tham chiếu đến USERS(user_id) của người lập hóa đơn.
+INVOICE_DETAILS.invoice_id tham chiếu đến INVOICES(invoice_id).
+INVOICE_DETAILS.service_id tham chiếu đến SERVICES(service_id).
+Đối với các dịch vụ và thợ làm tóc đã có dữ liệu lịch hẹn, hóa đơn hoặc lịch sử dịch vụ liên quan, hệ thống áp dụng ON DELETE RESTRICT để tránh làm mất hoặc đứt gãy dữ liệu nghiệp vụ liên quan.
+2. Ràng buộc Miền giá trị (Domain Constraints)
+SERVICES.price >= 0.
+SERVICES.duration_minutes > 0.
+INVOICES.subtotal >= 0.
+INVOICES.discount_amount >= 0.
+INVOICES.final_amount >= 0.
+WORK_SCHEDULES.start_time < WORK_SCHEDULES.end_time.
+APPOINTMENTS.start_time < APPOINTMENTS.end_time.
+INVOICE_DETAILS.quantity > 0.
+INVOICE_DETAILS.unit_price >= 0.
+INVOICE_DETAILS.amount >= 0.
+3. Ràng buộc Chống trùng lịch thợ (Anti-overlap Constraint)
+Quy tắc: Trong cùng ngày appointment_date, một thợ làm tóc (stylist_id) không được có hai lịch hẹn có khoảng thời gian giao nhau nếu cả hai lịch đều đang ở trạng thái hoạt động: PENDING, CONFIRMED hoặc IN_PROGRESS.
+Thực thi: Trước khi tạo hoặc thay đổi lịch hẹn, hệ thống kiểm tra lịch làm việc của thợ và các lịch hẹn hiện có để xác định khoảng thời gian có bị trùng hay không. Việc kiểm tra được thực hiện trong transaction và có thể sử dụng cơ chế khóa bản ghi như SELECT ... FOR UPDATE nhằm hạn chế tình trạng hai yêu cầu đặt lịch đồng thời tạo ra lịch hẹn bị trùng.
+Nếu phát hiện khoảng thời gian bị trùng, hệ thống không cho phép tạo hoặc cập nhật lịch hẹn và thông báo cho người dùng lựa chọn thời gian khác.
+MỤC 5: TÀI LIỆU THIẾT KẾ HƯỚNG ĐỐI TƯỢNG (MÔ HÌNH LỚP)
+Nhóm 08 - Thành viên nhóm:
+Lương Việt Anh (Trưởng nhóm)
+Lương Thế Mạnh
+Tên ứng dụng: Hệ thống quản lý đặt lịch salon tóc có tích hợp AI
+Thời gian thực hiện: Từ 27/07/2026 đến 27/09/2026 (9 tuần)
+1. Mô hình lớp (Class Diagram)
+Hình 30: Sơ đồ Mô hình Lớp Class Diagram
+2. Đặc tả chi tiết các Class & Phương thức (Methods)
+2.1. Đặc tả Class User (Lớp Người dùng nội bộ)
+Các thuộc tính:
+user_id: INT, khóa chính.
+username: VARCHAR(50), tên đăng nhập duy nhất.
+password_hash: VARCHAR(255), mật khẩu được băm bằng Bcrypt.
+full_name: VARCHAR(100), họ tên người dùng.
+phone: VARCHAR(15), số điện thoại.
+role: VARCHAR(20), vai trò (MANAGER, RECEPTIONIST, HAIRDRESSER).
+created_at: TIMESTAMP, thời điểm tạo tài khoản.
+Đặc tả các phương thức:
+login(password: str) -> bool
+Mô tả: Xác thực mật khẩu đăng nhập của người dùng nội bộ.
+Tham số đầu vào: password – mật khẩu người dùng nhập.
+Kết quả đầu ra: BOOLEAN (True nếu xác thực thành công, False nếu không thành công).
+Luồng xử lý: So sánh mật khẩu người dùng nhập với password_hash đã được lưu bằng cơ chế xác thực Bcrypt.
+Điều kiện bắt đầu: Tài khoản tồn tại và được phép đăng nhập.
+Điều kiện kết thúc: Trả về trạng thái xác thực.
+2.2. Đặc tả Class Appointment (Lớp Thực thể Lịch hẹn)
+Các thuộc tính:
+appointment_id: INT, khóa chính.
+booking_code: VARCHAR(30), mã lịch hẹn duy nhất.
+customer_id: INT, khóa ngoại khách hàng.
+stylist_id: INT, khóa ngoại thợ làm tóc.
+appointment_date: DATE, ngày hẹn.
+start_time: TIME, giờ bắt đầu hẹn.
+end_time: TIME, giờ kết thúc dự kiến.
+status: VARCHAR(20), trạng thái (PENDING, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED).
+customer_note: TEXT, ghi chú hoặc yêu cầu của khách hàng.
+estimated_total: DECIMAL(12,2), tổng tiền tạm tính.
+Đặc tả các phương thức:
+calculate_end_time() -> time
+Mô tả: Tính thời gian kết thúc dự kiến dựa trên thời gian bắt đầu và tổng thời lượng của các dịch vụ trong lịch hẹn.
+Tham số đầu vào: Không có.
+Kết quả đầu ra: end_time (TIME).
+Luồng xử lý: end_time = start_time + SUM(services.duration_minutes).
+Điều kiện bắt đầu: start_time đã được xác định và lịch hẹn có ít nhất một dịch vụ.
+Điều kiện kết thúc: Trả về end_time hợp lệ.
+2.3. Đặc tả Class BookingController (Lớp Điều khiển & Nghiệp vụ Booking)
+Đặc tả các phương thức:
+get_available_slots(stylist_id: int, date: Date, duration: int) -> List[str]
+Mô tả: Xác định các khung giờ còn trống của thợ làm tóc trong ngày, dựa trên lịch làm việc, các lịch hẹn hiện có và thời lượng dịch vụ.
+Tham số đầu vào:
+stylist_id: INT – ID thợ làm tóc.
+date: DATE – ngày cần tìm lịch.
+duration: INT – tổng thời lượng dịch vụ, tính bằng phút.
+Kết quả đầu ra: Danh sách các khung giờ khả dụng List[str], ví dụ: ["09:00", "09:30", "14:00"].
+Luồng xử lý:
+Truy vấn WORK_SCHEDULES để lấy thời gian bắt đầu, kết thúc và trạng thái nghỉ của thợ trong ngày.
+Nếu thợ nghỉ trong ngày đó, trả về danh sách rỗng.
+Truy vấn các lịch hẹn của thợ trong ngày và loại bỏ các lịch đã CANCELLED khỏi phạm vi kiểm tra bận.
+Xác định các khoảng thời gian còn trống trong ca làm việc.
+Kiểm tra mỗi khung giờ có đủ thời lượng dịch vụ và không giao với các lịch hẹn đang hoạt động.
+Trả về danh sách các khung giờ khả dụng.
+Điều kiện bắt đầu: stylist_id > 0, duration > 0 và ngày cần tìm hợp lệ.
+Điều kiện kết thúc: Trả về danh sách khung giờ có thể đặt.
+create_appointment(booking_data: BookingRequestDTO) -> Appointment
+Mô tả: Tạo lịch hẹn mới sau khi kiểm tra thông tin khách hàng, dịch vụ, lịch làm việc và khả năng bị trùng lịch.
+Tham số đầu vào: booking_data – DTO chứa thông tin khách hàng, thợ làm tóc, ngày, giờ và danh sách dịch vụ.
+Kết quả đầu ra: Đối tượng Appointment đã được lưu.
+Luồng xử lý:
+Kiểm tra hoặc tạo thông tin khách hàng theo nghiệp vụ hệ thống.
+Kiểm tra các dịch vụ được lựa chọn.
+Tính tổng giá và tổng thời lượng dịch vụ.
+Kiểm tra lịch làm việc của thợ.
+Kiểm tra các lịch hẹn đang hoạt động có bị giao nhau hay không.
+Nếu không có xung đột, lưu Appointment và AppointmentDetail.
+Hoàn tất transaction và trả về lịch hẹn.
+Điều kiện bắt đầu: Thông tin đặt lịch hợp lệ và đầy đủ.
+Điều kiện kết thúc: Lịch hẹn được tạo thành công và không bị trùng với lịch hẹn đang hoạt động của cùng thợ.
+2.4. Đặc tả Class AIService (Lớp Tích hợp Trí tuệ nhân tạo Gemini)
+Class AIService chịu trách nhiệm giao tiếp với Gemini API thông qua Backend và thực hiện ba nhóm chức năng AI của hệ thống: gợi ý dịch vụ, tạo nội dung nhắc lịch/chăm sóc sau dịch vụ và tóm tắt lịch sử dịch vụ.
+Đặc tả các phương thức:
+recommend_services(customer_need: str, customer_phone: str = None) -> dict
+Mô tả: Phân tích nhu cầu của khách hàng dựa trên dữ liệu được Backend cung cấp và gợi ý các dịch vụ phù hợp trong danh mục dịch vụ của salon.
+Tham số đầu vào:
+customer_need: TEXT – nhu cầu của khách hàng.
+customer_phone: VARCHAR(15), tùy chọn – số điện thoại để tra cứu lịch sử dịch vụ nếu có.
+Kết quả đầu ra: Dictionary chứa danh sách dịch vụ được gợi ý và phần giải thích phù hợp.
+Luồng xử lý:
+Nạp danh mục dịch vụ đang được salon cung cấp.
+Tra cứu lịch sử dịch vụ của khách hàng nếu có.
+Xây dựng Prompt từ nhu cầu khách hàng, lịch sử và danh sách dịch vụ.
+Gửi yêu cầu đến Gemini API.
+Nhận và kiểm tra kết quả trả về.
+Đối chiếu các dịch vụ được AI đề xuất với danh mục dịch vụ của salon.
+Ghi nhận nhật ký AI nếu hệ thống có triển khai AI_LOGS.
+Trả kết quả cho hệ thống.
+Điều kiện bắt đầu: customer_need không rỗng.
+Điều kiện kết thúc: Trả về kết quả gợi ý dựa trên dữ liệu được cung cấp và không chứa dịch vụ ngoài danh mục của salon.
+generate_reminder_care_message(customer_id: int, appointment_id: int = None, message_type: str = "REMINDER") -> dict
+Mô tả: Tạo nội dung tin nhắn nhắc lịch hoặc chăm sóc khách hàng sau khi sử dụng dịch vụ.
+Tham số đầu vào:
+customer_id: INT – ID khách hàng.
+appointment_id: INT, tùy chọn – ID lịch hẹn liên quan.
+message_type: loại nội dung cần tạo, ví dụ REMINDER hoặc CARE.
+Kết quả đầu ra: Dictionary chứa nội dung tin nhắn được AI tạo.
+Luồng xử lý:
+Lấy thông tin khách hàng và dữ liệu lịch hẹn hoặc dịch vụ liên quan.
+Xác định loại nội dung cần tạo.
+Xây dựng Prompt theo loại yêu cầu.
+Gửi Prompt đến Gemini API.
+Kiểm tra nội dung phản hồi.
+Trả nội dung tin nhắn về hệ thống.
+Điều kiện bắt đầu: Có thông tin khách hàng và dữ liệu cần thiết cho loại tin nhắn được yêu cầu.
+Điều kiện kết thúc: Trả về nội dung nhắc lịch hoặc chăm sóc sau dịch vụ phù hợp với dữ liệu được cung cấp.
+summarize_hair_history(customer_id: int) -> dict
+Mô tả: Tổng hợp lịch sử sử dụng dịch vụ của khách hàng và sử dụng AI để tạo bản tóm tắt ngắn gọn cho nhân viên salon.
+Tham số đầu vào: customer_id – ID khách hàng.
+Kết quả đầu ra: Dictionary chứa nội dung tóm tắt lịch sử dịch vụ.
+Luồng xử lý:
+Lấy các bản ghi từ SERVICE_HISTORIES.
+Chuẩn bị dữ liệu lịch sử cho Prompt.
+Gửi yêu cầu tóm tắt đến Gemini API.
+Kiểm tra nội dung phản hồi.
+Ghi nhận nhật ký AI nếu hệ thống có triển khai AI_LOGS.
+Trả kết quả để nhân viên salon xem.
+Điều kiện bắt đầu: customer_id hợp lệ và có dữ liệu lịch sử hoặc hệ thống xác định không có dữ liệu lịch sử.
+Điều kiện kết thúc: Trả về bản tóm tắt dựa trên dữ liệu lịch sử được cung cấp.
+2.5. Đặc tả Class Invoice (Lớp Hóa đơn thanh toán)
+Đặc tả các phương thức:
+process_payment(payment_method: str) -> bool
+Mô tả: Ghi nhận trạng thái thanh toán của hóa đơn và hoàn tất xử lý hóa đơn theo nghiệp vụ của hệ thống.
+Tham số đầu vào: payment_method – phương thức thanh toán được lựa chọn.
+Kết quả đầu ra: BOOLEAN (True nếu xử lý thành công).
+Luồng xử lý:
+Kiểm tra hóa đơn hợp lệ.
+Kiểm tra tổng tiền cần thanh toán.
+Ghi nhận phương thức thanh toán.
+Cập nhật payment_status.
+Ghi nhận paid_at khi thanh toán hoàn tất.
+Cập nhật trạng thái lịch hẹn thành COMPLETED theo nghiệp vụ hệ thống.
+Cập nhật thông tin liên quan đến lịch sử dịch vụ nếu cần.
+Hoàn tất transaction.
+Điều kiện bắt đầu: Hóa đơn tồn tại và thông tin thanh toán hợp lệ.
+Điều kiện kết thúc: Trạng thái thanh toán của hóa đơn được cập nhật thành công và dữ liệu liên quan được lưu vào CSDL.
+MỤC 6: KIỂM THỬ CHỨC NĂNG ỨNG DỤNG (TESTING)
+Nhóm 08 - Thành viên nhóm:
+Lương Việt Anh (Trưởng nhóm)
+Lương Thế Mạnh
+Tên ứng dụng: Hệ thống quản lý đặt lịch salon tóc có tích hợp AI
+Thời gian thực hiện: Từ 27/07/2026 đến 27/09/2026 (9 tuần)
+1. Những yêu cầu về tài nguyên cho kiểm thử ứng dụng
+1.1. Phần cứng
+CPU: Intel Core i5, xung nhịp 2.3 GHz trở lên.
+RAM: 8 GB.
+Ổ cứng (HDD/SSD): 360 GB.
+Architecture: 64-bit.
+Kết nối mạng: Mạng LAN nội bộ và Internet băng thông ổn định.
+1.2. Phần mềm
+Tên phần mềm
+Phiên bản sử dụng
+Loại công cụ / Vai trò
+IDE / Editor
+Visual Studio Code v1.92+
+Công cụ phát triển mã nguồn và Debug
+Công cụ kiểm thử API
+Postman v10.20, Pytest v8.2
+Kiểm thử API Backend và tự động hóa test
+Hệ quản trị CSDL
+MySQL Community Server 8.0
+Lưu trữ và kiểm tra toàn vẹn dữ liệu
+Hệ điều hành
+Windows 11 64-bit
+Môi trường triển khai và thực thi kiểm thử
+AI Engine
+Google Gemini API (gemini-1.5-flash)
+Dịch vụ AI sinh nội dung và phân tích
+2. Danh sách các tình huống kiểm tra (Test Cases)
+Test ID
+Chức năng
+Mô tả kịch bản test
+Điều kiện trước
+Dữ liệu Test
+Kết quả mong muốn
+Ghi chú
+TC01
+Đăng nhập
+Đăng nhập thành công với tài khoản Quản lý / Lễ tân
+Tài khoản đã tồn tại và được phép đăng nhập
+Username: letan01Password: Salon@2026
+Đăng nhập thành công, hệ thống cấp JWT Token và chuyển hướng đến giao diện phù hợp với vai trò Lễ tân.
+Nghiệp vụ
+TC02
+Đăng nhập
+Đăng nhập thất bại khi nhập sai mật khẩu
+Tài khoản đã tồn tại
+Username: letan01Password: SaiPass123
+Hệ thống thông báo lỗi "Tên đăng nhập hoặc mật khẩu không chính xác" và trả về mã HTTP 401.
+Ngoại lệ
+TC03
+Đặt lịch
+Kiểm tra thuật toán hiển thị các khung giờ trống của thợ
+Thợ có ca làm việc 09:00–18:00 và đã có lịch hẹn từ 10:00–11:30
+Stylist ID: 2Ngày: 2026-08-15Dịch vụ: 60 phút
+Các khung giờ bị trùng với lịch hiện tại như 10:00 và 10:30 bị ẩn/disabled; hệ thống hiển thị các khung giờ còn phù hợp như 09:00, 11:30, 12:00,...
+Cốt lõi
+TC04
+Đặt lịch
+Khách hàng đặt lịch thành công trên Website
+Khung giờ và thợ còn trống
+SĐT: 0987654321Khách: Trần Văn CDịch vụ: Cắt tóc namGiờ: 14:00
+Lịch hẹn được tạo thành công, lưu đầy đủ thông tin khách hàng, dịch vụ, thợ và thời gian; hệ thống sinh mã tra cứu lịch hẹn.
+Luồng chính
+TC05
+Đặt lịch
+Kiểm tra chống trùng lịch khi hai khách cùng đặt một khung giờ đồng thời
+Chỉ còn một khung giờ trống
+Hai Client gửi yêu cầu đặt cùng một khung giờ với khoảng cách 50 ms
+Một yêu cầu được xử lý thành công; yêu cầu còn lại nhận thông báo "Khung giờ vừa có người đặt, vui lòng chọn giờ khác". Hệ thống không tạo hai lịch trùng cho cùng một thợ.
+Kiểm thử tải / đồng thời
+TC06
+Đổi / Hủy lịch
+Khách hàng hủy lịch hẹn trước giờ hẹn hơn 2 tiếng
+Lịch hẹn đang ở trạng thái CONFIRMED
+Mã lịch: AP-20260815-0012
+Lịch hẹn chuyển sang trạng thái CANCELLED; khung giờ của thợ được xác định lại là có thể sử dụng cho lịch mới theo quy tắc của hệ thống.
+Nghiệp vụ
+TC07
+Hóa đơn & Thanh toán
+Lập hóa đơn và cập nhật trạng thái thanh toán sau khi hoàn thành dịch vụ
+Lịch hẹn đã hoàn thành
+Tiền dịch vụ: 400.000đThanh toán: 400.000đ
+Hóa đơn được tạo đúng tổng tiền, lưu thông tin thanh toán và trạng thái thanh toán được cập nhật thành PAID.
+Nghiệp vụ
+TC08
+AI gợi ý dịch vụ
+AI phân tích nhu cầu và lịch sử của khách hàng để gợi ý dịch vụ phù hợp
+Khách hàng có thông tin nhu cầu và lịch sử dịch vụ
+Input: "Tóc mình sợi mảnh, vừa tẩy 2 lần bị xơ, muốn làm tóc bóng khỏe và cắt gọn."
+AI đưa ra các gợi ý phù hợp dựa trên dữ liệu được cung cấp; các dịch vụ được gợi ý phải thuộc danh sách dịch vụ hiện có của salon.
+AI Feature
+TC09
+AI kiểm tra Prompt
+Kiểm tra AI không tự tạo dịch vụ không có trong danh mục salon
+Danh sách dịch vụ hiện tại không chứa dịch vụ được hỏi
+Input: "Salon có gói cấy tóc sinh học Nano không?"
+AI thông báo dịch vụ này không có trong danh mục được cung cấp và không tự tạo thông tin về dịch vụ; chỉ có thể gợi ý các dịch vụ thực sự có trong danh sách salon.
+AI Safety
+TC10
+AI nhắc lịch & chăm sóc
+Sinh nội dung tin nhắn nhắc lịch được cá nhân hóa
+Có lịch hẹn trong 2 giờ tới
+Mã hẹn: AP-0012Khách: Chị LanGiờ: 15:00
+AI sinh nội dung tin nhắn nhắc lịch có đầy đủ thông tin được cung cấp, ví dụ: "Chào Chị Lan! Salon xin nhắc lịch hẹn làm tóc lúc 15:00 hôm nay..."
+AI Generative
+TC11
+AI tóm tắt lịch sử
+Tóm tắt nhanh lịch sử dịch vụ để Thợ làm tóc xem
+Khách hàng có lịch sử sử dụng dịch vụ
+Khách: Nguyễn Văn ALịch sử: Cắt tóc 10/08, Gội tóc 10/08, Uốn tóc 20/08
+AI tóm tắt ngắn gọn các thông tin lịch sử được cung cấp, giúp Thợ làm tóc nhanh chóng nắm được các dịch vụ đã thực hiện và ghi chú liên quan.
+AI Summary
+3. Báo cáo kết quả kiểm thử (Test Report)
+Test ID
+Ngày testing
+Người tham gia Test
+Pass / Fail
+Độ nghiêm trọng
+Tóm tắt lỗi / Kết quả xử lý
+Ghi chú
+TC01
+15/09/2026
+Lương Thế Mạnh
+PASS
+None
+Đăng nhập thành công, hệ thống xác thực tài khoản và cấp JWT Token; quyền truy cập được áp dụng theo vai trò.
+Đạt
+TC02
+15/09/2026
+Lương Thế Mạnh
+PASS
+None
+Hệ thống thông báo lỗi chính xác khi người dùng nhập sai thông tin đăng nhập và không cho phép truy cập hệ thống.
+Đạt
+TC03
+16/09/2026
+Lương Thế Mạnh
+PASS
+None
+Các khung giờ được hiển thị phù hợp với ca làm việc và lịch hẹn hiện có của thợ. Các khung giờ bị trùng được loại khỏi lựa chọn.
+Đạt
+TC04
+16/09/2026
+Lương Thế Mạnh
+PASS
+None
+Tạo lịch hẹn thành công và thông tin lịch hẹn được lưu đúng vào CSDL.
+Đạt
+TC05
+17/09/2026
+Lương Việt Anh
+PASS
+High
+Kiểm tra đồng thời cho thấy hệ thống chỉ chấp nhận một yêu cầu đặt lịch tại cùng một khung giờ của cùng một thợ; yêu cầu còn lại được thông báo khung giờ đã có người đặt.
+Đạt sau khi xử lý vấn đề chống trùng lịch
+TC06
+17/09/2026
+Lương Thế Mạnh
+PASS
+None
+Hủy lịch hẹn thành công, trạng thái được cập nhật thành CANCELLED và khung giờ có thể được sử dụng cho lịch mới theo quy tắc của hệ thống.
+Đạt
+TC07
+18/09/2026
+Lương Thế Mạnh
+PASS
+None
+Hóa đơn được lập đúng theo thông tin dịch vụ; tổng tiền và trạng thái thanh toán được cập nhật chính xác.
+Đạt
+TC08
+18/09/2026
+Lương Việt Anh
+PASS
+Medium
+AI phân tích nhu cầu và lịch sử được cung cấp, đưa ra gợi ý phù hợp với danh sách dịch vụ của salon.
+AI Feature
+TC09
+19/09/2026
+Lương Việt Anh
+PASS
+High
+Đã tinh chỉnh Prompt để AI chỉ sử dụng các dịch vụ có trong danh sách được cung cấp; khi khách hỏi về dịch vụ không tồn tại, AI không tự tạo thông tin về dịch vụ đó.
+AI Safety
+TC10
+19/09/2026
+Lương Thế Mạnh
+PASS
+None
+AI sinh nội dung nhắc lịch lịch sự, có thể sử dụng các thông tin được cung cấp như tên khách hàng, thời gian hẹn và tên thợ.
+AI Generative
+TC11
+19/09/2026
+Lương Thế Mạnh
+PASS
+None
+AI tóm tắt ngắn gọn lịch sử dịch vụ dựa trên dữ liệu được cung cấp, giúp thợ nhanh chóng nắm được thông tin cần thiết trước khi thực hiện dịch vụ.
+AI Summary
+MỤC 7: TÀI LIỆU HƯỚNG DẪN SỬ DỤNG – V1.0 (USER MANUAL)
+Nhóm 08 - Thành viên nhóm:
+Lương Việt Anh (Trưởng nhóm)
+Lương Thế Mạnh
+Tên ứng dụng: Hệ thống quản lý đặt lịch salon tóc có tích hợp AI
+Thời gian thực hiện: Từ 27/07/2026 đến 27/09/2026 (9 tuần)
+1. GIỚI THIỆU HỆ THỐNG
+Hệ thống quản lý đặt lịch salon tóc có tích hợp AI là giải pháp hỗ trợ salon quản lý khách hàng, thợ làm tóc, dịch vụ, lịch làm việc, lịch hẹn, hóa đơn, thanh toán và lịch sử dịch vụ. Hệ thống đồng thời tích hợp AI thông qua Google Gemini API để hỗ trợ tư vấn và gợi ý dịch vụ, tạo nội dung nhắc lịch và chăm sóc sau dịch vụ, cũng như tóm tắt lịch sử dịch vụ của khách hàng.
+Hệ thống giúp giảm thao tác quản lý thủ công, hỗ trợ kiểm tra trùng lịch của thợ, tra cứu thông tin khách hàng và cung cấp các chức năng AI dựa trên dữ liệu do hệ thống cung cấp.
+2. CẤU HÌNH PHẦN CỨNG - PHẦN MỀM
+2.1. Phần cứng
+Phía Khách hàng: Máy tính, máy tính bảng hoặc thiết bị di động có trình duyệt Web và kết nối Internet.
+Phía Salon: Máy tính bàn hoặc Laptop dùng cho Quản lý, Lễ tân và Thợ làm tóc, có kết nối mạng ổn định.
+2.2. Phần mềm
+Hệ điều hành: Windows 11 64-bit.
+Trình duyệt Web hiện đại: Google Chrome, Microsoft Edge, Safari hoặc Firefox phiên bản phù hợp.
+Backend: FastAPI/Python.
+Frontend: ReactJS.
+Cơ sở dữ liệu: MySQL.
+Dịch vụ AI: Google Gemini API.
+3. CÁC CHỨC NĂNG CHÍNH THEO TÁC NHÂN
+3.1. Hướng dẫn dành cho Khách hàng (Customer)
+Bước 1: Tư vấn và gợi ý dịch vụ cùng AI
+Trên website, khách hàng truy cập chức năng AI tư vấn và gợi ý dịch vụ.
+Nhập nhu cầu hoặc tình trạng tóc hiện tại, ví dụ: "Tóc mình sợi mảnh, muốn thay đổi kiểu tóc và cắt gọn."
+Nhấn nút Nhận tư vấn.
+Hệ thống gửi nhu cầu cùng các dữ liệu cần thiết đến Backend để tạo Prompt và gửi đến Gemini.
+AI trả về các dịch vụ phù hợp dựa trên danh sách dịch vụ hiện có của salon.
+Khách hàng tham khảo kết quả và lựa chọn dịch vụ phù hợp để tiếp tục đặt lịch.
+Bước 2: Đặt lịch hẹn trực tuyến
+Chọn dịch vụ: Chọn dịch vụ muốn sử dụng.
+Chọn thợ và ngày: Chọn thợ làm tóc và ngày muốn đến salon.
+Chọn giờ: Hệ thống kiểm tra ca làm việc và các lịch hẹn đã có để hiển thị những khung giờ phù hợp.
+Nhập thông tin: Nhập họ tên, số điện thoại và ghi chú nếu cần.
+Xác nhận: Nhấn Xác nhận đặt lịch.
+Hệ thống lưu lịch hẹn và hiển thị thông tin/mã tra cứu lịch hẹn cho khách hàng.
+3.2. Hướng dẫn dành cho Lễ tân (Receptionist)
+1. Quản lý lịch hẹn
+Lễ tân đăng nhập bằng tài khoản được cấp.
+Truy cập chức năng Quản lý lịch hẹn để xem các lịch hẹn.
+Có thể tìm kiếm lịch hẹn theo ngày, khách hàng hoặc thợ làm tóc.
+Khi cần hỗ trợ khách hàng đặt lịch, Lễ tân nhập thông tin khách hàng, chọn dịch vụ, thợ và thời gian phù hợp.
+Hệ thống kiểm tra lịch làm việc và trùng lịch trước khi tạo hoặc thay đổi lịch hẹn.
+Lễ tân có thể thực hiện đổi lịch hoặc hủy lịch theo quy trình của hệ thống.
+2. Sử dụng AI tạo nội dung nhắc lịch và chăm sóc
+Truy cập chức năng AI hỗ trợ trên hệ thống.
+Chọn chức năng Tạo nội dung nhắc lịch hoặc Tạo nội dung chăm sóc sau dịch vụ.
+Hệ thống lấy các thông tin cần thiết như tên khách hàng, lịch hẹn, dịch vụ và dữ liệu liên quan.
+AI sinh nội dung dựa trên dữ liệu được cung cấp.
+Lễ tân kiểm tra nội dung trước khi sử dụng cho khách hàng.
+3. Lập hóa đơn và cập nhật thanh toán
+Sau khi lịch hẹn hoàn thành, Lễ tân chọn lịch hẹn tương ứng.
+Kiểm tra thông tin khách hàng và các dịch vụ đã thực hiện.
+Hệ thống tính tổng tiền dựa trên thông tin dịch vụ.
+Lễ tân xác nhận và lập hóa đơn.
+Cập nhật trạng thái thanh toán theo thực tế.
+Hệ thống lưu hóa đơn và lịch sử dịch vụ để phục vụ tra cứu và chăm sóc khách hàng.
+3.3. Hướng dẫn dành cho Thợ làm tóc (Hairdresser)
+1. Theo dõi lịch làm việc cá nhân
+Thợ làm tóc đăng nhập bằng tài khoản được cấp.
+Truy cập chức năng Lịch làm việc.
+Xem ca làm việc và các lịch hẹn được phân công trong ngày.
+Thợ có thể xem thông tin cần thiết của khách hàng và lịch hẹn tương ứng.
+2. Xem AI tóm tắt lịch sử dịch vụ
+Truy cập thông tin khách hàng từ lịch hẹn được phân công.
+Chọn chức năng AI tóm tắt lịch sử dịch vụ.
+Hệ thống lấy lịch sử dịch vụ của khách hàng và gửi dữ liệu cần thiết đến Backend.
+AI tạo bản tóm tắt ngắn gọn dựa trên dữ liệu được cung cấp.
+Thợ sử dụng bản tóm tắt để nhanh chóng nắm được các dịch vụ khách hàng đã sử dụng và các ghi chú liên quan.
+Ví dụ:
+Dịch vụ gần đây: Cắt tóc nam, Gội đầu.
+Lịch sử sử dụng: Các dịch vụ đã thực hiện theo thời gian được lưu trong hệ thống.
+Ghi chú: Các ghi chú liên quan được lưu trong lịch sử dịch vụ.
+3. Cập nhật thông tin lịch sử dịch vụ
+Sau khi hoàn thành dịch vụ, nhân viên được phân quyền thực hiện cập nhật thông tin lịch sử dịch vụ theo chức năng của hệ thống.
+Nội dung ghi nhận tập trung vào thông tin liên quan đến quá trình thực hiện dịch vụ và các ghi chú cần thiết cho những lần phục vụ sau.
+3.4. Hướng dẫn dành cho Quản lý (Manager)
+1. Quản lý dịch vụ
+Vào menu Quản lý dịch vụ.
+Thêm mới, chỉnh sửa hoặc xóa dịch vụ theo quyền được cấp.
+Cập nhật tên dịch vụ, giá và thời lượng thực hiện.
+Có thể cập nhật trạng thái phục vụ của dịch vụ theo thiết kế hệ thống.
+2. Quản lý thợ làm tóc và lịch làm việc
+Vào chức năng Quản lý thợ làm tóc.
+Thêm hoặc cập nhật thông tin thợ làm tóc.
+Thiết lập lịch làm việc của từng thợ theo ngày và thời gian.
+Kiểm tra lịch làm việc để phục vụ việc phân công và đặt lịch.
+3. Quản lý phân quyền
+Truy cập chức năng Quản lý phân quyền.
+Xem danh sách tài khoản nội bộ và vai trò hiện tại.
+Chọn tài khoản cần phân quyền.
+Thiết lập vai trò phù hợp.
+Hệ thống áp dụng quyền truy cập dựa trên cơ chế RBAC.
+4. Tra cứu và thống kê
+Truy cập chức năng Tra cứu & Thống kê.
+Tra cứu lịch hẹn theo ngày, khách hàng hoặc thợ làm tóc.
+Xem thống kê doanh thu, dịch vụ phổ biến và khách hàng quay lại.
+Sử dụng kết quả thống kê để hỗ trợ quản lý hoạt động của salon.
+5. Sử dụng các chức năng AI
+Quản lý có thể sử dụng các chức năng AI được phân quyền, bao gồm:
+AI gợi ý dịch vụ dựa trên nhu cầu và lịch sử của khách hàng.
+AI tạo nội dung nhắc lịch và chăm sóc sau dịch vụ.
+AI tóm tắt lịch sử dịch vụ để hỗ trợ nhân viên salon.
+Kết quả AI cần được kiểm tra trước khi sử dụng. AI chỉ được phép gợi ý các dịch vụ có trong danh sách dịch vụ được Backend cung cấp và không được tự tạo thông tin khách hàng hoặc dịch vụ không có trong dữ liệu hệ thống.

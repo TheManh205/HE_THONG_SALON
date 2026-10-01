@@ -64,6 +64,24 @@ def get_current_user(
         )
     return user
 
+def get_optional_current_user(
+    token: Optional[str] = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+) -> Optional[User]:
+    if not token:
+        return None
+    try:
+        payload = decode_token(token)
+        user_id_str = payload.get("sub")
+        if not user_id_str:
+            return None
+        user = db.query(User).filter(User.id == int(user_id_str)).first()
+        if user and user.is_active:
+            return user
+    except Exception:
+        pass
+    return None
+
 def require_roles(allowed_roles: list):
     def role_checker(current_user: User = Depends(get_current_user)):
         # Kiểm tra phòng hờ user không có role
