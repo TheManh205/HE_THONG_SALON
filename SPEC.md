@@ -114,16 +114,21 @@ Flow:
 Model chủ chốt:
 - [backend/app/models/customer.py](backend/app/models/customer.py): lưu thông tin khách hàng
 - [backend/app/models/appointment.py](backend/app/models/appointment.py): lịch hẹn của khách với thợ
-- [backend/app/models/invoice.py](backend/app/models/invoice.py): hóa đơn và trạng thái thanh toán
 - [backend/app/models/history.py](backend/app/models/history.py): lịch sử dịch vụ đã hoàn thành
-- [backend/app/models/user.py](backend/app/models/user.py): thông tin người dùng + role
+- [backend/app/models/invoice.py](backend/app/models/invoice.py): hóa đơn (Invoice header)
+- [backend/app/models/payment.py](backend/app/models/payment.py): bảng `payments` quản lý giao dịch thanh toán. Các trường lưu trữ gồm có: phương thức thanh toán, trạng thái thanh toán, mã tham chiếu/giao dịch (`transaction_code`) và thời gian thanh toán (`paid_at`).
+- [backend/app/models/service.py](backend/app/models/service.py): quản lý dịch vụ và chi tiết dịch vụ đã chọn (`appointment_services`). Bảng `appointment_services` lưu trữ dịch vụ được chọn cho lịch hẹn cùng giá tại thời điểm đặt (`price_at_booking`), qua đó cung cấp thông tin dòng chi tiết dịch vụ cho việc xuất hóa đơn và thanh toán. Trong kiến trúc hiện tại, thông tin chi tiết dịch vụ dùng cho hóa đơn được lấy từ `appointment_services`; không triển khai bảng vật lý `INVOICE_DETAILS`.
+- [backend/app/models/user.py](backend/app/models/user.py): thông tin người dùng. Bảng `roles` là nguồn sự thật (source of truth) cho cơ sở dữ liệu RBAC; `users` tham chiếu đến `roles` thông qua khóa ngoại `users.role_id → roles.id`. Tầng API có thể trả về `role` dưới dạng chuỗi (string) để thuận tiện, tuy nhiên không tồn tại sự trùng lặp nguồn dữ liệu dạng cột vật lý `users.role` trong cơ sở dữ liệu.
 
 Mối quan hệ đang có:
 - customer -> appointments
 - customer -> invoices
 - customer -> service_histories
-- user -> role
+- user -> role_id -> roles
 - user -> hairdresser
+- appointment -> appointment_services
+- appointment -> invoice
+- invoice -> payments
 
 ## 3. Có đoạn logic nào đang bị thừa, lặp lặp, hoặc vi phạm nguyên tắc RBAC không?
 
