@@ -1,4 +1,5 @@
 import json
+import time
 import re
 from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
@@ -26,6 +27,39 @@ except ImportError:
 
 
 class AIService:
+
+    @staticmethod
+    def _log_ai_request(
+        db: Session,
+        request_type: str,
+        status: str,
+        model: str,
+        processing_time_ms: int,
+        prompt_details: str = None,
+        response_details: str = None,
+        error_message: str = None,
+        user_id: int = None,
+        customer_id: int = None
+    ):
+        try:
+            from app.models.ai_log import AILog
+            log = AILog(
+                user_id=user_id,
+                customer_id=customer_id,
+                request_type=request_type,
+                model=model,
+                status=status,
+                prompt_details=prompt_details,
+                response_details=response_details,
+                error_message=error_message,
+                processing_time_ms=processing_time_ms
+            )
+            db.add(log)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            print(f"[AI Logging Error] Failed to persist log: {e}")
+
     @staticmethod
     def _get_gemini_client():
         if not settings.GEMINI_API_KEY or not GENAI_SDK_AVAILABLE:
@@ -67,7 +101,8 @@ class AIService:
                     return None
 
     @staticmethod
-    def get_recommendations(db: Session, request: AIRecommendationRequest) -> AIRecommendationResponse:
+    def get_recommendations(db: Session, request: AIRecommendationRequest, current_user=None) -> AIRecommendationResponse:
+        start_time = time.perf_counter()
         """
         AI Hair Advisor with Strict Prompt Guard & Anti-Hallucination:
         - Feeds active services catalog from DB.
@@ -154,8 +189,10 @@ Trả về định dạng JSON DUY NHẤT:
                 )
             )
 
+        used_fallback = False
         # Fallback intelligent rule-based engine if Gemini client unavailable or offline
         if not raw_json_str:
+            used_fallback = True
             raw_json_str = AIService._fallback_recommendation_logic(request, services_catalog)
 
         # Parse & Validate Output (Anti-Hallucination Filter)
@@ -163,6 +200,7 @@ Trả về định dạng JSON DUY NHẤT:
             cleaned = AIService._clean_json_output(raw_json_str)
             data = json.loads(cleaned)
         except Exception:
+            used_fallback = True
             data = json.loads(AIService._fallback_recommendation_logic(request, services_catalog))
 
         valid_recommended_items: List[RecommendedServiceItem] = []
@@ -200,7 +238,7 @@ Trả về định dạng JSON DUY NHẤT:
             total_price = svc.price
             total_duration = svc.duration_minutes
 
-        return AIRecommendationResponse(
+        response = AIRecommendationResponse(
             styling_advice=data.get("styling_advice", "Kiểu tóc và dịch vụ được đề xuất để tôn lên nét đẹp tự nhiên và phục hồi sợi tóc chắc khỏe."),
             recommended_services=valid_recommended_items,
             total_estimated_price=total_price,
@@ -211,6 +249,25 @@ Trả về định dạng JSON DUY NHẤT:
                 "Sấy tóc ở chế độ gió mát hoặc ấm nhẹ để tránh làm tổn hại biểu bì tóc."
             ])
         )
+
+        status = "FALLBACK" if used_fallback else "SUCCESS"
+        if status == "SUCCESS" and not valid_recommended_items:
+            status = "FALLBACK" # All recommendations were hallucinated
+
+        processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+        AIService._log_ai_request(
+            db=db,
+            request_type="recommend",
+            status=status,
+            model=settings.GEMINI_MODEL,
+            processing_time_ms=processing_time_ms,
+            prompt_details=request.model_dump_json(),
+            response_details=response.model_dump_json(),
+            error_message="Gemini API failed" if status == "FALLBACK" else None,
+            user_id=current_user.id if current_user else None,
+            customer_id=request.customer_id
+        )
+        return response
 
     @staticmethod
     def _fallback_recommendation_logic(request: AIRecommendationRequest, services_catalog: List[Dict[str, Any]]) -> str:
@@ -249,7 +306,8 @@ Trả về định dạng JSON DUY NHẤT:
         return json.dumps(result, ensure_ascii=False)
 
     @staticmethod
-    def generate_care_message(request: AICareMessageRequest) -> AICareMessageResponse:
+    def generate_care_message(db: Session, request: AICareMessageRequest, current_user=None) -> AICareMessageResponse:
+        start_time = time.perf_counter()
         """Generate personalized salon messages: Appointment reminders, Post-care instructions, Re-engagement offers."""
         system_instruction = (
             "Bạn là Trợ lý Chăm sóc Khách hàng Tận tâm của Salon Tóc Cao Cấp (Salon Customer Care AI).\n"
@@ -300,31 +358,58 @@ Trả về JSON duy nhất:
                 title = "Ưu đãi tri ân khách hàng thân thiết"
                 content = f"🎁 Chào {request.customer_name}! Đã một thời gian kể từ lần gần nhất bạn ghé salon làm dịch vụ {request.service_names}. Mái tóc của bạn có lẽ đã cần được phục hồi và cắt tỉa lại form dáng. Salon gửi tặng bạn voucher ưu đãi 15% cho lần ghé thăm tiếp theo. Đặt lịch ngay hôm nay để nhận ưu đãi nhé! ✨"
 
-            return AICareMessageResponse(
+            response = AICareMessageResponse(
                 message_type=request.message_type,
                 channel="Zalo/SMS",
                 title=title,
                 message_content=content
             )
+            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+            AIService._log_ai_request(
+                db=db, request_type="care_message", status="FALLBACK",
+                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
+                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
+                error_message="Gemini API failed or timed out",
+                user_id=current_user.id if current_user else None
+            )
+            return response
 
         try:
             cleaned = AIService._clean_json_output(raw_json_str)
             data = json.loads(cleaned)
-            return AICareMessageResponse(**data)
+            response = AICareMessageResponse(**data)
+            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+            AIService._log_ai_request(
+                db=db, request_type="care_message", status="SUCCESS",
+                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
+                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
+                user_id=current_user.id if current_user else None
+            )
+            return response
         except Exception:
-            return AICareMessageResponse(
+            response = AICareMessageResponse(
                 message_type=request.message_type,
                 channel="Zalo/SMS",
                 title="Thông báo từ Salon Tóc",
                 message_content=f"Kính gửi {request.customer_name}, Salon xin gửi lời cảm ơn và lời chúc tốt đẹp nhất đến bạn!"
             )
+            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+            AIService._log_ai_request(
+                db=db, request_type="care_message", status="ERROR",
+                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
+                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
+                error_message="Validation or parse error",
+                user_id=current_user.id if current_user else None
+            )
+            return response
 
     @staticmethod
     def summarize_customer_history(db: Session, request: AISummaryRequest, current_user=None) -> AISummaryResponse:
+        start_time = time.perf_counter()
         """Summarize customer's hair treatment history, preferred stylist, and formulas for quick stylist glance."""
         customer = db.query(Customer).filter(Customer.id == request.customer_id).first()
         if not customer:
-            return AISummaryResponse(
+            response = AISummaryResponse(
                 customer_id=request.customer_id,
                 customer_name="Khách hàng",
                 summary="Không tìm thấy thông tin khách hàng",
@@ -332,6 +417,14 @@ Trả về JSON duy nhất:
                 frequent_stylist=None,
                 technical_notes=[]
             )
+            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+            AIService._log_ai_request(
+                db=db, request_type="summary", status="ERROR",
+                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
+                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
+                error_message="Customer not found", user_id=current_user.id if current_user else None, customer_id=request.customer_id
+            )
+            return response
 
         query = db.query(ServiceHistory).filter(ServiceHistory.customer_id == customer.id)
         
@@ -346,7 +439,7 @@ Trả về JSON duy nhất:
         histories = query.order_by(ServiceHistory.completed_at.desc()).all()
 
         if not histories:
-            return AISummaryResponse(
+            response = AISummaryResponse(
                 customer_id=customer.id,
                 customer_name=customer.full_name,
                 summary=f"Khách hàng mới chưa có lịch sử làm dịch vụ trước đó. Ghi chú cá nhân: {customer.notes or 'Không có'}.",
@@ -354,6 +447,14 @@ Trả về JSON duy nhất:
                 frequent_stylist=None,
                 technical_notes=[customer.notes] if customer.notes else []
             )
+            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+            AIService._log_ai_request(
+                db=db, request_type="summary", status="SUCCESS",
+                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
+                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
+                user_id=current_user.id if current_user else None, customer_id=request.customer_id
+            )
+            return response
 
         # Prepare summary text
         history_records = []
@@ -409,7 +510,7 @@ Trả về JSON duy nhất:
             try:
                 cleaned = AIService._clean_json_output(raw_json_str)
                 data = json.loads(cleaned)
-                return AISummaryResponse(
+                response = AISummaryResponse(
                     customer_id=customer.id,
                     customer_name=customer.full_name,
                     summary=data.get("summary", ""),
@@ -418,6 +519,14 @@ Trả về JSON duy nhất:
                     technical_notes=data.get("technical_notes", []),
                     last_visit_date=last_visit
                 )
+                processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+                AIService._log_ai_request(
+                    db=db, request_type="summary", status="SUCCESS",
+                    model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
+                    prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
+                    user_id=current_user.id if current_user else None, customer_id=request.customer_id
+                )
+                return response
             except Exception:
                 pass
 
@@ -427,7 +536,7 @@ Trả về JSON duy nhất:
         if customer.notes:
             notes_list.append(customer.notes)
 
-        return AISummaryResponse(
+        response = AISummaryResponse(
             customer_id=customer.id,
             customer_name=customer.full_name,
             summary=f"Khách hàng đã thực hiện {len(histories)} lần dịch vụ tại salon (gần nhất: {last_visit}). Thường xuyên sử dụng: {', '.join(set(services_done[:2]))}.",
@@ -436,3 +545,12 @@ Trả về JSON duy nhất:
             technical_notes=notes_list[:3],
             last_visit_date=last_visit
         )
+        processing_time_ms = int((time.perf_counter() - start_time) * 1000)
+        AIService._log_ai_request(
+            db=db, request_type="summary", status="FALLBACK",
+            model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
+            prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
+            error_message="Gemini API failed or parse error",
+            user_id=current_user.id if current_user else None, customer_id=request.customer_id
+        )
+        return response

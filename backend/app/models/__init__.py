@@ -8,6 +8,7 @@ from app.models.invoice import Invoice, PaymentMethod, PaymentStatus
 from app.models.payment import Payment
 from app.models.history import ServiceHistory
 from app.models.audit import AuditLog
+from app.models.ai_log import AILog
 
 __all__ = [
     "Base",
@@ -26,4 +27,5 @@ __all__ = [
     "Payment",
     "ServiceHistory",
     "AuditLog",
+    "AILog",
 ]
