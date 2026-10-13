@@ -7,6 +7,8 @@ import {
 } from '../services/endpoints';
 import { useToast } from '../contexts/ToastContext';
 import { AppointmentBadge } from '../components/common/Badge';
+import { AIChatbox } from '../components/common/AIChatbox';
+import { ThemeToggle } from '../components/common/ThemeToggle';
 import {
   Scissors,
   Calendar,
@@ -64,6 +66,7 @@ export const PublicBookingPage = () => {
   // Customer form
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerGender, setCustomerGender] = useState('Nữ');
   const [notes, setNotes] = useState('');
@@ -72,6 +75,7 @@ export const PublicBookingPage = () => {
 
   // My Bookings lookup state
   const [lookupPhone, setLookupPhone] = useState('');
+  const [lookupPhoneError, setLookupPhoneError] = useState('');
   const [myBookings, setMyBookings] = useState([]);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [lookupDone, setLookupDone] = useState(false);
@@ -122,10 +126,21 @@ export const PublicBookingPage = () => {
         target_date: selectedDate,
         duration_minutes: totalDuration || 45,
       });
-      setAvailableSlots(res.data);
-      if (res.data.length > 0 && (!selectedTimeSlot || !res.data.includes(selectedTimeSlot))) {
-        setSelectedTimeSlot(res.data[0]);
-      } else if (res.data.length === 0) {
+      
+      let slots = res.data;
+      const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      
+      if (selectedDate === todayStr) {
+        now.setMinutes(now.getMinutes() + 30);
+        const minTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        slots = slots.filter(slot => slot >= minTimeStr);
+      }
+
+      setAvailableSlots(slots);
+      if (slots.length > 0 && (!selectedTimeSlot || !slots.includes(selectedTimeSlot))) {
+        setSelectedTimeSlot(slots[0]);
+      } else if (slots.length === 0) {
         setSelectedTimeSlot('');
       }
     } catch {
@@ -142,11 +157,20 @@ export const PublicBookingPage = () => {
   };
 
   const handleSelectServiceAndScroll = (id) => {
-    if (!selectedServiceIds.includes(id)) {
-      setSelectedServiceIds((prev) => [...prev, id]);
-    }
+    setSelectedServiceIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
     setActiveTab('booking');
     setStep(1);
+    bookingSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSelectServiceFromChat = (serviceId) => {
+    if (!selectedServiceIds.includes(serviceId)) {
+      setSelectedServiceIds((prev) => [...prev, serviceId]);
+    }
+    setActiveTab('booking');
+    setStep(2);
     bookingSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -190,6 +214,12 @@ export const PublicBookingPage = () => {
       addToast('Khung giờ hẹn không hợp lệ, vui lòng chọn lại!', 'error');
       return;
     }
+    
+    if (!/^(0[3|5|7|8|9])+([0-9]{8})$/.test(customerPhone.trim())) {
+      setPhoneError('Số điện thoại không hợp lệ (phải gồm 10 chữ số hợp lệ tại Việt Nam)');
+      return;
+    }
+    setPhoneError('');
 
     setIsSubmitting(true);
     try {
@@ -228,6 +258,11 @@ export const PublicBookingPage = () => {
       addToast('Vui lòng nhập số điện thoại để tra cứu!', 'warning');
       return;
     }
+    if (!/^(0[3|5|7|8|9])+([0-9]{8})$/.test(lookupPhone.trim())) {
+      setLookupPhoneError('Số điện thoại không hợp lệ (phải gồm 10 chữ số hợp lệ tại Việt Nam)');
+      return;
+    }
+    setLookupPhoneError('');
     setIsLookingUp(true);
     setLookupDone(false);
     try {
@@ -272,7 +307,7 @@ export const PublicBookingPage = () => {
             </div>
             <div>
               <span className="block text-xl sm:text-2xl font-black tracking-wider text-white font-serif-salon">
-                THEMANH SALON
+                THE MANH SALON
               </span>
               <span className="block text-[10px] font-bold uppercase tracking-[0.25em] text-amber-400">
                 Haute Coiffure & Spa
@@ -310,6 +345,9 @@ export const PublicBookingPage = () => {
           </nav>
 
           <div className="flex items-center gap-3">
+            {/* Theme Toggle (Dark / Light) */}
+            <ThemeToggle />
+
             <button
               onClick={scrollToBooking}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-500 text-slate-950 text-xs font-black uppercase tracking-wider hover:bg-amber-400 transition-all shadow-glow-gold"
@@ -346,7 +384,7 @@ export const PublicBookingPage = () => {
             </h1>
 
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal max-w-2xl">
-              Chào mừng bạn đến với THEMANH SALON. Nơi hội tụ các chuyên gia tạo mẫu tóc hàng đầu,
+              Chào mừng bạn đến với THE MANH SALON. Nơi hội tụ các chuyên gia tạo mẫu tóc hàng đầu,
               quy trình chuẩn 5 sao, sản phẩm thảo dược hữu cơ cao cấp và không gian thư giãn tuyệt đối.
             </p>
 
@@ -597,7 +635,7 @@ export const PublicBookingPage = () => {
                         setStep(1);
                         setSelectedServiceIds([]);
                       }}
-                      className="flex-1 py-3 rounded-xl border border-slate-700 bg-slate-900 font-bold text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-all"
+                      className="flex-1 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-bold text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shadow-sm"
                     >
                       Đặt Thêm Lịch Mới
                     </button>
@@ -618,29 +656,39 @@ export const PublicBookingPage = () => {
                 <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-10 shadow-card-dark">
                   {/* Stepper Header (3 Steps) */}
                   <div className="max-w-2xl mx-auto mb-10">
-                    <div className="flex items-center justify-between relative">
-                      {/* Connecting Line */}
-                      <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-700 -translate-y-1/2 z-0" />
-                      <div
-                        className="absolute top-1/2 left-0 h-0.5 bg-amber-500 -translate-y-1/2 z-0 transition-all duration-300"
-                        style={{ width: step === 1 ? '0%' : step === 2 ? '50%' : '100%' }}
-                      />
+                    <div className="flex items-center justify-between relative px-2 sm:px-6">
+                      {/* Connecting Line Track */}
+                      <div className="absolute top-5 left-8 right-8 sm:left-14 sm:right-14 h-1 bg-slate-200 dark:bg-slate-700 rounded-full -translate-y-1/2 z-0 stepper-track overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full transition-all duration-300 shadow-sm"
+                          style={{ width: step === 1 ? '0%' : step === 2 ? '50%' : '100%' }}
+                        />
+                      </div>
 
                       {/* Step 1 */}
                       <button
+                        type="button"
                         onClick={() => setStep(1)}
-                        className="relative z-10 flex flex-col items-center gap-2 focus:outline-none"
+                        className="relative z-10 flex flex-col items-center gap-2 focus:outline-none transition-transform hover:scale-105 active:scale-95 cursor-pointer"
                       >
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-colors ${
-                            step >= 1 ? 'bg-amber-500 text-slate-950 shadow-glow-gold' : 'bg-slate-700 text-slate-400'
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-all shadow-sm ${
+                            step === 1
+                              ? 'bg-amber-500 text-slate-950 ring-4 ring-amber-500/25 shadow-glow-gold stepper-step-active'
+                              : step > 1
+                              ? 'bg-amber-500 text-slate-950 shadow-sm'
+                              : 'bg-slate-100 text-slate-600 border-2 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 stepper-step-inactive'
                           }`}
                         >
-                          1
+                          {step > 1 ? <Check className="w-5 h-5 stroke-[3]" /> : '1'}
                         </div>
                         <span
-                          className={`text-xs font-black uppercase tracking-wider ${
-                            step === 1 ? 'text-amber-400' : 'text-slate-400'
+                          className={`text-xs uppercase tracking-wider transition-colors ${
+                            step === 1
+                              ? 'text-amber-600 dark:text-amber-400 font-black stepper-label-active'
+                              : step > 1
+                              ? 'text-slate-700 dark:text-slate-300 font-bold stepper-label-done'
+                              : 'text-slate-500 dark:text-slate-400 font-semibold stepper-label-inactive'
                           }`}
                         >
                           Chọn Dịch Vụ
@@ -649,20 +697,33 @@ export const PublicBookingPage = () => {
 
                       {/* Step 2 */}
                       <button
+                        type="button"
                         onClick={() => selectedServiceIds.length > 0 && setStep(2)}
                         disabled={selectedServiceIds.length === 0}
-                        className="relative z-10 flex flex-col items-center gap-2 focus:outline-none disabled:opacity-40"
+                        className={`relative z-10 flex flex-col items-center gap-2 focus:outline-none transition-transform ${
+                          selectedServiceIds.length > 0
+                            ? 'hover:scale-105 active:scale-95 cursor-pointer'
+                            : 'cursor-not-allowed'
+                        }`}
                       >
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-colors ${
-                            step >= 2 ? 'bg-amber-500 text-slate-950 shadow-glow-gold' : 'bg-slate-700 text-slate-400'
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-all shadow-sm ${
+                            step === 2
+                              ? 'bg-amber-500 text-slate-950 ring-4 ring-amber-500/25 shadow-glow-gold stepper-step-active'
+                              : step > 2
+                              ? 'bg-amber-500 text-slate-950 shadow-sm'
+                              : 'bg-slate-100 text-slate-600 border-2 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 stepper-step-inactive'
                           }`}
                         >
-                          2
+                          {step > 2 ? <Check className="w-5 h-5 stroke-[3]" /> : '2'}
                         </div>
                         <span
-                          className={`text-xs font-black uppercase tracking-wider ${
-                            step === 2 ? 'text-amber-400' : 'text-slate-400'
+                          className={`text-xs uppercase tracking-wider transition-colors ${
+                            step === 2
+                              ? 'text-amber-600 dark:text-amber-400 font-black stepper-label-active'
+                              : step > 2
+                              ? 'text-slate-700 dark:text-slate-300 font-bold stepper-label-done'
+                              : 'text-slate-500 dark:text-slate-400 font-semibold stepper-label-inactive'
                           }`}
                         >
                           Thợ & Khung Giờ
@@ -671,20 +732,29 @@ export const PublicBookingPage = () => {
 
                       {/* Step 3 */}
                       <button
-                        onClick={() => selectedTimeSlot && setStep(3)}
-                        disabled={!selectedTimeSlot}
-                        className="relative z-10 flex flex-col items-center gap-2 focus:outline-none disabled:opacity-40"
+                        type="button"
+                        onClick={() => selectedTimeSlot && selectedServiceIds.length > 0 && setStep(3)}
+                        disabled={!selectedTimeSlot || selectedServiceIds.length === 0}
+                        className={`relative z-10 flex flex-col items-center gap-2 focus:outline-none transition-transform ${
+                          selectedTimeSlot && selectedServiceIds.length > 0
+                            ? 'hover:scale-105 active:scale-95 cursor-pointer'
+                            : 'cursor-not-allowed'
+                        }`}
                       >
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-colors ${
-                            step === 3 ? 'bg-amber-500 text-slate-950 shadow-glow-gold' : 'bg-slate-700 text-slate-400'
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-all shadow-sm ${
+                            step === 3
+                              ? 'bg-amber-500 text-slate-950 ring-4 ring-amber-500/25 shadow-glow-gold stepper-step-active'
+                              : 'bg-slate-100 text-slate-600 border-2 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 stepper-step-inactive'
                           }`}
                         >
                           3
                         </div>
                         <span
-                          className={`text-xs font-black uppercase tracking-wider ${
-                            step === 3 ? 'text-amber-400' : 'text-slate-400'
+                          className={`text-xs uppercase tracking-wider transition-colors ${
+                            step === 3
+                              ? 'text-amber-600 dark:text-amber-400 font-black stepper-label-active'
+                              : 'text-slate-500 dark:text-slate-400 font-semibold stepper-label-inactive'
                           }`}
                         >
                           Xác Nhận & Đặt
@@ -830,7 +900,7 @@ export const PublicBookingPage = () => {
                             className="w-full px-4 py-3 rounded-xl border border-slate-700 bg-slate-900 text-sm font-bold text-white focus:outline-none focus:border-amber-400"
                           />
                           <p className="text-xs text-slate-400">
-                            Salon mở cửa từ 08:30 đến 20:30 hàng ngày.
+                            Salon mở cửa từ 07:00 đến 23:00 hàng ngày.
                           </p>
                         </div>
 
@@ -845,9 +915,17 @@ export const PublicBookingPage = () => {
                               Đang kiểm tra lịch rảnh của Stylist...
                             </div>
                           ) : availableSlots.length === 0 ? (
-                            <div className="p-6 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm">
+                            <div className="p-6 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-sm leading-relaxed">
                               <AlertCircle className="w-4 h-4 inline mr-2 text-amber-400" />
-                              Stylist này không có ca làm việc hoặc đã kín lịch vào ngày đã chọn. Quý khách vui lòng chọn ngày khác hoặc chọn Stylist khác!
+                              {totalDuration > 960 ? (
+                                <span>
+                                  Tổng thời lượng các dịch vụ đã chọn (<strong>{totalDuration} phút</strong> ~ {(totalDuration / 60).toFixed(1)} tiếng) vượt quá ca làm việc trong ngày của Stylist (ca từ 07:00 đến 23:00). Quý khách vui lòng bấm <strong>Quay Lại Bước 1</strong> để bỏ bớt dịch vụ hoặc tách làm các lịch hẹn riêng biệt!
+                                </span>
+                              ) : (
+                                <span>
+                                  Stylist này không có ca làm việc hoặc đã kín lịch vào ngày đã chọn. Quý khách vui lòng chọn ngày khác hoặc chọn Stylist khác!
+                                </span>
+                              )}
                             </div>
                           ) : (
                             <div className="grid grid-cols-4 sm:grid-cols-6 gap-2.5">
@@ -876,8 +954,9 @@ export const PublicBookingPage = () => {
                       {/* Step 2 Bottom Navigation */}
                       <div className="pt-6 border-t border-slate-700 flex items-center justify-between">
                         <button
+                          type="button"
                           onClick={() => setStep(1)}
-                          className="px-6 py-3 rounded-full border border-slate-700 bg-slate-900 font-bold text-xs text-slate-300 hover:bg-slate-700 hover:text-white flex items-center gap-1.5"
+                          className="px-6 py-3 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-bold text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-1.5 shadow-sm"
                         >
                           <ChevronLeft className="w-4 h-4" />
                           <span>Quay Lại Bước 1</span>
@@ -937,12 +1016,21 @@ export const PublicBookingPage = () => {
                                 <input
                                   type="tel"
                                   required
+                                  maxLength={10}
                                   placeholder="VD: 0987654321"
                                   value={customerPhone}
-                                  onChange={(e) => setCustomerPhone(e.target.value)}
-                                  className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-slate-700 bg-slate-900 text-sm font-medium text-white focus:outline-none focus:border-amber-400"
+                                  onChange={(e) => {
+                                    setCustomerPhone(e.target.value);
+                                    setPhoneError('');
+                                  }}
+                                  className={`w-full pl-10 pr-3.5 py-3 rounded-xl border bg-slate-900 text-sm font-medium text-white focus:outline-none focus:border-amber-400 ${
+                                    phoneError ? 'border-rose-500' : 'border-slate-700'
+                                  }`}
                                 />
                               </div>
+                              {phoneError && (
+                                <p className="text-rose-500 text-[10px] mt-1 italic">{phoneError}</p>
+                              )}
                             </div>
                           </div>
 
@@ -1054,7 +1142,7 @@ export const PublicBookingPage = () => {
                         <button
                           type="button"
                           onClick={() => setStep(2)}
-                          className="px-6 py-3 rounded-full border border-slate-700 bg-slate-900 font-bold text-xs text-slate-300 hover:bg-slate-700 hover:text-white flex items-center gap-1.5"
+                          className="px-6 py-3 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-bold text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-1.5 shadow-sm"
                         >
                           <ChevronLeft className="w-4 h-4" />
                           <span>Quay Lại Bước 2</span>
@@ -1093,16 +1181,27 @@ export const PublicBookingPage = () => {
 
               {/* Phone Input Form */}
               <form onSubmit={handleLookupBookings} className="max-w-md mx-auto flex gap-2">
-                <div className="relative flex-1">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="tel"
-                    required
-                    placeholder="Nhập số điện thoại của bạn..."
-                    value={lookupPhone}
-                    onChange={(e) => setLookupPhone(e.target.value)}
-                    className="w-full pl-10 pr-3.5 py-3 rounded-full border border-slate-700 bg-slate-900 text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 shadow-sm"
-                  />
+                <div className="flex flex-col flex-1 gap-1">
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="tel"
+                      required
+                      maxLength={10}
+                      placeholder="Nhập số điện thoại của bạn..."
+                      value={lookupPhone}
+                      onChange={(e) => {
+                        setLookupPhone(e.target.value);
+                        setLookupPhoneError('');
+                      }}
+                      className={`w-full pl-10 pr-3.5 py-3 rounded-full border bg-slate-900 text-sm font-semibold text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 shadow-sm ${
+                        lookupPhoneError ? 'border-rose-500' : 'border-slate-700'
+                      }`}
+                    />
+                  </div>
+                  {lookupPhoneError && (
+                    <p className="text-rose-500 text-[10px] italic ml-3">{lookupPhoneError}</p>
+                  )}
                 </div>
                 <button
                   type="submit"
@@ -1148,6 +1247,12 @@ export const PublicBookingPage = () => {
                                 #{b.booking_code || b.id}
                               </span>
                               <AppointmentBadge status={b.status} />
+                              {b.is_paid && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                                  <CheckCircle2 className="w-2.5 h-2.5" />
+                                  Đã thanh toán
+                                </span>
+                              )}
                             </div>
 
                             <div className="flex flex-wrap items-center gap-4 text-sm text-slate-300">
@@ -1207,18 +1312,21 @@ export const PublicBookingPage = () => {
               <Scissors className="w-5 h-5 rotate-45" />
             </div>
             <div>
-              <span className="font-bold text-white tracking-wider block text-sm">THEMANH SALON</span>
+              <span className="font-bold text-white tracking-wider block text-sm">THE MANH SALON</span>
               <span className="text-[11px] text-slate-500">© 2026 All Rights Reserved.</span>
             </div>
           </div>
 
           <div className="flex items-center gap-6 font-medium">
             <span>Hotline: 0988.888.888</span>
-            <span>Giờ mở cửa: 08:30 - 20:30</span>
+            <span>Giờ mở cửa: 07:00 - 23:00</span>
             <span>Địa chỉ: 123 Đường Phong Cách, Hà Nội</span>
           </div>
         </div>
       </footer>
+
+      {/* Floating AI Consultation Chatbox */}
+      <AIChatbox onSelectService={handleSelectServiceFromChat} />
     </div>
   );
 };

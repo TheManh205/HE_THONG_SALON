@@ -133,9 +133,9 @@ export const InvoicesPage = () => {
           <div className="space-y-6">
             <div className="bg-white text-slate-900 p-6 rounded-2xl shadow-md text-xs space-y-4 font-sans print:p-0">
               <div className="text-center pb-3 border-b border-dashed border-slate-300">
-                <h2 className="text-base font-extrabold tracking-tight uppercase">LUMIÈRE LUXURY HAIR SALON</h2>
-                <p className="text-[10px] text-slate-500">123 Đường Thời Trang, Quận 1, TP. Hồ Chí Minh</p>
-                <p className="text-[10px] text-slate-500">Hotline: 1900 6868</p>
+                <h2 className="text-base font-extrabold tracking-tight uppercase">THE MANH LUXURY HAIR SALON</h2>
+                <p className="text-[10px] text-slate-500">123 Đường Phong Cách, Hà Nội</p>
+                <p className="text-[10px] text-slate-500">Hotline: 0988.888.888 • Giờ mở cửa: 07:00 - 23:00</p>
                 <h3 className="text-sm font-bold uppercase mt-2">PHIẾU THANH TOÁN DỊCH VỤ</h3>
                 <span className="font-mono text-[11px] text-slate-600">Số: #{selectedInvoice.id}</span>
               </div>
@@ -171,7 +171,7 @@ export const InvoicesPage = () => {
               </div>
 
               <div className="text-center pt-3 border-t border-dashed border-slate-300 text-[10px] text-slate-500 space-y-0.5">
-                <p>Cảm ơn Quý Khách đã trải nghiệm dịch vụ tại Lumière Salon!</p>
+                <p>Cảm ơn Quý Khách đã trải nghiệm dịch vụ tại THE MANH Salon!</p>
                 <p>Bảo hành nếp uốn & màu nhuộm trong 7 ngày.</p>
               </div>
             </div>

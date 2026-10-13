@@ -1,5 +1,4 @@
 import json
-import time
 import re
 from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
@@ -7,6 +6,7 @@ from app.core.config import settings
 from app.models.service import Service
 from app.models.customer import Customer
 from app.models.history import ServiceHistory
+from app.models.user import User
 from app.schemas.ai import (
     AIRecommendationRequest,
     AIRecommendationResponse,
@@ -14,7 +14,9 @@ from app.schemas.ai import (
     AICareMessageRequest,
     AICareMessageResponse,
     AISummaryRequest,
-    AISummaryResponse
+    AISummaryResponse,
+    AIChatRequest,
+    AIChatResponse
 )
 
 # Attempt to import google-genai
@@ -27,48 +29,58 @@ except ImportError:
 
 
 class AIService:
-
     @staticmethod
-    def _log_ai_request(
-        db: Session,
-        request_type: str,
-        status: str,
-        model: str,
-        processing_time_ms: int,
-        prompt_details: str = None,
-        response_details: str = None,
-        error_message: str = None,
-        user_id: int = None,
-        customer_id: int = None
-    ):
-        try:
-            from app.models.ai_log import AILog
-            log = AILog(
-                user_id=user_id,
-                customer_id=customer_id,
-                request_type=request_type,
-                model=model,
-                status=status,
-                prompt_details=prompt_details,
-                response_details=response_details,
-                error_message=error_message,
-                processing_time_ms=processing_time_ms
-            )
-            db.add(log)
-            db.commit()
-        except Exception as e:
-            db.rollback()
-            print(f"[AI Logging Error] Failed to persist log: {e}")
-
-    @staticmethod
-    def _get_gemini_client():
-        if not settings.GEMINI_API_KEY or not GENAI_SDK_AVAILABLE:
+    def _get_gemini_client(custom_api_key: Optional[str] = None):
+        key = (custom_api_key or "").strip() or (settings.GEMINI_API_KEY or "").strip()
+        if not key or not GENAI_SDK_AVAILABLE:
             return None
         try:
-            client = genai.Client(api_key=settings.GEMINI_API_KEY)
+            client = genai.Client(api_key=key)
             return client
-        except Exception:
+        except Exception as e:
+            print(f"[AIService] Failed to initialize Gemini Client: {e}", flush=True)
             return None
+
+    @staticmethod
+    def _generate_content_with_fallback(
+        client,
+        contents: str,
+        system_instruction: str,
+        temperature: float = 0.2,
+        response_mime_type: str = "application/json"
+    ) -> Optional[str]:
+        if not client:
+            return None
+        candidate_models = [
+            settings.GEMINI_MODEL,
+            "gemini-flash-lite-latest",
+            "gemini-3.5-flash-lite",
+            "gemini-3.1-flash-lite",
+            "gemini-flash-latest"
+        ]
+        unique_models = []
+        for m in candidate_models:
+            if m and m not in unique_models:
+                unique_models.append(m)
+
+        for model_name in unique_models:
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=contents,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_instruction,
+                        temperature=temperature,
+                        response_mime_type=response_mime_type
+                    )
+                )
+                if response and response.text:
+                    print(f"[AIService] Generated response successfully using model '{model_name}'", flush=True)
+                    return response.text
+            except Exception as e:
+                print(f"[AIService] Model '{model_name}' failed: {e}", flush=True)
+                continue
+        return None
 
     @staticmethod
     def _clean_json_output(text: str) -> str:
@@ -83,26 +95,11 @@ class AIService:
         return text.strip()
 
     @staticmethod
-    def _generate_with_retry(client, model, contents, config, max_retries=2) -> Optional[str]:
-        import time
-        for attempt in range(max_retries + 1):
-            try:
-                response = client.models.generate_content(
-                    model=model,
-                    contents=contents,
-                    config=config
-                )
-                return response.text
-            except Exception as e:
-                print(f"[AI Retry] Lỗi Gemini API (Attempt {attempt+1}/{max_retries+1}): {e}")
-                if attempt < max_retries:
-                    time.sleep(1) # Delay before retry
-                else:
-                    return None
-
-    @staticmethod
-    def get_recommendations(db: Session, request: AIRecommendationRequest, current_user=None) -> AIRecommendationResponse:
-        start_time = time.perf_counter()
+    def get_recommendations(
+        db: Session,
+        request: AIRecommendationRequest,
+        current_user: Optional[User] = None
+    ) -> AIRecommendationResponse:
         """
         AI Hair Advisor with Strict Prompt Guard & Anti-Hallucination:
         - Feeds active services catalog from DB.
@@ -175,24 +172,16 @@ Trả về định dạng JSON DUY NHẤT:
 """
 
         client = AIService._get_gemini_client()
-        raw_json_str = None
+        raw_json_str = AIService._generate_content_with_fallback(
+            client=client,
+            contents=user_prompt,
+            system_instruction=system_instruction,
+            temperature=settings.AI_TEMPERATURE,
+            response_mime_type="application/json"
+        )
 
-        if client:
-            raw_json_str = AIService._generate_with_retry(
-                client=client,
-                model=settings.GEMINI_MODEL,
-                contents=user_prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_instruction,
-                    temperature=settings.AI_TEMPERATURE,
-                    response_mime_type="application/json"
-                )
-            )
-
-        used_fallback = False
         # Fallback intelligent rule-based engine if Gemini client unavailable or offline
         if not raw_json_str:
-            used_fallback = True
             raw_json_str = AIService._fallback_recommendation_logic(request, services_catalog)
 
         # Parse & Validate Output (Anti-Hallucination Filter)
@@ -200,7 +189,6 @@ Trả về định dạng JSON DUY NHẤT:
             cleaned = AIService._clean_json_output(raw_json_str)
             data = json.loads(cleaned)
         except Exception:
-            used_fallback = True
             data = json.loads(AIService._fallback_recommendation_logic(request, services_catalog))
 
         valid_recommended_items: List[RecommendedServiceItem] = []
@@ -238,7 +226,7 @@ Trả về định dạng JSON DUY NHẤT:
             total_price = svc.price
             total_duration = svc.duration_minutes
 
-        response = AIRecommendationResponse(
+        return AIRecommendationResponse(
             styling_advice=data.get("styling_advice", "Kiểu tóc và dịch vụ được đề xuất để tôn lên nét đẹp tự nhiên và phục hồi sợi tóc chắc khỏe."),
             recommended_services=valid_recommended_items,
             total_estimated_price=total_price,
@@ -249,25 +237,6 @@ Trả về định dạng JSON DUY NHẤT:
                 "Sấy tóc ở chế độ gió mát hoặc ấm nhẹ để tránh làm tổn hại biểu bì tóc."
             ])
         )
-
-        status = "FALLBACK" if used_fallback else "SUCCESS"
-        if status == "SUCCESS" and not valid_recommended_items:
-            status = "FALLBACK" # All recommendations were hallucinated
-
-        processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-        AIService._log_ai_request(
-            db=db,
-            request_type="recommend",
-            status=status,
-            model=settings.GEMINI_MODEL,
-            processing_time_ms=processing_time_ms,
-            prompt_details=request.model_dump_json(),
-            response_details=response.model_dump_json(),
-            error_message="Gemini API failed" if status == "FALLBACK" else None,
-            user_id=current_user.id if current_user else None,
-            customer_id=request.customer_id
-        )
-        return response
 
     @staticmethod
     def _fallback_recommendation_logic(request: AIRecommendationRequest, services_catalog: List[Dict[str, Any]]) -> str:
@@ -306,9 +275,13 @@ Trả về định dạng JSON DUY NHẤT:
         return json.dumps(result, ensure_ascii=False)
 
     @staticmethod
-    def generate_care_message(db: Session, request: AICareMessageRequest, current_user=None) -> AICareMessageResponse:
-        start_time = time.perf_counter()
+    def generate_care_message(
+        request_or_db: Any,
+        request: Optional[AICareMessageRequest] = None,
+        current_user: Optional[User] = None
+    ) -> AICareMessageResponse:
         """Generate personalized salon messages: Appointment reminders, Post-care instructions, Re-engagement offers."""
+        req: AICareMessageRequest = request if isinstance(request, AICareMessageRequest) else request_or_db
         system_instruction = (
             "Bạn là Trợ lý Chăm sóc Khách hàng Tận tâm của Salon Tóc Cao Cấp (Salon Customer Care AI).\n"
             "Nhiệm vụ: Viết tin nhắn Zalo/SMS hoặc Email cá nhân hóa, ấm áp, lịch sự, chuyên nghiệp và đầy đủ thông tin hữu ích."
@@ -316,15 +289,15 @@ Trả về định dạng JSON DUY NHẤT:
 
         user_prompt = f"""
 THÔNG TIN YÊU CẦU:
-- Tên khách hàng: {request.customer_name}
-- Loại tin nhắn: {request.message_type} (REMINDER: Nhắc lịch hẹn sắp tới, AFTERCARE: Hướng dẫn chăm sóc tại nhà sau làm tóc, RE_ENGAGE: Mời khách quay lại kèm ưu đãi)
-- Dịch vụ đã làm / sắp làm: {request.service_names or 'Chăm sóc tóc chuyên sâu'}
-- Thời gian lịch hẹn (nếu có): {request.appointment_time or 'Hôm nay'}
+- Tên khách hàng: {req.customer_name}
+- Loại tin nhắn: {req.message_type} (REMINDER: Nhắc lịch hẹn sắp tới, AFTERCARE: Hướng dẫn chăm sóc tại nhà sau làm tóc, RE_ENGAGE: Mời khách quay lại kèm ưu đãi)
+- Dịch vụ đã làm / sắp làm: {req.service_names or 'Chăm sóc tóc chuyên sâu'}
+- Thời gian lịch hẹn (nếu có): {req.appointment_time or 'Hôm nay'}
 
 Hãy tạo tin nhắn chuẩn mực, có emoji tinh tế, lịch sự, thân thiện.
 Trả về JSON duy nhất:
 {{
-  "message_type": "{request.message_type}",
+  "message_type": "{req.message_type}",
   "channel": "Zalo/SMS",
   "title": "Tiêu đề ngắn gọn",
   "message_content": "Nội dung tin nhắn đầy đủ"
@@ -332,84 +305,55 @@ Trả về JSON duy nhất:
 """
 
         client = AIService._get_gemini_client()
-        raw_json_str = None
-
-        if client:
-            raw_json_str = AIService._generate_with_retry(
-                client=client,
-                model=settings.GEMINI_MODEL,
-                contents=user_prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_instruction,
-                    temperature=0.3,
-                    response_mime_type="application/json"
-                )
-            )
+        raw_json_str = AIService._generate_content_with_fallback(
+            client=client,
+            contents=user_prompt,
+            system_instruction=system_instruction,
+            temperature=0.3,
+            response_mime_type="application/json"
+        )
 
         if not raw_json_str:
             # Fallback smart generator
-            if request.message_type == "REMINDER":
+            if req.message_type == "REMINDER":
                 title = "Nhắc lịch hẹn làm tóc tại Salon"
-                content = f"✨ Xin chào {request.customer_name}! Salon xin nhắc bạn có lịch hẹn lúc {request.appointment_time or 'ngày mai'} cho dịch vụ {request.service_names}. Đội ngũ stylist đã chuẩn bị sẵn sàng để đón tiếp bạn. Nếu cần điều chỉnh thời gian, bạn vui lòng liên hệ lại hotline salon nhé! Chúc bạn một ngày tràn đầy năng lượng 💖"
-            elif request.message_type == "AFTERCARE":
+                content = f"✨ Xin chào {req.customer_name}! Salon xin nhắc bạn có lịch hẹn lúc {req.appointment_time or 'ngày mai'} cho dịch vụ {req.service_names}. Đội ngũ stylist đã chuẩn bị sẵn sàng để đón tiếp bạn. Nếu cần điều chỉnh thời gian, bạn vui lòng liên hệ lại hotline salon nhé! Chúc bạn một ngày tràn đầy năng lượng 💖"
+            elif req.message_type == "AFTERCARE":
                 title = "Cẩm nang chăm sóc tóc sau làm dịch vụ"
-                content = f"🌿 Cảm ơn {request.customer_name} đã tin tưởng trải nghiệm dịch vụ '{request.service_names}' tại Salon hôm nay! Để giữ mái tóc luôn bóng mượt & bền màu:\n1. Tránh gội đầu trong 48h tới.\n2. Sử dụng nước mát và dầu dưỡng tóc khi sấy.\nNếu tóc cần hỗ trợ chỉnh sửa, salon bảo hành miễn phí trong 7 ngày nhé! Chúc bạn luôn rạng rỡ ✨"
+                content = f"🌿 Cảm ơn {req.customer_name} đã tin tưởng trải nghiệm dịch vụ '{req.service_names}' tại Salon hôm nay! Để giữ mái tóc luôn bóng mượt & bền màu:\n1. Tránh gội đầu trong 48h tới.\n2. Sử dụng nước mát và dầu dưỡng tóc khi sấy.\nNếu tóc cần hỗ trợ chỉnh sửa, salon bảo hành miễn phí trong 7 ngày nhé! Chúc bạn luôn rạng rỡ ✨"
             else: # RE_ENGAGE
                 title = "Ưu đãi tri ân khách hàng thân thiết"
-                content = f"🎁 Chào {request.customer_name}! Đã một thời gian kể từ lần gần nhất bạn ghé salon làm dịch vụ {request.service_names}. Mái tóc của bạn có lẽ đã cần được phục hồi và cắt tỉa lại form dáng. Salon gửi tặng bạn voucher ưu đãi 15% cho lần ghé thăm tiếp theo. Đặt lịch ngay hôm nay để nhận ưu đãi nhé! ✨"
+                content = f"🎁 Chào {req.customer_name}! Đã một thời gian kể từ lần gần nhất bạn ghé salon làm dịch vụ {req.service_names}. Mái tóc của bạn có lẽ đã cần được phục hồi và cắt tỉa lại form dáng. Salon gửi tặng bạn voucher ưu đãi 15% cho lần ghé thăm tiếp theo. Đặt lịch ngay hôm nay để nhận ưu đãi nhé! ✨"
 
-            response = AICareMessageResponse(
-                message_type=request.message_type,
+            return AICareMessageResponse(
+                message_type=req.message_type,
                 channel="Zalo/SMS",
                 title=title,
                 message_content=content
             )
-            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-            AIService._log_ai_request(
-                db=db, request_type="care_message", status="FALLBACK",
-                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
-                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
-                error_message="Gemini API failed or timed out",
-                user_id=current_user.id if current_user else None
-            )
-            return response
 
         try:
             cleaned = AIService._clean_json_output(raw_json_str)
             data = json.loads(cleaned)
-            response = AICareMessageResponse(**data)
-            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-            AIService._log_ai_request(
-                db=db, request_type="care_message", status="SUCCESS",
-                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
-                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
-                user_id=current_user.id if current_user else None
-            )
-            return response
+            return AICareMessageResponse(**data)
         except Exception:
-            response = AICareMessageResponse(
-                message_type=request.message_type,
+            return AICareMessageResponse(
+                message_type=req.message_type,
                 channel="Zalo/SMS",
                 title="Thông báo từ Salon Tóc",
-                message_content=f"Kính gửi {request.customer_name}, Salon xin gửi lời cảm ơn và lời chúc tốt đẹp nhất đến bạn!"
+                message_content=f"Kính gửi {req.customer_name}, Salon xin gửi lời cảm ơn và lời chúc tốt đẹp nhất đến bạn!"
             )
-            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-            AIService._log_ai_request(
-                db=db, request_type="care_message", status="ERROR",
-                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
-                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
-                error_message="Validation or parse error",
-                user_id=current_user.id if current_user else None
-            )
-            return response
 
     @staticmethod
-    def summarize_customer_history(db: Session, request: AISummaryRequest, current_user=None) -> AISummaryResponse:
-        start_time = time.perf_counter()
+    def summarize_customer_history(
+        db: Session,
+        request: AISummaryRequest,
+        current_user: Optional[User] = None
+    ) -> AISummaryResponse:
         """Summarize customer's hair treatment history, preferred stylist, and formulas for quick stylist glance."""
         customer = db.query(Customer).filter(Customer.id == request.customer_id).first()
         if not customer:
-            response = AISummaryResponse(
+            return AISummaryResponse(
                 customer_id=request.customer_id,
                 customer_name="Khách hàng",
                 summary="Không tìm thấy thông tin khách hàng",
@@ -417,29 +361,13 @@ Trả về JSON duy nhất:
                 frequent_stylist=None,
                 technical_notes=[]
             )
-            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-            AIService._log_ai_request(
-                db=db, request_type="summary", status="ERROR",
-                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
-                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
-                error_message="Customer not found", user_id=current_user.id if current_user else None, customer_id=request.customer_id
-            )
-            return response
 
-        query = db.query(ServiceHistory).filter(ServiceHistory.customer_id == customer.id)
-        
-        # Enforce Data-Level Scoping for Hairdresser
-        from app.models.user import RoleEnum
-        if current_user and getattr(current_user.role, 'name', '') == RoleEnum.HAIRDRESSER.value:
-            if getattr(current_user, 'hairdresser', None):
-                query = query.filter(ServiceHistory.hairdresser_id == current_user.hairdresser.id)
-            else:
-                query = query.filter(ServiceHistory.id == -1) # empty query if no profile
-
-        histories = query.order_by(ServiceHistory.completed_at.desc()).all()
+        histories = db.query(ServiceHistory).filter(
+            ServiceHistory.customer_id == customer.id
+        ).order_by(ServiceHistory.completed_at.desc()).all()
 
         if not histories:
-            response = AISummaryResponse(
+            return AISummaryResponse(
                 customer_id=customer.id,
                 customer_name=customer.full_name,
                 summary=f"Khách hàng mới chưa có lịch sử làm dịch vụ trước đó. Ghi chú cá nhân: {customer.notes or 'Không có'}.",
@@ -447,14 +375,6 @@ Trả về JSON duy nhất:
                 frequent_stylist=None,
                 technical_notes=[customer.notes] if customer.notes else []
             )
-            processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-            AIService._log_ai_request(
-                db=db, request_type="summary", status="SUCCESS",
-                model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
-                prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
-                user_id=current_user.id if current_user else None, customer_id=request.customer_id
-            )
-            return response
 
         # Prepare summary text
         history_records = []
@@ -492,25 +412,19 @@ Trả về JSON duy nhất:
 """
 
         client = AIService._get_gemini_client()
-        raw_json_str = None
-
-        if client:
-            raw_json_str = AIService._generate_with_retry(
-                client=client,
-                model=settings.GEMINI_MODEL,
-                contents=user_prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction="Bạn là Trợ lý Kỹ thuật Salon Tóc giúp tóm tắt nhanh lịch sử khách cho thợ làm tóc.",
-                    temperature=0.2,
-                    response_mime_type="application/json"
-                )
-            )
+        raw_json_str = AIService._generate_content_with_fallback(
+            client=client,
+            contents=user_prompt,
+            system_instruction="Bạn là Trợ lý Kỹ thuật Salon Tóc giúp tóm tắt nhanh lịch sử khách cho thợ làm tóc.",
+            temperature=0.2,
+            response_mime_type="application/json"
+        )
 
         if raw_json_str:
             try:
                 cleaned = AIService._clean_json_output(raw_json_str)
                 data = json.loads(cleaned)
-                response = AISummaryResponse(
+                return AISummaryResponse(
                     customer_id=customer.id,
                     customer_name=customer.full_name,
                     summary=data.get("summary", ""),
@@ -519,14 +433,6 @@ Trả về JSON duy nhất:
                     technical_notes=data.get("technical_notes", []),
                     last_visit_date=last_visit
                 )
-                processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-                AIService._log_ai_request(
-                    db=db, request_type="summary", status="SUCCESS",
-                    model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
-                    prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
-                    user_id=current_user.id if current_user else None, customer_id=request.customer_id
-                )
-                return response
             except Exception:
                 pass
 
@@ -536,7 +442,7 @@ Trả về JSON duy nhất:
         if customer.notes:
             notes_list.append(customer.notes)
 
-        response = AISummaryResponse(
+        return AISummaryResponse(
             customer_id=customer.id,
             customer_name=customer.full_name,
             summary=f"Khách hàng đã thực hiện {len(histories)} lần dịch vụ tại salon (gần nhất: {last_visit}). Thường xuyên sử dụng: {', '.join(set(services_done[:2]))}.",
@@ -545,12 +451,161 @@ Trả về JSON duy nhất:
             technical_notes=notes_list[:3],
             last_visit_date=last_visit
         )
-        processing_time_ms = int((time.perf_counter() - start_time) * 1000)
-        AIService._log_ai_request(
-            db=db, request_type="summary", status="FALLBACK",
-            model=settings.GEMINI_MODEL, processing_time_ms=processing_time_ms,
-            prompt_details=request.model_dump_json(), response_details=response.model_dump_json(),
-            error_message="Gemini API failed or parse error",
-            user_id=current_user.id if current_user else None, customer_id=request.customer_id
+
+    @staticmethod
+    def chat_consultation(db: Session, request: AIChatRequest) -> AIChatResponse:
+        """
+        AI Stylist Chatbot Consultation:
+        - Consults customers on hairstyles, coloring, perm techniques, and treatments.
+        - Grounded in active services from DB catalog with strict anti-hallucination.
+        - Returns conversational stylist reply, matched recommended services, and quick prompts.
+        """
+        active_services = db.query(Service).filter(Service.is_active == True).all()
+        services_catalog = [
+            {
+                "id": s.id,
+                "name": s.name,
+                "category": s.category,
+                "price": s.price,
+                "duration_minutes": s.duration_minutes,
+                "description": s.description or ""
+            }
+            for s in active_services
+        ]
+        services_map = {s.id: s for s in active_services}
+
+        system_instruction = (
+            "Bạn là Chuyên gia Tư vấn Tạo mẫu Tóc AI Cao Cấp của THE MANH Salon (Master Stylist AI Advisor).\n"
+            "PHONG CÁCH TƯ VẤN: Lịch sự, chu đáo, tinh tế, dí dỏm tự nhiên, am hiểu sâu về phong cách và kỹ thuật tạo mẫu tóc.\n"
+            "QUY TẮC BẢO VỆ CHỐNG HALLUCINATION VÀ TƯ VẤN ĐÚNG TRỌNG TÂM:\n"
+            "1. Nếu khách hàng hỏi câu hỏi đời thường, chuyện phiếm, chào hỏi hoặc hỏi vui (ví dụ: ăn cơm, ăn uống, thời tiết, giải trí...), hãy trả lời một cách tự nhiên, thân thiện và dí dỏm bằng tiếng Việt đúng trọng tâm câu hỏi của khách. Tuyệt đối KHÔNG trả lời lạc đề sang uốn tóc hay phục hồi tóc nếu khách không hề hỏi. Sau đó có thể khéo léo mời khách tham khảo dịch vụ làm tóc nếu có nhu cầu.\n"
+            "2. CHỈ gợi ý các dịch vụ có trong 'DANH MỤC DỊCH VỤ SALON' bên dưới nếu thực sự liên quan đến câu hỏi. Nếu câu hỏi ngoài lề hoặc chưa có nhu cầu cụ thể, hãy để suggested_services là [].\n"
+            "3. Tuyệt đối KHÔNG tự sáng tác dịch vụ hoặc giá tiền ngoài danh mục.\n"
+            "4. Trả về DUY NHẤT một JSON hợp lệ theo cấu trúc:\n"
+            "{\n"
+            '  "reply": "Câu trả lời tư vấn chi tiết, thân thiện, trả lời đúng câu hỏi của khách...",\n'
+            '  "suggested_services": [\n'
+            '    {\n'
+            '      "service_id": 1,\n'
+            '      "reason": "Lý do ngắn gọn phù hợp với nhu cầu"\n'
+            '    }\n'
+            '  ],\n'
+            '  "quick_replies": ["Gợi ý câu hỏi tiếp theo 1", "Gợi ý câu hỏi tiếp theo 2"]\n'
+            "}"
         )
-        return response
+
+        history_lines = []
+        for msg in (request.history or [])[-6:]:
+            prefix = "Khách hàng" if msg.role == "user" else "Stylist AI"
+            history_lines.append(f"{prefix}: {msg.content}")
+
+        history_str = "\n".join(history_lines) if history_lines else "Chưa có lịch sử trước đó."
+
+        user_prompt = f"""
+DANH MỤC DỊCH VỤ SALON HIỆN CÓ:
+{json.dumps(services_catalog, ensure_ascii=False, indent=2)}
+
+LỊCH SỬ HỘI THOẠI GẦN ĐÂY:
+{history_str}
+
+CÂU HỎI MỚI CỦA KHÁCH HÀNG:
+Khách hàng ({request.gender or 'Khách'}): {request.message}
+
+Hãy phản hồi bằng tiếng Việt chu đáo, thẩm mỹ cao và gợi ý dịch vụ phù hợp nhất từ danh mục (nếu có).
+Trả về JSON duy nhất.
+"""
+
+        client = AIService._get_gemini_client(request.api_key)
+        raw_json_str = AIService._generate_content_with_fallback(
+            client=client,
+            contents=user_prompt,
+            system_instruction=system_instruction,
+            temperature=0.3,
+            response_mime_type="application/json"
+        )
+
+        if raw_json_str:
+            try:
+                cleaned = AIService._clean_json_output(raw_json_str)
+                data = json.loads(cleaned)
+                reply = data.get("reply", "")
+                suggested_raw = data.get("suggested_services", [])
+                quick_replies = data.get("quick_replies", [])
+
+                matched_items = []
+                for item in suggested_raw:
+                    sid = item.get("service_id")
+                    if sid in services_map:
+                        svc = services_map[sid]
+                        matched_items.append(RecommendedServiceItem(
+                            service_id=svc.id,
+                            service_name=svc.name,
+                            price=svc.price,
+                            duration_minutes=svc.duration_minutes,
+                            reason=item.get("reason", "Phù hợp với nhu cầu của bạn.")
+                        ))
+
+                if reply:
+                    return AIChatResponse(
+                        reply=reply,
+                        suggested_services=matched_items,
+                        quick_replies=quick_replies or ["Đặt lịch ngay", "Tư vấn thêm về màu nhuộm", "Chi phí làm trọn gói?"]
+                    )
+            except Exception as e:
+                print(f"[AIService] JSON parse error from Gemini response: {e}", flush=True)
+
+        # Intelligent Fallback Advisor (only used if Gemini API is unreachable)
+        msg_lower = request.message.lower()
+        matched_svcs = []
+        reply_lines = []
+        quick_replies = ["Đặt lịch tư vấn trực tiếp", "Xem chi tiết bảng giá", "Cách chăm sóc sau làm tóc"]
+
+        has_dye = bool(re.search(r'(?:\b|\s)(nhuộm|tẩy tóc|màu tóc|balayage|nâu tây|bạch kim|highlight)(?:\b|\s)', msg_lower))
+        has_perm = bool(re.search(r'(?:\b|\s)(uốn tóc|uốn xoăn|uốn lơi|uốn sóng|uốn phồng|làm xoăn|uốn setting)(?:\b|\s)', msg_lower))
+        has_repair = bool(re.search(r'(?:\b|\s)(phục hồi|hư tổn|chẻ ngọn|tóc khô|tóc xơ|hàn gắn|olaplex|keratin)(?:\b|\s)', msg_lower))
+        has_cut = bool(re.search(r'(?:\b|\s)(cắt tóc|tỉa tóc|cắt layer|tỉa layer|undercut|fade|tạo kiểu tóc)(?:\b|\s)', msg_lower))
+
+        if has_dye:
+            found = [s for s in active_services if "nhuộm" in s.name.lower() or "màu" in s.name.lower()]
+            if found:
+                matched_svcs.append(found[0])
+            reply_lines.append("Với màu nhuộm, salon luôn ưu tiên các dòng thuốc cao cấp (L'Oréal, Wella) bổ sung dưỡng chất để màu lên chuẩn sắc, bóng mượt và tôn sáng tone da của bạn.")
+
+        if has_perm:
+            found = [s for s in active_services if "uốn" in s.name.lower()]
+            if found:
+                matched_svcs.append(found[0])
+            reply_lines.append("Đối với kỹ thuật uốn, salon ứng dụng công nghệ uốn setting nhiệt độ thấp kết hợp trục uốn tạo sóng lơi tự nhiên, mềm mại và rất dễ sấy tạo kiểu tại nhà.")
+
+        if has_repair:
+            found = [s for s in active_services if "phục hồi" in s.name.lower() or "olaplex" in s.name.lower()]
+            if found:
+                matched_svcs.append(found[0])
+            reply_lines.append("Tóc khô xơ hư tổn cần được hàn gắn các liên kết lưu huỳnh bên trong sợi tóc trước khi tạo kiểu. Gói phục hồi Olaplex & Keratin chuyên sâu sẽ giúp tóc lấy lại độ đanh dai và bóng mượt vượt trội.")
+
+        if has_cut:
+            found = [s for s in active_services if "cắt" in s.name.lower()]
+            if found:
+                matched_svcs.append(found[0])
+            reply_lines.append("Về form tóc, dáng cắt layer tỉa tơ mềm mại hoặc form chuẩn salon sẽ giúp cân đối tỷ lệ khuôn mặt, tạo độ bay tự nhiên và giúp bạn trẻ trung, thanh thoát hơn.")
+
+        if not reply_lines:
+            reply_lines.append("Chào bạn! THE MANH Salon luôn sẵn lòng tư vấn cho bạn từ kiểu cắt phù hợp dáng mặt, màu nhuộm tôn da đến các liệu trình phục hồi chuyên sâu. Bạn hãy chia sẻ thêm về tình trạng tóc hiện tại hoặc phong cách bạn muốn hướng tới nhé!")
+
+        final_reply = " ".join(reply_lines)
+        service_items = [
+            RecommendedServiceItem(
+                service_id=s.id,
+                service_name=s.name,
+                price=s.price,
+                duration_minutes=s.duration_minutes,
+                reason="Dịch vụ được stylist đề xuất phù hợp tối ưu theo nhu cầu của bạn."
+            )
+            for s in matched_svcs[:2]
+        ]
+
+        return AIChatResponse(
+            reply=final_reply,
+            suggested_services=service_items,
+            quick_replies=quick_replies
+        )

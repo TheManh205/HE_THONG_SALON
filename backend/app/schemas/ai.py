@@ -48,3 +48,19 @@ class AISummaryResponse(BaseModel):
     frequent_stylist: Optional[str] = None
     technical_notes: List[str]
     last_visit_date: Optional[str] = None
+
+class ChatMessage(BaseModel):
+    role: str # "user" or "assistant"
+    content: str
+
+class AIChatRequest(BaseModel):
+    message: str
+    history: Optional[List[ChatMessage]] = []
+    customer_name: Optional[str] = None
+    gender: Optional[str] = "Nữ"
+    api_key: Optional[str] = None
+
+class AIChatResponse(BaseModel):
+    reply: str
+    suggested_services: List[RecommendedServiceItem] = []
+    quick_replies: List[str] = []

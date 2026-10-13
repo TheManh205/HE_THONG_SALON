@@ -130,6 +130,14 @@ class BookingService:
         exclude_appointment_id: Optional[int] = None
     ) -> OverlapCheckResponse:
         """Check whether requested time slot is valid and free for the stylist."""
+        import zoneinfo
+        now_ict = datetime.now(zoneinfo.ZoneInfo("Asia/Ho_Chi_Minh")).replace(tzinfo=None)
+        if start_time < now_ict:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Không thể đặt khung giờ trong quá khứ"
+            )
+
         hairdresser = db.query(Hairdresser).filter(
             Hairdresser.id == hairdresser_id,
             Hairdresser.is_active == True

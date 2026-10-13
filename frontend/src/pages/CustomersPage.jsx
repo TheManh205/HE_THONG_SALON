@@ -38,6 +38,7 @@ export const CustomersPage = () => {
   // Create / Edit modal
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [phoneError, setPhoneError] = useState('');
   const [formData, setFormData] = useState({
     full_name: '',
     phone: '',
@@ -93,6 +94,11 @@ export const CustomersPage = () => {
 
   const handleSaveCustomer = async (e) => {
     e.preventDefault();
+    if (!/^(0[3|5|7|8|9])+([0-9]{8})$/.test(formData.phone)) {
+      setPhoneError('Số điện thoại không hợp lệ (phải gồm 10 chữ số hợp lệ tại Việt Nam)');
+      return;
+    }
+    setPhoneError('');
     try {
       if (editingId) {
         await customerAPI.update(editingId, formData);
@@ -360,10 +366,19 @@ export const CustomersPage = () => {
               <input
                 type="tel"
                 required
+                maxLength={10}
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-salon-border text-xs text-slate-100"
+                onChange={(e) => {
+                  setFormData({ ...formData, phone: e.target.value });
+                  setPhoneError('');
+                }}
+                className={`w-full px-3 py-2 rounded-xl bg-slate-900 border text-xs text-slate-100 ${
+                  phoneError ? 'border-rose-500' : 'border-salon-border'
+                }`}
               />
+              {phoneError && (
+                <p className="text-rose-500 text-[10px] mt-1 italic">{phoneError}</p>
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-300 mb-1">Giới Tính</label>

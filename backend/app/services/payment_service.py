@@ -76,26 +76,29 @@ class PaymentService:
             new_payment.paid_at = datetime.now(timezone.utc)
             invoice.payment_status = PaymentStatus.PAID
             invoice.payment_method = new_payment.payment_method
-            appointment.status = AppointmentStatus.COMPLETED
 
-            # Create Service History
-            # Check if history already exists
-            existing_history = db.query(ServiceHistory).filter(ServiceHistory.appointment_id == appointment.id).first()
-            if not existing_history:
-                service_names_list = [s.service.name for s in appointment.appointment_services if s.service]
-                service_names_str = ", ".join(service_names_list) if service_names_list else "Dịch vụ salon"
-                
-                history_entry = ServiceHistory(
-                    customer_id=appointment.customer_id,
-                    hairdresser_id=appointment.hairdresser_id,
-                    appointment_id=appointment.id,
-                    service_names=service_names_str,
-                    formula_or_color_code=invoice.formula_or_color_code,
-                    notes=invoice.technician_notes or appointment.notes,
-                    cost=invoice.final_amount,
-                    completed_at=datetime.now(timezone.utc)
-                )
-                db.add(history_entry)
+            # If complete_appointment is False, do not mark as COMPLETED (keep in current state like CONFIRMED/IN_PROGRESS)
+            should_complete = (payment_data.complete_appointment is not False)
+            if should_complete:
+                appointment.status = AppointmentStatus.COMPLETED
+
+                # Create Service History
+                existing_history = db.query(ServiceHistory).filter(ServiceHistory.appointment_id == appointment.id).first()
+                if not existing_history:
+                    service_names_list = [s.service.name for s in appointment.appointment_services if s.service]
+                    service_names_str = ", ".join(service_names_list) if service_names_list else "Dịch vụ salon"
+                    
+                    history_entry = ServiceHistory(
+                        customer_id=appointment.customer_id,
+                        hairdresser_id=appointment.hairdresser_id,
+                        appointment_id=appointment.id,
+                        service_names=service_names_str,
+                        formula_or_color_code=invoice.formula_or_color_code,
+                        notes=invoice.technician_notes or appointment.notes,
+                        cost=invoice.final_amount,
+                        completed_at=datetime.now(timezone.utc)
+                    )
+                    db.add(history_entry)
         else:
             # FAILED or UNPAID payment attempt
             pass

@@ -9,7 +9,7 @@ import { Modal } from '../components/common/Modal';
 import {
   Calendar, Clock, Scissors, CheckCircle, XCircle,
   PlayCircle, Receipt, RotateCcw, Search, Plus,
-  RefreshCw, Phone
+  RefreshCw, Phone, Info
 } from 'lucide-react';
 
 export const AppointmentsPage = () => {
@@ -43,6 +43,7 @@ export const AppointmentsPage = () => {
   const [checkoutPaymentMethod, setCheckoutPaymentMethod] = useState('CASH');
   const [checkoutFormula, setCheckoutFormula] = useState('');
   const [checkoutNotes, setCheckoutNotes] = useState('');
+  const [checkoutCompleteAppointment, setCheckoutCompleteAppointment] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   // New booking modal
@@ -147,7 +148,15 @@ export const AppointmentsPage = () => {
         target_date: rescheduleDate,
         duration_minutes: totalDur,
       });
-      setRescheduleSlots(res.data);
+      let slots = res.data;
+      const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      if (rescheduleDate === todayStr) {
+        now.setMinutes(now.getMinutes() + 30);
+        const minTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        slots = slots.filter(slot => slot >= minTimeStr);
+      }
+      setRescheduleSlots(slots);
     } catch {
       setRescheduleSlots([]);
     } finally {
@@ -179,12 +188,13 @@ export const AppointmentsPage = () => {
   };
 
   // Checkout
-  const openCheckout = (app) => {
+  const openCheckout = (app, shouldComplete = false) => {
     setSelectedApp(app);
     setCheckoutDiscount(0);
     setCheckoutPaymentMethod('CASH');
     setCheckoutFormula('');
     setCheckoutNotes('');
+    setCheckoutCompleteAppointment(shouldComplete);
     setIsCheckoutOpen(true);
   };
 
@@ -207,10 +217,15 @@ export const AppointmentsPage = () => {
         invoice_id: invoice.id,
         amount: invoice.final_amount,
         payment_method: checkoutPaymentMethod,
-        payment_status: 'PAID'
+        payment_status: 'PAID',
+        complete_appointment: checkoutCompleteAppointment
       });
 
-      addToast('Thanh toán thành công! Hóa đơn đã được ghi nhận.', 'success');
+      if (checkoutCompleteAppointment) {
+        addToast('Thanh toán và hoàn thành dịch vụ thành công!', 'success');
+      } else {
+        addToast('Thanh toán trước thành công! Trạng thái ca làm vẫn được giữ để tiếp tục phục vụ.', 'success');
+      }
       setIsCheckoutOpen(false);
       fetchData();
     } catch (err) {
@@ -235,8 +250,18 @@ export const AppointmentsPage = () => {
           target_date: newDate,
           duration_minutes: totalDur,
         });
-        setNewSlots(res.data);
-        if (res.data.length > 0) setNewTime(res.data[0]);
+        
+        let slots = res.data;
+        const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        if (newDate === todayStr) {
+          now.setMinutes(now.getMinutes() + 30);
+          const minTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+          slots = slots.filter(slot => slot >= minTimeStr);
+        }
+        
+        setNewSlots(slots);
+        if (slots.length > 0) setNewTime(slots[0]);
       } catch {
         setNewSlots([]);
       } finally {
@@ -515,7 +540,15 @@ export const AppointmentsPage = () => {
 
                     {/* Status Badge */}
                     <td className="py-4 px-4 text-center">
-                      <AppointmentBadge status={app.status} />
+                      <div className="flex flex-col items-center gap-1">
+                        <AppointmentBadge status={app.status} />
+                        {app.is_paid && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                            <CheckCircle className="w-2.5 h-2.5" />
+                            Đã thanh toán
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     {/* Action buttons (Pending -> Confirmed -> In Progress -> Completed) */}
@@ -536,23 +569,51 @@ export const AppointmentsPage = () => {
                         {app.status === 'CONFIRMED' && (isAdmin || isReceptionist) && (
                           <button
                             onClick={() => handleUpdateStatus(app.id, 'IN_PROGRESS')}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-blue-600 text-white hover:bg-blue-500 transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-sm"
                           >
                             <PlayCircle className="w-3.5 h-3.5" />
                             Bắt Đầu Làm
                           </button>
                         )}
 
-                        {/* IN_PROGRESS or CONFIRMED -> CHECKOUT / COMPLETED */}
-                        {(app.status === 'CONFIRMED' || app.status === 'IN_PROGRESS') &&
-                          !app.has_invoice &&
+                        {/* CONFIRMED -> THANH TOÁN TRƯỚC (khi chưa thanh toán) */}
+                        {app.status === 'CONFIRMED' &&
+                          !app.is_paid &&
                           (isAdmin || isReceptionist) && (
                             <button
-                              onClick={() => openCheckout(app)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-emerald-600 text-white hover:bg-emerald-500 transition-colors"
+                              onClick={() => openCheckout(app, false)}
+                              title="Khách thanh toán trước khi bắt đầu làm tóc"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-emerald-600/90 text-white hover:bg-emerald-500 transition-colors shadow-sm"
+                            >
+                              <Receipt className="w-3.5 h-3.5" />
+                              Thanh Toán Trước
+                            </button>
+                          )}
+
+                        {/* IN_PROGRESS -> NẾU CHƯA THANH TOÁN: Thanh Toán & Xong */}
+                        {app.status === 'IN_PROGRESS' &&
+                          !app.is_paid &&
+                          (isAdmin || isReceptionist) && (
+                            <button
+                              onClick={() => openCheckout(app, true)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-emerald-600 text-white hover:bg-emerald-500 transition-colors shadow-sm"
                             >
                               <Receipt className="w-3.5 h-3.5" />
                               Thanh Toán & Xong
+                            </button>
+                          )}
+
+                        {/* IN_PROGRESS -> NẾU ĐÃ THANH TOÁN RỒI: Hoàn Thành */}
+                        {app.status === 'IN_PROGRESS' &&
+                          app.is_paid &&
+                          (isAdmin || isReceptionist) && (
+                            <button
+                              onClick={() => handleUpdateStatus(app.id, 'COMPLETED')}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-emerald-600 text-white hover:bg-emerald-500 transition-colors shadow-sm"
+                              title="Làm xong dịch vụ, hoàn thành ca làm"
+                            >
+                              <CheckCircle className="w-3.5 h-3.5" />
+                              Hoàn Thành
                             </button>
                           )}
 
@@ -670,9 +731,16 @@ export const AppointmentsPage = () => {
       <Modal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
-        title="Thanh Toán & Xuất Hóa Đơn"
+        title={checkoutCompleteAppointment ? "Thanh Toán & Hoàn Tất Dịch Vụ" : "Thanh Toán Trước (Thu Tiền Trước)"}
       >
         <form onSubmit={handleCheckout} className="space-y-4 text-sm">
+          {!checkoutCompleteAppointment && (
+            <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs flex items-center gap-2.5">
+              <Info className="w-4 h-4 shrink-0 text-blue-400" />
+              <span>Khách thanh toán trước khi làm tóc. Trạng thái lịch hẹn vẫn được giữ nguyên là <strong>Đã xác nhận</strong> và hiển thị nhãn <strong>Đã thanh toán</strong> để Stylist tiếp tục phục vụ.</span>
+            </div>
+          )}
+
           <div className="p-4 bg-slate-900 rounded-xl border border-slate-700 space-y-2">
             <div className="flex justify-between text-slate-300">
               <span>Khách hàng:</span>
@@ -749,7 +817,11 @@ export const AppointmentsPage = () => {
               disabled={checkoutLoading}
               className="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-black hover:bg-amber-400 shadow-glow-gold disabled:opacity-50"
             >
-              {checkoutLoading ? 'Đang xử lý...' : 'Xác Nhận Thanh Toán'}
+              {checkoutLoading
+                ? 'Đang xử lý...'
+                : checkoutCompleteAppointment
+                ? 'Xác Nhận & Hoàn Thành'
+                : 'Xác Nhận Thu Tiền Trước'}
             </button>
           </div>
         </form>

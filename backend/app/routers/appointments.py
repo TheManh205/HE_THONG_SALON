@@ -1,6 +1,6 @@
 from app.models.user import RoleEnum
 from typing import List, Optional
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -8,7 +8,8 @@ from sqlalchemy import or_
 from app.core.database import get_db
 from app.models.appointment import Appointment, AppointmentStatus
 from app.models.customer import Customer
-from app.models.invoice import Invoice
+from app.models.invoice import Invoice, PaymentStatus
+from app.models.history import ServiceHistory
 from app.models.user import User
 from app.schemas.appointment import (
     AppointmentCreatePublic,
@@ -22,6 +23,12 @@ from app.schemas.appointment import (
 from app.services.booking_service import BookingService
 from app.services.auth_service import require_roles, get_current_user
 from app.services.audit_service import AuditService
+
+def to_appointment_response(app: Appointment) -> AppointmentResponse:
+    resp = AppointmentResponse.model_validate(app)
+    resp.has_invoice = (app.invoice is not None)
+    resp.is_paid = bool(app.invoice and app.invoice.payment_status == PaymentStatus.PAID)
+    return resp
 
 router = APIRouter(prefix="/appointments", tags=["Appointment & Booking Management"])
 
@@ -40,12 +47,7 @@ def get_my_bookings(
         Appointment.customer_id == customer.id
     ).order_by(Appointment.appointment_date.desc()).all()
 
-    results = []
-    for app in appointments:
-        resp = AppointmentResponse.model_validate(app)
-        resp.has_invoice = (app.invoice is not None)
-        results.append(resp)
-    return results
+    return [to_appointment_response(app) for app in appointments]
 
 
 @router.post("/public-cancel/{appointment_id}", response_model=AppointmentResponse)
@@ -66,9 +68,7 @@ def public_cancel_appointment(
     app.status = AppointmentStatus.CANCELLED
     db.commit()
     db.refresh(app)
-    resp = AppointmentResponse.model_validate(app)
-    resp.has_invoice = (app.invoice is not None)
-    return resp
+    return to_appointment_response(app)
 
 
 @router.post("/check-overlap", response_model=OverlapCheckResponse)
@@ -112,10 +112,7 @@ def public_book_appointment(
 ):
     """Public booking endpoint for guest customers without needing to log in."""
     app = BookingService.create_public_booking(db, booking_data)
-    # Check invoice presence
-    resp = AppointmentResponse.model_validate(app)
-    resp.has_invoice = False
-    return resp
+    return to_appointment_response(app)
 
 @router.post("/", response_model=AppointmentResponse, status_code=status.HTTP_201_CREATED)
 def admin_create_appointment(
@@ -125,9 +122,7 @@ def admin_create_appointment(
 ):
     """Create appointment internally by staff."""
     app = BookingService.create_admin_booking(db, booking_data, user_id=current_user.id)
-    resp = AppointmentResponse.model_validate(app)
-    resp.has_invoice = False
-    return resp
+    return to_appointment_response(app)
 
 @router.get("/", response_model=List[AppointmentResponse])
 def get_appointments(
@@ -171,15 +166,7 @@ def get_appointments(
             pass
 
     appointments = query.order_by(Appointment.appointment_date.desc()).all()
-
-    # Enhance with invoice boolean
-    results = []
-    for app in appointments:
-        resp = AppointmentResponse.model_validate(app)
-        resp.has_invoice = (app.invoice is not None)
-        results.append(resp)
-
-    return results
+    return [to_appointment_response(app) for app in appointments]
 
 @router.get("/{appointment_id}", response_model=AppointmentResponse)
 def get_appointment(
@@ -196,9 +183,7 @@ def get_appointment(
         if current_user.hairdresser and app.hairdresser_id != current_user.hairdresser.id:
             raise HTTPException(status_code=403, detail="Bạn chỉ có quyền xem lịch hẹn của mình")
 
-    resp = AppointmentResponse.model_validate(app)
-    resp.has_invoice = (app.invoice is not None)
-    return resp
+    return to_appointment_response(app)
 
 @router.put("/{appointment_id}/status", response_model=AppointmentResponse)
 def update_appointment_status(
@@ -214,6 +199,30 @@ def update_appointment_status(
 
     old_status = app.status
     app.status = status_update.status
+
+    # If transitioning to COMPLETED, ensure ServiceHistory is created if not exists
+    if status_update.status == AppointmentStatus.COMPLETED:
+        existing_history = db.query(ServiceHistory).filter(ServiceHistory.appointment_id == app.id).first()
+        if not existing_history:
+            service_names_list = [s.service.name for s in app.appointment_services if s.service]
+            service_names_str = ", ".join(service_names_list) if service_names_list else "Dịch vụ salon"
+            invoice = app.invoice
+            formula = invoice.formula_or_color_code if invoice else None
+            notes = (invoice.technician_notes if invoice else None) or app.notes
+            cost = invoice.final_amount if invoice else app.total_price
+
+            history_entry = ServiceHistory(
+                customer_id=app.customer_id,
+                hairdresser_id=app.hairdresser_id,
+                appointment_id=app.id,
+                service_names=service_names_str,
+                formula_or_color_code=formula,
+                notes=notes,
+                cost=cost,
+                completed_at=datetime.now(timezone.utc)
+            )
+            db.add(history_entry)
+
     db.commit()
     db.refresh(app)
 
@@ -226,9 +235,7 @@ def update_appointment_status(
         details=f"Cập nhật trạng thái lịch hẹn #{app.id} từ {old_status.value} -> {app.status.value}"
     )
 
-    resp = AppointmentResponse.model_validate(app)
-    resp.has_invoice = (app.invoice is not None)
-    return resp
+    return to_appointment_response(app)
 
 @router.put("/{appointment_id}/reschedule", response_model=AppointmentResponse)
 def reschedule_appointment(
@@ -239,9 +246,7 @@ def reschedule_appointment(
 ):
     """Reschedule date/time or stylist for an appointment."""
     app = BookingService.reschedule_appointment(db, appointment_id, reschedule_data, user_id=current_user.id)
-    resp = AppointmentResponse.model_validate(app)
-    resp.has_invoice = (app.invoice is not None)
-    return resp
+    return to_appointment_response(app)
 
 @router.post("/{appointment_id}/cancel", response_model=AppointmentResponse)
 def cancel_appointment(
@@ -251,6 +256,4 @@ def cancel_appointment(
 ):
     """Cancel an appointment."""
     app = BookingService.cancel_appointment(db, appointment_id, user_id=current_user.id)
-    resp = AppointmentResponse.model_validate(app)
-    resp.has_invoice = (app.invoice is not None)
-    return resp
+    return to_appointment_response(app)

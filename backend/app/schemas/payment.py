@@ -9,6 +9,7 @@ class PaymentCreate(BaseModel):
     payment_method: PaymentMethod
     transaction_code: Optional[str] = None
     payment_status: Optional[PaymentStatus] = PaymentStatus.PAID
+    complete_appointment: Optional[bool] = None
 
 class PaymentResponse(BaseModel):
     id: int

@@ -7,6 +7,7 @@ class Service(Base):
     __tablename__ = "services"
 
     id = Column(Integer, primary_key=True, index=True)
+    service_code = Column(String(20), unique=True, nullable=True, index=True)
     name = Column(String(100), unique=True, nullable=False, index=True)
     description = Column(Text, nullable=True)
     duration_minutes = Column(Integer, nullable=False, default=45) # in minutes
@@ -20,7 +21,7 @@ class Service(Base):
     appointment_services = relationship("AppointmentService", back_populates="service", cascade="all, delete-orphan")
 
 class AppointmentService(Base):
-    __tablename__ = "appointment_services"
+    __tablename__ = "invoice_details"
 
     id = Column(Integer, primary_key=True, index=True)
     appointment_id = Column(Integer, ForeignKey("appointments.id"), nullable=False, index=True)

@@ -31,7 +31,7 @@ export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
             </div>
             <div>
               <span className="block text-lg font-black tracking-wider text-white font-serif-salon">
-                THEMANH
+                THE MANH
               </span>
               <span className="block text-[10px] font-bold uppercase tracking-widest text-amber-400">
                 Salon Haute Coiffure

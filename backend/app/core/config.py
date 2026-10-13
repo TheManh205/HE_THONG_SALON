@@ -5,7 +5,7 @@ import json
 import os
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Hệ Thống Salon Tóc AI"
+    PROJECT_NAME: str = "Hệ Thống THE MANH Salon Tóc AI"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     API_V1_STR: str = "/api/v1"
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # Gemini AI
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_MODEL: str = "gemini-flash-lite-latest"
     AI_TEMPERATURE: float = 0.2
 
     # CORS

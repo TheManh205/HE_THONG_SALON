@@ -69,13 +69,13 @@ def create_hairdresser(
             )
             db.add(s)
     else:
-        # Default Mon-Sun schedule (8:30 to 20:00, off on Monday)
+        # Default Mon-Sun schedule (07:00 to 23:00, off on Monday)
         for dow in range(7):
             s = Schedule(
                 hairdresser_id=hairdresser.id,
                 day_of_week=dow,
-                start_time=time(8, 30),
-                end_time=time(20, 0),
+                start_time=time(7, 0),
+                end_time=time(23, 0),
                 is_day_off=(dow == 0) # Day off on Monday
             )
             db.add(s)
@@ -183,3 +183,18 @@ def upsert_daily_schedule(
         "end_time": daily.end_time,
         "is_day_off": daily.is_day_off
     })
+
+@router.delete("/{hairdresser_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_hairdresser(
+    hairdresser_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+):
+    """Soft delete a hairdresser by setting is_active to False."""
+    hairdresser = db.query(Hairdresser).filter(Hairdresser.id == hairdresser_id).first()
+    if not hairdresser:
+        raise HTTPException(status_code=404, detail="Không tìm thấy thợ làm tóc")
+    
+    hairdresser.is_active = False
+    db.commit()
+    return None

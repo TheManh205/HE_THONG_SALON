@@ -14,7 +14,8 @@ import {
   CheckCircle,
   XCircle,
   ToggleLeft,
-  ToggleRight
+  ToggleRight,
+  Trash2
 } from 'lucide-react';
 import MonthlyScheduleView from '../components/MonthlyScheduleView';
 
@@ -78,15 +79,15 @@ export const StylistsPage = () => {
       if (found) {
         currentSchedules.push({
           day_of_week: dow,
-          start_time: typeof found.start_time === 'string' ? found.start_time.slice(0, 5) : '08:30',
-          end_time: typeof found.end_time === 'string' ? found.end_time.slice(0, 5) : '20:00',
+          start_time: typeof found.start_time === 'string' ? found.start_time.slice(0, 5) : '07:00',
+          end_time: typeof found.end_time === 'string' ? found.end_time.slice(0, 5) : '23:00',
           is_day_off: found.is_day_off,
         });
       } else {
         currentSchedules.push({
           day_of_week: dow,
-          start_time: '08:30',
-          end_time: '20:00',
+          start_time: '07:00',
+          end_time: '23:00',
           is_day_off: dow === 0,
         });
       }
@@ -162,6 +163,17 @@ export const StylistsPage = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Bạn có chắc chắn muốn ngừng hoạt động thợ làm tóc này?')) return;
+    try {
+      await hairdresserAPI.delete(id);
+      addToast('Đã dừng hoạt động thợ làm tóc', 'success');
+      fetchStylists();
+    } catch (err) {
+      addToast('Không thể xóa thợ làm tóc', 'error');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -209,10 +221,10 @@ export const StylistsPage = () => {
                     <img
                       src={s.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300'}
                       alt={s.full_name}
-                      className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-salon-primary/50"
+                      className={`w-24 h-24 rounded-full mx-auto object-cover border-2 border-salon-primary/50 ${!s.is_active ? 'opacity-50 grayscale' : ''}`}
                     />
                     <div>
-                      <h3 className="font-bold text-lg text-slate-100">{s.full_name}</h3>
+                      <h3 className={`font-bold text-lg text-slate-100 ${!s.is_active ? 'line-through text-slate-400' : ''}`}>{s.full_name}</h3>
                       <div className="flex items-center justify-center gap-1 text-amber-400 text-xs font-semibold mt-1">
                         <Star className="w-3.5 h-3.5 fill-amber-400" />
                         <span>{s.rating?.toFixed(1) || '5.0'} / 5.0</span>
@@ -222,7 +234,7 @@ export const StylistsPage = () => {
                     </div>
 
                     <p className="text-xs text-salon-muted line-clamp-3 leading-relaxed text-left">
-                      {s.bio || 'Chuyên gia tạo mẫu tóc tại Lumière Salon.'}
+                      {s.bio || 'Chuyên gia tạo mẫu tóc tại THE MANH Salon.'}
                     </p>
 
                     {/* Weekly schedule preview badge */}
@@ -265,6 +277,12 @@ export const StylistsPage = () => {
                           className="p-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:text-white border border-salon-border"
                         >
                           <Edit className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(s.id)}
+                          className="p-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:text-rose-400 hover:bg-rose-500/10 border border-salon-border"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </>
                     ) : (

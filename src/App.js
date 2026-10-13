@@ -18,7 +18,7 @@ const styles = [
   { name: 'Mặt dài', tone: 'Mái ngắn, tầng xoè ngang giúp cân đối đường nét.' },
 ];
 const hours = [
-  ['Thứ 2', '08:30', '19:00'], ['Thứ 3', '08:30', '19:00'], ['Thứ 4', '08:30', '19:00'], ['Thứ 5', '08:30', '19:00'], ['Thứ 6', '08:30', '19:00'], ['Thứ 7', '09:00', '18:00'], ['Chủ Nhật', '09:00', '17:00'],
+  ['Thứ 2', '07:00', '23:00'], ['Thứ 3', '07:00', '23:00'], ['Thứ 4', '07:00', '23:00'], ['Thứ 5', '07:00', '23:00'], ['Thứ 6', '07:00', '23:00'], ['Thứ 7', '07:00', '23:00'], ['Chủ Nhật', '07:00', '23:00'],
 ];
 const blogPosts = [
   { title: '5 mẹo giữ màu nhuộm bền đẹp sau 4 tuần', text: 'Khám phá cách bảo dưỡng tóc nhuộm đúng cách để giữ màu sắc tươi sáng và không bị khô xơ.', image: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=900&q=80' },

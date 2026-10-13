@@ -147,3 +147,272 @@
 .btn-secondary:hover {
   background-color: #475569;
 }
+
+/* ==========================================================================
+   LIGHT MODE THEME SYSTEM
+   Tailored luxury warm-cream / gold / white aesthetic
+   ========================================================================== */
+html.light,
+html.light body,
+html.light #root {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6 {
+  color: #0f172a;
+}
+
+html.light p,
+html.light span,
+html.light label {
+  color: inherit;
+}
+
+/* Scrollbar in Light Mode */
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Backgrounds in Light Mode */
+html.light .bg-slate-950 {
+  background-color: #ffffff !important;
+}
+html.light .bg-slate-900 {
+  background-color: #f8fafc !important;
+}
+html.light .bg-slate-850 {
+  background-color: #f1f5f9 !important;
+}
+html.light .bg-slate-800 {
+  background-color: #ffffff !important;
+}
+html.light .bg-slate-900\/95,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/50 {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+}
+html.light .bg-slate-800\/90,
+html.light .bg-slate-800\/80,
+html.light .bg-slate-800\/70,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/50 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Borders in Light Mode */
+html.light .border-slate-800,
+html.light .border-slate-700,
+html.light .border-slate-600,
+html.light .border-slate-800\/80,
+html.light .border-slate-700\/80,
+html.light .border-slate-800\/50,
+html.light .border-slate-700\/50,
+html.light .border-slate-800\/40,
+html.light .border-slate-800\/20 {
+  border-color: #e2e8f0 !important;
+}
+html.light .divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+/* Text in Light Mode */
+html.light .text-slate-100,
+html.light .text-slate-200 {
+  color: #0f172a !important;
+}
+html.light .text-white:not(.keep-white):not([class*="bg-amber"]):not([class*="btn-"]):not([class*="badge-"]) {
+  color: #0f172a;
+}
+html.light .text-slate-300,
+html.light .text-slate-400 {
+  color: #475569 !important;
+}
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+html.light .text-amber-300,
+html.light .text-amber-400 {
+  color: #b45309 !important;
+}
+html.light .text-amber-200 {
+  color: #92400e !important;
+}
+
+/* Explicit dark containers retain white text */
+html.light [class*="bg-[#0f1724]"],
+html.light [class*="from-[#0f1724]"] {
+  color: #ffffff !important;
+}
+html.light [class*="bg-[#0f1724]"] h1,
+html.light [class*="from-[#0f1724]"] h1 {
+  color: #ffffff !important;
+}
+html.light [class*="bg-[#0f1724]"] p,
+html.light [class*="from-[#0f1724]"] p {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Hero Banner in Light Mode */
+html.light .hero-banner {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 40%, #ffffff 100%) !important;
+  border-color: #fde68a !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.12) !important;
+}
+html.light .hero-banner h1 {
+  color: #0f172a !important;
+}
+html.light .hero-banner p {
+  color: #475569 !important;
+}
+html.light .hero-banner .hero-badge {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+  color: #92400e !important;
+}
+html.light .hero-banner .hero-btn-secondary {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Cards & Modals */
+html.light .card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+  color: #0f172a;
+}
+
+/* Inputs & Form Controls */
+html.light .input-base,
+html.light input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+html.light select,
+html.light textarea {
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+html.light .input-base:focus,
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+html.light .input-base::placeholder,
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* Buttons in Light Mode */
+html.light .btn-secondary {
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+html.light .btn-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+/* Table styling in Light Mode */
+html.light table thead {
+  background-color: #f1f5f9 !important;
+}
+html.light table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Toast Notifications in Light Mode */
+html.light .toast-item {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.2) !important;
+}
+html.light .toast-item .toast-text {
+  color: #0f172a !important;
+}
+html.light .toast-item button {
+  color: #64748b !important;
+}
+html.light .toast-item button:hover {
+  color: #0f172a !important;
+}
+
+/* Stepper Component in Light Mode */
+html.light .stepper-track {
+  background-color: #e2e8f0 !important;
+}
+html.light .stepper-step-inactive {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+html.light .stepper-step-active {
+  background-color: #f59e0b !important;
+  color: #020617 !important;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.45) !important;
+}
+html.light .stepper-label-inactive {
+  color: #64748b !important;
+}
+html.light .stepper-label-active {
+  color: #b45309 !important;
+}
+html.light .stepper-label-done {
+  color: #0f172a !important;
+}
+
+/* AI Chatbox Header (Maintains luxury dark gold aesthetic with bright crisp text) */
+.chatbox-header,
+html.light .chatbox-header {
+  background: linear-gradient(135deg, #090d16 0%, #111827 50%, #090d16 100%) !important;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+html.light .chatbox-header h3,
+.chatbox-header h3 {
+  color: #ffffff !important;
+}
+
+html.light .chatbox-header p,
+.chatbox-header p {
+  color: #fef08a !important;
+}
+
+html.light .chatbox-header button,
+.chatbox-header button,
+html.light .chatbox-header-btn,
+.chatbox-header-btn {
+  color: #cbd5e1 !important;
+}
+
+html.light .chatbox-header button:hover,
+.chatbox-header button:hover,
+html.light .chatbox-header-btn:hover,
+.chatbox-header-btn:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}

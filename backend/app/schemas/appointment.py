@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 from app.models.appointment import AppointmentStatus
 from app.schemas.customer import CustomerResponse
 from app.schemas.hairdresser import HairdresserResponse
@@ -13,6 +13,15 @@ class AppointmentServiceItem(BaseModel):
 class AppointmentCreatePublic(BaseModel):
     customer_name: str
     customer_phone: str
+    
+    @field_validator('customer_phone')
+    @classmethod
+    def validate_phone(cls, v: str) -> str:
+        import re
+        if not re.match(r"^(0[3|5|7|8|9])+([0-9]{8})$", v):
+            raise ValueError("Số điện thoại không hợp lệ (phải gồm 10 chữ số hợp lệ tại Việt Nam)")
+        return v
+        
     customer_email: Optional[str] = None
     customer_gender: Optional[str] = "Female"
     hairdresser_id: int
@@ -60,12 +69,12 @@ class AppointmentServiceResponse(BaseModel):
 class AppointmentResponse(BaseModel):
     id: int
     customer_id: int
-    hairdresser_id: int
+    hairdresser_id: Optional[int] = None
     booking_code: Optional[str] = None
     appointment_date: datetime
     end_time: datetime
     status: AppointmentStatus
-    total_price: float
+    total_price: Optional[float] = 0.0
     notes: Optional[str] = None
     created_at: datetime
     updated_at: datetime
@@ -73,4 +82,5 @@ class AppointmentResponse(BaseModel):
     hairdresser: Optional[HairdresserResponse] = None
     appointment_services: List[AppointmentServiceResponse] = []
     has_invoice: Optional[bool] = False
+    is_paid: Optional[bool] = False
     model_config = ConfigDict(from_attributes=True)

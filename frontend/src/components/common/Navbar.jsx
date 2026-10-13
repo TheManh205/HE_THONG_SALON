@@ -5,6 +5,7 @@ import { RoleBadge } from './Badge';
 import {
   ExternalLink, LogOut, User, ShieldCheck, Menu
 } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 export const Navbar = ({ onMenuClick }) => {
   const { user, isAuthenticated, logout, role } = useAuth();
@@ -45,6 +46,9 @@ export const Navbar = ({ onMenuClick }) => {
           <ExternalLink className="h-3.5 w-3.5" />
           <span>Đặt Lịch Khách</span>
         </Link>
+
+        {/* Theme Dark/Light Toggle */}
+        <ThemeToggle />
 
         {isAuthenticated ? (
           <>

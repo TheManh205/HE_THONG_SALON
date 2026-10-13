@@ -30,6 +30,7 @@ api.interceptors.response.use(
       if (!window.location.pathname.startsWith('/booking') && !window.location.pathname.startsWith('/login')) {
         localStorage.removeItem('salon_token');
         localStorage.removeItem('salon_user');
+        localStorage.setItem('auth_error', 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
         window.location.href = '/login';
       }
     }

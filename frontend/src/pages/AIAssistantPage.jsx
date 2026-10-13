@@ -78,7 +78,11 @@ export const AIAssistantPage = () => {
         budget_max: advisorBudget ? parseFloat(advisorBudget) : null
       });
       setAdvisorResult(res.data);
-      addToast('AI Gemini đã phân tích và tạo combo đề xuất thành công!', 'success');
+      if (res.data.is_fallback) {
+        addToast('Hệ thống AI tạm thời gián đoạn. Đang hiển thị kết quả tư vấn mặc định!', 'warning');
+      } else {
+        addToast('AI Gemini đã phân tích và tạo combo đề xuất thành công!', 'success');
+      }
     } catch (err) {
       addToast('Lỗi khi gọi AI Advisor', 'error');
     } finally {

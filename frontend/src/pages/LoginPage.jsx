@@ -13,6 +13,14 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  React.useEffect(() => {
+    const errorMsg = localStorage.getItem('auth_error');
+    if (errorMsg) {
+      addToast(errorMsg, 'error');
+      localStorage.removeItem('auth_error');
+    }
+  }, [addToast]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
@@ -45,7 +53,7 @@ export const LoginPage = () => {
             <Scissors className="h-8 w-8 rotate-45" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-wider text-white font-serif-salon">
-            THEMANH SALON
+            THE MANH SALON
           </h1>
           <p className="text-sm text-slate-300 mt-1 font-medium">
             Hệ thống quản lý & điều phối salon tích hợp AI

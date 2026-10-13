@@ -81,8 +81,8 @@ export const MonthlyScheduleView = ({ initialDate = new Date() }) => {
         const present = !!selectedDayData[h.id];
         const payload = {
           day_of_week: 0,
-          start_time: '08:30:00',
-          end_time: '20:00:00',
+          start_time: '07:00:00',
+          end_time: '23:00:00',
           is_day_off: !present,
           schedule_date: scheduleDate
         };

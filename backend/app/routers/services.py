@@ -87,3 +87,19 @@ def delete_service(
     service.is_active = False
     db.commit()
     return None
+
+@router.patch("/{service_id}/restore", response_model=ServiceResponse)
+def restore_service(
+    service_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles([RoleEnum.ADMIN]))
+):
+    """Restore a soft-deleted service."""
+    service = db.query(Service).filter(Service.id == service_id).first()
+    if not service:
+        raise HTTPException(status_code=404, detail="Không tìm thấy dịch vụ")
+    
+    service.is_active = True
+    db.commit()
+    db.refresh(service)
+    return service

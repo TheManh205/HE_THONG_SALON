@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: salon_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/.env:/app/.env
+      # Mount the sqlite database to persist data between container restarts
+      - ./backend/salon.db:/app/salon.db
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=sqlite:///./salon.db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: salon_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend

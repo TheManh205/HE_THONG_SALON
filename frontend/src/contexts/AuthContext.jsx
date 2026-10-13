@@ -11,6 +11,22 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('salon_token'));
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const storedToken = localStorage.getItem('salon_token');
+      if (storedToken) {
+        try {
+          const response = await authAPI.getMe();
+          setUser(response.data);
+          localStorage.setItem('salon_user', JSON.stringify(response.data));
+        } catch (error) {
+          logout();
+        }
+      }
+    };
+    checkAuth();
+  }, []);
+
   const login = async (username, password) => {
     setLoading(true);
     try {

@@ -11,6 +11,7 @@ export const serviceAPI = {
   create: (data) => api.post('/services/', data),
   update: (id, data) => api.put(`/services/${id}`, data),
   delete: (id) => api.delete(`/services/${id}`),
+  restore: (id) => api.patch(`/services/${id}/restore`),
 };
 
 export const hairdresserAPI = {
@@ -20,6 +21,7 @@ export const hairdresserAPI = {
   update: (id, data) => api.put(`/hairdressers/${id}`, data),
   updateSchedules: (id, schedules) => api.put(`/hairdressers/${id}/schedules`, schedules),
   upsertDailySchedule: (id, body) => api.put(`/hairdressers/${id}/daily-schedule`, body),
+  delete: (id) => api.delete(`/hairdressers/${id}`),
 };
 
 export const appointmentAPI = {
@@ -68,7 +70,8 @@ export const analyticsAPI = {
 };
 
 export const aiAPI = {
-  getRecommendations: (data) => api.post('/ai/recommend', data),
-  generateCareMessage: (data) => api.post('/ai/generate-care-message', data),
+  chat: (data) => api.post('/ai/chat', data),
+  getRecommendations: (data) => api.post('/ai/consult', data),
+  generateCareMessage: (data) => api.post('/ai/generate-reminder', data),
   summarizeHistory: (customerId) => api.post('/ai/summarize-history', { customer_id: customerId }),
 };

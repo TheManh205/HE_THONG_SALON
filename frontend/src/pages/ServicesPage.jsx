@@ -11,7 +11,8 @@ import {
   Trash2,
   DollarSign,
   Search,
-  Tag
+  Tag,
+  RefreshCw
 } from 'lucide-react';
 
 export const ServicesPage = () => {
@@ -116,6 +117,16 @@ export const ServicesPage = () => {
     }
   };
 
+  const handleRestore = async (id) => {
+    try {
+      await serviceAPI.restore(id);
+      addToast('Khôi phục dịch vụ thành công', 'success');
+      fetchServices();
+    } catch (err) {
+      addToast('Không thể khôi phục dịch vụ', 'error');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -189,18 +200,35 @@ export const ServicesPage = () => {
                   </span>
                   {isAdmin && (
                     <div className="flex items-center gap-1">
+                      {!s.is_active && (
+                        <span className="px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[10px] font-bold uppercase mr-2">
+                          Đã ngưng
+                        </span>
+                      )}
                       <button
+                        title="Sửa"
                         onClick={() => openEditModal(s)}
                         className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
-                      <button
-                        onClick={() => handleDelete(s.id)}
-                        className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-rose-500/10"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      {s.is_active ? (
+                        <button
+                          title="Ngừng cung cấp"
+                          onClick={() => handleDelete(s.id)}
+                          className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-rose-500/10"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      ) : (
+                        <button
+                          title="Khôi phục"
+                          onClick={() => handleRestore(s.id)}
+                          className="p-1 rounded text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

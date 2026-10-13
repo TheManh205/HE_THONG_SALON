@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, synonym
 from app.core.database import Base
 from enum import Enum
 
@@ -23,13 +23,16 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, nullable=False, index=True)
     email = Column(String(100), unique=True, nullable=False, index=True)
-    hashed_password = Column(String(255), nullable=False)
+    password_hash = Column(String(255), nullable=False)
     full_name = Column(String(100), nullable=False)
     phone = Column(String(20), nullable=True)
     is_active = Column(Boolean, default=True)
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Alias synonym so code referencing hashed_password works seamlessly
+    hashed_password = synonym("password_hash")
 
     role = relationship("Role", back_populates="users")
     hairdresser = relationship("Hairdresser", back_populates="user", uselist=False)

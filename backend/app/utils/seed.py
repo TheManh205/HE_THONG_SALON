@@ -39,7 +39,7 @@ def seed_database():
             {
                 "username": "admin",
                 "email": "admin@salonluxury.vn",
-                "hashed_password": get_password_hash("admin123"),
+                "password_hash": get_password_hash("admin123"),
                 "full_name": "Nguyễn Hoàng Minh (Quản lý)",
                 "phone": "0901234567",
                 "role_id": roles_map["admin"].id,
@@ -48,7 +48,7 @@ def seed_database():
             {
                 "username": "letan",
                 "email": "receptionist@salonluxury.vn",
-                "hashed_password": get_password_hash("letan123"),
+                "password_hash": get_password_hash("letan123"),
                 "full_name": "Trần Thu Hà (Lễ tân)",
                 "phone": "0912345678",
                 "role_id": roles_map["receptionist"].id,
@@ -57,7 +57,7 @@ def seed_database():
             {
                 "username": "stylist_nam",
                 "email": "nam.stylist@salonluxury.vn",
-                "hashed_password": get_password_hash("stylist123"),
+                "password_hash": get_password_hash("stylist123"),
                 "full_name": "Lê Tuấn Nam (Master Stylist)",
                 "phone": "0923456789",
                 "role_id": roles_map["hairdresser"].id,
@@ -66,7 +66,7 @@ def seed_database():
             {
                 "username": "stylist_linh",
                 "email": "linh.stylist@salonluxury.vn",
-                "hashed_password": get_password_hash("stylist123"),
+                "password_hash": get_password_hash("stylist123"),
                 "full_name": "Phạm Mai Linh (Color Expert)",
                 "phone": "0934567890",
                 "role_id": roles_map["hairdresser"].id,
@@ -75,7 +75,7 @@ def seed_database():
             {
                 "username": "stylist_an",
                 "email": "an.stylist@salonluxury.vn",
-                "hashed_password": get_password_hash("stylist123"),
+                "password_hash": get_password_hash("stylist123"),
                 "full_name": "Đỗ Hoàng An (Creative Stylist)",
                 "phone": "0945678901",
                 "role_id": roles_map["hairdresser"].id,
@@ -129,13 +129,13 @@ def seed_database():
                 db.add(existing)
                 db.flush()
 
-                # Add weekly schedule (Mon: Off, Tue-Sun: 8:30 - 20:00)
+                # Add weekly schedule (Mon: Off, Tue-Sun: 07:00 - 23:00)
                 for dow in range(7):
                     sched = Schedule(
                         hairdresser_id=existing.id,
                         day_of_week=dow,
-                        start_time=time(8, 30),
-                        end_time=time(20, 0),
+                        start_time=time(7, 0),
+                        end_time=time(23, 0),
                         is_day_off=(dow == 0) # Day off on Monday
                     )
                     db.add(sched)
@@ -245,28 +245,28 @@ def seed_database():
                 "phone": "0987654321",
                 "email": "bichphuong@gmail.com",
                 "gender": "Female",
-                "notes": "Khách quen, thích tone màu lạnh, da đầu hơi nhạy cảm với chất tẩy mạnh."
+                "hair_type_notes": "Khách quen, thích tone màu lạnh, da đầu hơi nhạy cảm với chất tẩy mạnh."
             },
             {
                 "full_name": "Trần Đức Anh",
                 "phone": "0976543210",
                 "email": "ducanh.tran@gmail.com",
                 "gender": "Male",
-                "notes": "Cắt fade sát 2 bên, uốn nhẹ mái texture."
+                "hair_type_notes": "Cắt fade sát 2 bên, uốn nhẹ mái texture."
             },
             {
                 "full_name": "Vũ Ngọc Ánh",
                 "phone": "0965432109",
                 "email": "ngocanh.vu@gmail.com",
                 "gender": "Female",
-                "notes": "Tóc từng tẩy 2 lần, cần chú ý phục hồi chuyên sâu trước khi uốn."
+                "hair_type_notes": "Tóc từng tẩy 2 lần, cần chú ý phục hồi chuyên sâu trước khi uốn."
             },
             {
                 "full_name": "Lê Quỳnh Trang",
                 "phone": "0954321098",
                 "email": "quynhtrang@gmail.com",
                 "gender": "Female",
-                "notes": "Thích phong cách uốn xoăn sóng Hàn Quốc."
+                "hair_type_notes": "Thích phong cách uốn xoăn sóng Hàn Quốc."
             }
         ]
         customers_map = {}
@@ -286,13 +286,13 @@ def seed_database():
             app_time_past = now - timedelta(days=3, hours=4)
             app1 = Appointment(
                 customer_id=customers_map["Nguyễn Bích Phương"].id,
-                hairdresser_id=hairdressers_map["Phạm Mai Linh"].id,
+                stylist_id=hairdressers_map["Phạm Mai Linh"].id,
                 booking_code="BKG-SEED01",
                 appointment_date=app_time_past,
                 end_time=app_time_past + timedelta(minutes=135),
                 status=AppointmentStatus.COMPLETED,
-                total_price=730000,
-                notes="Khách uốn sóng và cắt layer"
+                estimated_total=730000,
+                customer_note="Khách uốn sóng và cắt layer"
             )
             db.add(app1)
             db.flush()
@@ -330,13 +330,13 @@ def seed_database():
             # Service history
             hist1 = ServiceHistory(
                 customer_id=app1.customer_id,
-                hairdresser_id=app1.hairdresser_id,
+                hairdresser_id=app1.stylist_id,
                 appointment_id=app1.id,
-                service_names="Cắt Tóc Layer Nữ, Uốn Sóng Lơi Hàn Quốc",
+                technical_notes="Cắt Tóc Layer Nữ, Uốn Sóng Lơi Hàn Quốc",
                 formula_or_color_code="Trục uốn size 25mm, thuốc uốn Milbon số 1 (20 phút) + dập định hình số 2 (15 phút)",
                 notes="Khách rất ưng ý lọn sóng tự nhiên, dặn khách sấy cuộn tay về phía sau.",
                 cost=730000,
-                completed_at=app_time_past + timedelta(minutes=140)
+                recorded_at=app_time_past + timedelta(minutes=140)
             )
             db.add(hist1)
 
@@ -347,13 +347,13 @@ def seed_database():
             today_time = datetime(now.year, now.month, now.day, 14, 0, 0, tzinfo=timezone.utc)
             app2 = Appointment(
                 customer_id=customers_map["Trần Đức Anh"].id,
-                hairdresser_id=hairdressers_map["Đỗ Hoàng An"].id,
+                stylist_id=hairdressers_map["Đỗ Hoàng An"].id,
                 booking_code="BKG-SEED02",
                 appointment_date=today_time,
                 end_time=today_time + timedelta(minutes=95),
                 status=AppointmentStatus.CONFIRMED,
-                total_price=470000,
-                notes="Khách đặt qua public client, muốn cắt form Ivy League và uốn nhẹ phần mái"
+                estimated_total=470000,
+                customer_note="Khách đặt qua public client, muốn cắt form Ivy League và uốn nhẹ phần mái"
             )
             db.add(app2)
             db.flush()

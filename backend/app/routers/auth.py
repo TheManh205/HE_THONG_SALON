@@ -17,7 +17,10 @@ async def login(request: Request, db: Session = Depends(get_db)):
     """
     content_type = request.headers.get("content-type", "")
     if content_type.startswith("application/json"):
-        body = await request.json()
+        try:
+            body = await request.json()
+        except Exception:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Dữ liệu JSON không hợp lệ")
         login_data = LoginRequest(**body)
     else:
         form = await request.form()

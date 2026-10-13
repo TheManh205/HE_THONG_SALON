@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 import { Navbar } from './components/common/Navbar';
 import { Sidebar } from './components/common/Sidebar';
@@ -51,104 +52,106 @@ const AppLayout = ({ children }) => {
 
 export function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <Router>
-          <Routes>
-            {/* Public Booking Portal */}
-            <Route path="/booking" element={<PublicBookingPage />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <Router>
+            <Routes>
+              {/* Public Booking Portal */}
+              <Route path="/booking" element={<PublicBookingPage />} />
 
-            {/* Staff Login */}
-            <Route path="/login" element={<LoginPage />} />
+              {/* Staff Login */}
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* Protected Portal Routes */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <DashboardPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/appointments"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <AppointmentsPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/ai-hub"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <AIAssistantPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/customers"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'receptionist', 'hairdresser']}>
-                  <AppLayout>
-                    <CustomersPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/stylists"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <StylistsPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/services"
-              element={
-                <ProtectedRoute>
-                  <AppLayout>
-                    <ServicesPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/invoices"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'receptionist']}>
-                  <AppLayout>
-                    <InvoicesPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/analytics"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'receptionist']}>
-                  <AppLayout>
-                    <AnalyticsPage />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
+              {/* Protected Portal Routes */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <DashboardPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/appointments"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <AppointmentsPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ai-hub"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <AIAssistantPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/customers"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'receptionist', 'hairdresser']}>
+                    <AppLayout>
+                      <CustomersPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/stylists"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <StylistsPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/services"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <ServicesPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/invoices"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'receptionist']}>
+                    <AppLayout>
+                      <InvoicesPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/analytics"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'receptionist']}>
+                    <AppLayout>
+                      <AnalyticsPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Catch-all */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
-      </ToastProvider>
-    </AuthProvider>
+              {/* Catch-all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Router>
+        </ToastProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -27,27 +27,33 @@ export const ToastProvider = ({ children }) => {
       {/* Toast floating container */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 max-w-md w-full px-4 pointer-events-none">
         {toasts.map((toast) => {
-          let bg = 'bg-[#111111] border border-black/20 text-white';
-          let icon = <CheckCircle2 className="w-5 h-5 text-white shrink-0" />;
+          let borderClass = 'border-emerald-500/40';
+          let icon = <CheckCircle2 className="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />;
 
           if (toast.type === 'error') {
-            bg = 'bg-[#1f1f1f] border border-black/20 text-white';
-            icon = <AlertCircle className="w-5 h-5 text-white shrink-0" />;
-          } else if (toast.type === 'info') {
-            bg = 'bg-[#f5f5f3] border border-black/10 text-[#111111]';
-            icon = <Info className="w-5 h-5 text-[#111111] shrink-0" />;
+            borderClass = 'border-rose-500/40';
+            icon = <AlertCircle className="w-5 h-5 text-rose-500 dark:text-rose-400 shrink-0 mt-0.5" />;
+          } else if (toast.type === 'info' || toast.type === 'warning') {
+            borderClass = 'border-amber-500/40';
+            icon = <Info className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />;
           }
 
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl border backdrop-blur-md shadow-2xl transition-all duration-300 transform translate-y-0 ${bg}`}
+              className={`toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-xl transition-all duration-300 transform translate-y-0 bg-white dark:bg-slate-900 text-slate-900 dark:text-white ${borderClass}`}
+              style={{
+                boxShadow: '0 12px 30px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.2)',
+              }}
             >
               {icon}
-              <div className="flex-1 text-sm font-medium leading-relaxed">{toast.message}</div>
+              <div className="toast-text flex-1 text-sm font-semibold leading-relaxed text-slate-900 dark:text-white">
+                {toast.message}
+              </div>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="opacity-70 hover:opacity-100 transition-opacity p-0.5 rounded"
+                aria-label="Đóng thông báo"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors p-1 rounded-lg"
               >
                 <X className="w-4 h-4" />
               </button>

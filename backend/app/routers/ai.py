@@ -10,14 +10,27 @@ from app.schemas.ai import (
     AICareMessageRequest,
     AICareMessageResponse,
     AISummaryRequest,
-    AISummaryResponse
+    AISummaryResponse,
+    AIChatRequest,
+    AIChatResponse
 )
 from app.services.ai_service import AIService
 from app.services.auth_service import require_roles, get_current_user, get_optional_current_user
 
 router = APIRouter(prefix="/ai", tags=["AI Engine (Gemini Powered)"])
 
-@router.post("/recommend", response_model=AIRecommendationResponse)
+@router.post("/chat", response_model=AIChatResponse)
+def chat_ai(
+    request: AIChatRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Public Interactive AI Stylist Consultation Chatbot.
+    Enables customers to chat freely and get salon service recommendations.
+    """
+    return AIService.chat_consultation(db, request)
+
+@router.post("/consult", response_model=AIRecommendationResponse)
 def get_ai_recommendation(
     request: AIRecommendationRequest,
     db: Session = Depends(get_db),
@@ -37,7 +50,7 @@ def get_ai_recommendation(
         )
     return AIService.get_recommendations(db, request, current_user)
 
-@router.post("/generate-care-message", response_model=AICareMessageResponse)
+@router.post("/generate-reminder", response_model=AICareMessageResponse)
 def generate_care_message(
     request: AICareMessageRequest,
     db: Session = Depends(get_db),

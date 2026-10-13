@@ -12,7 +12,8 @@ class AuthService:
     @staticmethod
     def authenticate(db: Session, login_data: LoginRequest) -> Token:
         user = db.query(User).filter(User.username == login_data.username).first()
-        if not user or not verify_password(login_data.password, user.hashed_password):
+        pwd_hash = getattr(user, "password_hash", None) or getattr(user, "hashed_password", None)
+        if not user or not pwd_hash or not verify_password(login_data.password, pwd_hash):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Tài khoản hoặc mật khẩu không chính xác",

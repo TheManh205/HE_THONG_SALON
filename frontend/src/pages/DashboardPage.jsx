@@ -6,7 +6,7 @@ import { AppointmentBadge } from '../components/common/Badge';
 import HeroBanner from '../components/common/HeroBanner';
 import {
   DollarSign, Calendar, Clock, Users, Sparkles,
-  TrendingUp, ChevronRight, AlertCircle, ArrowUpRight
+  TrendingUp, ChevronRight, AlertCircle, ArrowUpRight, CheckCircle
 } from 'lucide-react';
 
 export const DashboardPage = () => {
@@ -145,6 +145,12 @@ export const DashboardPage = () => {
                         <span className="font-bold text-white truncate">{app.customer?.full_name}</span>
                         <span className="text-xs text-slate-400 font-mono">{app.customer?.phone}</span>
                         <AppointmentBadge status={app.status} />
+                        {app.is_paid && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                            <CheckCircle className="w-2.5 h-2.5" />
+                            Đã thanh toán
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center gap-3 text-xs text-slate-300">
                         <span className="text-amber-400 font-bold">

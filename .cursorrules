@@ -1,0 +1,31 @@
+# HETHONGSALON - CORE DEVELOPMENT RULES
+
+You are an AI assistant helping a developer build the THEMANH SALON system.
+When writing, refactoring, or generating code, you MUST adhere to the following rules:
+
+## 1. TECH STACK
+- **Backend:** FastAPI (Python), SQLAlchemy, Pydantic, SQLite.
+- **Frontend:** React 18 (Vite), TailwindCSS, Axios, React Router v6.
+
+## 2. DATABASE & ENTITY MANAGEMENT
+- **Strict Soft Delete:** For core entities like `Services`, `Hairdressers`, and `Users`, you MUST use Soft Delete (`is_active = False` or `deleted_at`).
+- **Hard Delete Prohibition:** NEVER write `DELETE FROM` SQL queries or `db.delete()` for these entities.
+- **Restore Capability:** Always provide a `PATCH /api/.../:id/restore` API endpoint to recover soft-deleted data.
+- **Filtering:** Public GET APIs must always filter by `is_active == True` by default.
+
+## 3. VALIDATION RULES
+- **Vietnamese Phone Number:** Any phone number input MUST be validated using the exact regex `/^(0[3|5|7|8|9])+([0-9]{8})$/`.
+- **Frontend:** Phone inputs must use `maxLength={10}` and validate on change/submit, displaying clear localized error messages below the input.
+- **Backend:** Pydantic schemas (DTOs) MUST include a `@field_validator` with the same regex to prevent invalid direct API requests.
+
+## 4. AI INTEGRATION & SECURITY (GEMINI)
+- **No Client-Side Secrets:** NEVER import `@google/generative-ai` in the React frontend. NEVER store or expose `VITE_GEMINI_API_KEY`.
+- **Backend Proxy Pattern:** Frontend must send AI requests to Backend endpoints (e.g., `/api/v1/ai/consult`). Backend handles the Gemini SDK call using backend `.env`.
+- **Fault Tolerance:** Every backend call to Gemini SDK MUST be wrapped in a `try-catch` block and executed via `ThreadPoolExecutor` with a strict `timeout` of 10 seconds.
+- **Fallback Logging:** If the AI call fails or times out, the backend MUST log a `FALLBACK` status to the `AI_LOGS` table and return a default safe response instead of crashing.
+
+## 5. AUTHENTICATION & SESSION
+- **JWT Storage:** JWT Tokens are stored in `localStorage` (`salon_token`).
+- **HTTP Interceptor:** The Axios instance must include a response interceptor to catch `401 Unauthorized` errors.
+- **Auto-Logout:** Upon catching a 401, the interceptor MUST clear the token from `localStorage`, set an `auth_error` flag, and redirect the user to `/login`.
+- **State Hydration:** Frontend must call `/auth/me` silently on load to verify token validity and restore the user session.

@@ -23,13 +23,13 @@ class Hairdresser(Base):
     service_histories = relationship("ServiceHistory", back_populates="hairdresser")
 
 class Schedule(Base):
-    __tablename__ = "schedules"
+    __tablename__ = "work_schedules"
 
     id = Column(Integer, primary_key=True, index=True)
     hairdresser_id = Column(Integer, ForeignKey("hairdressers.id"), nullable=False, index=True)
     day_of_week = Column(Integer, nullable=False) # 0: Monday, 1: Tuesday, ..., 6: Sunday
-    start_time = Column(Time, default=time(8, 30))
-    end_time = Column(Time, default=time(20, 0))
+    start_time = Column(Time, default=time(7, 0))
+    end_time = Column(Time, default=time(23, 0))
     is_day_off = Column(Boolean, default=False)
 
     hairdresser = relationship("Hairdresser", back_populates="schedules")
@@ -41,8 +41,8 @@ class DailySchedule(Base):
     id = Column(Integer, primary_key=True, index=True)
     hairdresser_id = Column(Integer, ForeignKey("hairdressers.id"), nullable=False, index=True)
     schedule_date = Column(Date, nullable=False, index=True)
-    start_time = Column(Time, default=time(8, 30))
-    end_time = Column(Time, default=time(20, 0))
+    start_time = Column(Time, default=time(7, 0))
+    end_time = Column(Time, default=time(23, 0))
     is_day_off = Column(Boolean, default=False)
 
     hairdresser = relationship("Hairdresser", backref="daily_schedules")
