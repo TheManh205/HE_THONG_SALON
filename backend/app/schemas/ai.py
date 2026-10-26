@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class RecommendedServiceItem(BaseModel):
     service_id: int
@@ -9,6 +9,7 @@ class RecommendedServiceItem(BaseModel):
     reason: str
 
 class AIRecommendationRequest(BaseModel):
+    model_config = ConfigDict(extra="allow")
     customer_id: Optional[int] = None
     customer_name: Optional[str] = None
     gender: Optional[str] = "Female"
@@ -24,6 +25,7 @@ class AIRecommendationResponse(BaseModel):
     home_care_tips: List[str]
 
 class AICareMessageRequest(BaseModel):
+    model_config = ConfigDict(extra="allow")
     customer_id: Optional[int] = None
     customer_name: str
     message_type: str # "REMINDER" (Nhắc lịch hẹn), "AFTERCARE" (Chăm sóc sau làm tóc), "RE_ENGAGE" (Ưu đãi quay lại)

@@ -17,6 +17,7 @@ import { ServicesPage } from './pages/ServicesPage';
 import { InvoicesPage } from './pages/InvoicesPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { AIAssistantPage } from './pages/AIAssistantPage';
+import { UsersPage } from './pages/UsersPage';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -140,6 +141,16 @@ export function App() {
                   <ProtectedRoute allowedRoles={['admin', 'receptionist']}>
                     <AppLayout>
                       <AnalyticsPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <AppLayout>
+                      <UsersPage />
                     </AppLayout>
                   </ProtectedRoute>
                 }

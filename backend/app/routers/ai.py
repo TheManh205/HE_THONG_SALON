@@ -31,6 +31,7 @@ def chat_ai(
     return AIService.chat_consultation(db, request)
 
 @router.post("/consult", response_model=AIRecommendationResponse)
+@router.post("/recommend", response_model=AIRecommendationResponse)
 def get_ai_recommendation(
     request: AIRecommendationRequest,
     db: Session = Depends(get_db),
@@ -51,6 +52,7 @@ def get_ai_recommendation(
     return AIService.get_recommendations(db, request, current_user)
 
 @router.post("/generate-reminder", response_model=AICareMessageResponse)
+@router.post("/generate-care-message", response_model=AICareMessageResponse)
 def generate_care_message(
     request: AICareMessageRequest,
     db: Session = Depends(get_db),

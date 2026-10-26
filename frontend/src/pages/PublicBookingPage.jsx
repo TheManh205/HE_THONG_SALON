@@ -608,7 +608,11 @@ export const PublicBookingPage = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Số điện thoại:</span>
-                      <span className="font-bold font-mono text-white">{bookingSuccess.customer?.phone}</span>
+                      <span className="font-bold font-mono text-white">
+                        {bookingSuccess.customer?.phone
+                          ? bookingSuccess.customer.phone.replace(/(\d{3})\d{4}(\d{3})/, '$1****$2')
+                          : ''}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Stylist:</span>

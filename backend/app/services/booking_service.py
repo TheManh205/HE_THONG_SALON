@@ -1,10 +1,22 @@
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, time, timezone
 import random
 import string
 from typing import List, Optional, Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_
 from fastapi import HTTPException, status
+
+try:
+    import zoneinfo
+    ICT_TZ = zoneinfo.ZoneInfo("Asia/Ho_Chi_Minh")
+except Exception:
+    ICT_TZ = timezone(timedelta(hours=7))
+
+def get_now_ict() -> datetime:
+    try:
+        return datetime.now(ICT_TZ).replace(tzinfo=None)
+    except Exception:
+        return datetime.now(timezone(timedelta(hours=7))).replace(tzinfo=None)
 
 from app.models.customer import Customer
 from app.models.hairdresser import Hairdresser, Schedule
@@ -130,8 +142,7 @@ class BookingService:
         exclude_appointment_id: Optional[int] = None
     ) -> OverlapCheckResponse:
         """Check whether requested time slot is valid and free for the stylist."""
-        import zoneinfo
-        now_ict = datetime.now(zoneinfo.ZoneInfo("Asia/Ho_Chi_Minh")).replace(tzinfo=None)
+        now_ict = get_now_ict()
         if start_time < now_ict:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

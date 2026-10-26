@@ -69,6 +69,14 @@ export const analyticsAPI = {
   getCustomerRetention: () => api.get('/analytics/customer-retention'),
 };
 
+export const userAPI = {
+  getAll: () => api.get('/users/'),
+  getRoles: () => api.get('/users/roles'),
+  create: (data) => api.post('/users/', data),
+  update: (id, data) => api.put(`/users/${id}`, data),
+  delete: (id) => api.delete(`/users/${id}`),
+};
+
 export const aiAPI = {
   chat: (data) => api.post('/ai/chat', data),
   getRecommendations: (data) => api.post('/ai/consult', data),

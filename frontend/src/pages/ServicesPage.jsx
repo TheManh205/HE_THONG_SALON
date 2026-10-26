@@ -132,11 +132,11 @@ export const ServicesPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-serif-salon text-slate-100 flex items-center gap-2.5">
-            <Scissors className="w-6 h-6 text-salon-primary" />
+          <h1 className="text-2xl font-bold font-serif-salon text-slate-900 dark:text-slate-100 flex items-center gap-2.5">
+            <Scissors className="w-6 h-6 text-amber-500" />
             Danh Mục Dịch Vụ Salon
           </h1>
-          <p className="text-xs text-salon-muted mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Quản lý bảng giá, thời lượng từng dịch vụ và cấu hình AI recommendation
           </p>
         </div>
@@ -144,7 +144,7 @@ export const ServicesPage = () => {
         {isAdmin && (
           <button
             onClick={openCreateModal}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs bg-salon-primary text-black hover:bg-salon-primaryHover shadow-glow-gold transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs bg-amber-500 text-slate-950 hover:bg-amber-400 shadow-glow-gold transition-all"
           >
             <Plus className="w-4 h-4" /> Thêm Dịch Vụ Mới
           </button>
@@ -152,16 +152,16 @@ export const ServicesPage = () => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="glass-panel p-4 rounded-2xl border border-salon-border/60 flex flex-col sm:flex-row gap-4 items-center justify-between">
+      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm dark:bg-slate-800/90 dark:border-slate-700 dark:shadow-card-dark flex flex-col sm:flex-row gap-4 items-center justify-between transition-colors">
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 selectedCategory === cat
-                  ? 'bg-salon-primary text-black shadow-glow-gold'
-                  : 'bg-salon-card text-slate-300 hover:bg-slate-800 border border-salon-border'
+                  ? 'bg-amber-500 text-slate-950 font-black shadow-glow-gold'
+                  : 'bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 hover:text-slate-900 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white'
               }`}
             >
               {cat}
@@ -169,14 +169,14 @@ export const ServicesPage = () => {
           ))}
         </div>
 
-        <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        <div className="relative w-full sm:w-72">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Tìm tên dịch vụ..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-slate-900/80 border border-salon-border text-xs text-slate-100"
+            className="w-full pl-10 pr-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-slate-500 dark:focus:border-amber-400 transition-colors"
           />
         </div>
       </div>
@@ -184,31 +184,31 @@ export const ServicesPage = () => {
       {/* Services Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {loading ? (
-          <div className="col-span-full py-12 text-center text-salon-muted text-sm">Đang tải dịch vụ...</div>
+          <div className="col-span-full py-12 text-center text-slate-500 dark:text-slate-400 text-sm">Đang tải dịch vụ...</div>
         ) : (
           filteredServices.map((s) => (
             <div
               key={s.id}
-              className={`glass-panel rounded-2xl p-5 border transition-all flex flex-col justify-between ${
-                s.is_active ? 'border-salon-border/60 hover:border-slate-600' : 'border-rose-500/20 opacity-60'
+              className={`rounded-2xl p-5 border transition-all flex flex-col justify-between bg-white border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-md dark:bg-slate-800 dark:border-slate-700 dark:hover:border-slate-600 dark:shadow-card-dark ${
+                s.is_active ? '' : 'opacity-60 border-rose-300 dark:border-rose-500/20'
               }`}
             >
               <div className="space-y-3">
                 <div className="flex justify-between items-start">
-                  <span className="px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-bold uppercase">
+                  <span className="px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-700 border border-purple-200 dark:bg-purple-500/15 dark:text-purple-300 dark:border-purple-500/30 text-[10px] font-bold uppercase">
                     {s.category}
                   </span>
                   {isAdmin && (
                     <div className="flex items-center gap-1">
                       {!s.is_active && (
-                        <span className="px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[10px] font-bold uppercase mr-2">
+                        <span className="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-600 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/30 text-[10px] font-bold uppercase mr-2">
                           Đã ngưng
                         </span>
                       )}
                       <button
                         title="Sửa"
                         onClick={() => openEditModal(s)}
-                        className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 transition-colors"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
@@ -216,7 +216,7 @@ export const ServicesPage = () => {
                         <button
                           title="Ngừng cung cấp"
                           onClick={() => handleDelete(s.id)}
-                          className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-rose-500/10"
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:text-slate-400 dark:hover:text-rose-400 dark:hover:bg-rose-500/10 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -224,7 +224,7 @@ export const ServicesPage = () => {
                         <button
                           title="Khôi phục"
                           onClick={() => handleRestore(s.id)}
-                          className="p-1 rounded text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10"
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:text-slate-400 dark:hover:text-emerald-400 dark:hover:bg-emerald-500/10 transition-colors"
                         >
                           <RefreshCw className="w-3.5 h-3.5" />
                         </button>
@@ -234,19 +234,19 @@ export const ServicesPage = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-base text-slate-100">{s.name}</h3>
-                  <p className="text-xs text-salon-muted line-clamp-2 mt-1">
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white">{s.name}</h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mt-1">
                     {s.description || 'Dịch vụ chuẩn salon cao cấp.'}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 mt-4 border-t border-salon-border/40 text-xs">
-                <span className="font-extrabold text-base text-amber-300">
+              <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-200 dark:border-slate-700/60 text-xs">
+                <span className="font-extrabold text-base text-amber-600 dark:text-amber-400">
                   {s.price.toLocaleString('vi-VN')} VND
                 </span>
-                <span className="text-slate-400 flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-slate-500" />
+                <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
+                  <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                   {s.duration_minutes} phút
                 </span>
               </div>
@@ -263,23 +263,23 @@ export const ServicesPage = () => {
       >
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">Tên Dịch Vụ *</label>
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tên Dịch Vụ *</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-salon-border text-xs text-slate-100"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Danh Mục</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Danh Mục</label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-salon-border text-xs text-slate-100"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 focus:outline-none focus:border-amber-500 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100"
               >
                 <option value="Cắt & Tạo kiểu">Cắt & Tạo kiểu</option>
                 <option value="Uốn & Duỗi">Uốn & Duỗi</option>
@@ -288,7 +288,7 @@ export const ServicesPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Giá Tiền (VND) *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Giá Tiền (VND) *</label>
               <input
                 type="number"
                 required
@@ -296,11 +296,11 @@ export const ServicesPage = () => {
                 step={10000}
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-salon-border text-xs text-slate-100"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Thời Lượng (Phút) *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Thời Lượng (Phút) *</label>
               <input
                 type="number"
                 required
@@ -308,26 +308,26 @@ export const ServicesPage = () => {
                 step={5}
                 value={formData.duration_minutes}
                 onChange={(e) => setFormData({ ...formData, duration_minutes: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-salon-border text-xs text-slate-100"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">Mô Tả Chi Tiết</label>
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Mô Tả Chi Tiết</label>
             <textarea
               rows={3}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-salon-border text-xs text-slate-100"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t border-salon-border/50">
+          <div className="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-slate-700/60">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300"
+              className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
             >
               Hủy
             </button>

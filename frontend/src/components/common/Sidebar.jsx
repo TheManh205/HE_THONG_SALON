@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import {
   LayoutDashboard, Calendar, Users, Scissors,
-  Sparkles, Receipt, BarChart3, UserCheck, Globe, X
+  Sparkles, Receipt, BarChart3, UserCheck, Globe, X, Shield
 } from 'lucide-react';
 
 export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
@@ -18,6 +18,7 @@ export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
     { to: '/services', label: 'Dịch Vụ Salon', icon: Scissors, roles: ['admin', 'receptionist', 'hairdresser'] },
     { to: '/invoices', label: 'Hóa Đơn & Doanh Thu', icon: Receipt, roles: ['admin', 'receptionist'] },
     { to: '/analytics', label: 'Báo Cáo & Thống Kê', icon: BarChart3, roles: ['admin'] },
+    { to: '/users', label: 'Tài Khoản & Quyền (RBAC)', icon: Shield, roles: ['admin'] },
   ];
 
   const sidebarContent = (

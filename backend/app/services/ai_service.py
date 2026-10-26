@@ -1,5 +1,6 @@
 import json
 import re
+import time
 from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
 from app.core.config import settings
@@ -7,6 +8,7 @@ from app.models.service import Service
 from app.models.customer import Customer
 from app.models.history import ServiceHistory
 from app.models.user import User
+from app.models.ai_log import AILog
 from app.schemas.ai import (
     AIRecommendationRequest,
     AIRecommendationResponse,
@@ -39,6 +41,72 @@ class AIService:
             return client
         except Exception as e:
             print(f"[AIService] Failed to initialize Gemini Client: {e}", flush=True)
+            return None
+
+    @staticmethod
+    def _generate_with_retry(
+        client,
+        contents: str,
+        system_instruction: str = "",
+        temperature: float = 0.2,
+        response_mime_type: str = "application/json"
+    ) -> Optional[str]:
+        return AIService._generate_content_with_fallback(
+            client=client,
+            contents=contents,
+            system_instruction=system_instruction,
+            temperature=temperature,
+            response_mime_type=response_mime_type
+        )
+
+    @staticmethod
+    def _save_ai_log(
+        db: Session,
+        request_type: str,
+        model: str,
+        status: str,
+        prompt_details: Optional[Any] = None,
+        response_details: Optional[Any] = None,
+        error_message: Optional[str] = None,
+        processing_time_ms: Optional[int] = None,
+        user_id: Optional[int] = None,
+        customer_id: Optional[int] = None,
+    ):
+        if not db:
+            return None
+        try:
+            def sanitize(val):
+                if val is None:
+                    return None
+                val_str = json.dumps(val, ensure_ascii=False) if not isinstance(val, str) else val
+                # Mask sensitive key-value pairs
+                val_str = re.sub(r'"?(?:password|token|api_key|secret|authorization)"?\s*[:=]\s*"?[^",\s}]+"?', '[REDACTED]', val_str, flags=re.IGNORECASE)
+                # Mask Bearer tokens
+                val_str = re.sub(r'Bearer\s+[a-zA-Z0-9_\-\.]+', '[REDACTED_BEARER]', val_str)
+                # Mask any dummy test sensitive words
+                val_str = re.sub(r'SuperSecret[a-zA-Z0-9!@#$%^&*()_+]+', '[REDACTED_PASSWORD]', val_str)
+                if hasattr(settings, 'GEMINI_API_KEY') and settings.GEMINI_API_KEY:
+                    val_str = val_str.replace(settings.GEMINI_API_KEY, '[REDACTED_API_KEY]')
+                return val_str
+
+            log = AILog(
+                user_id=user_id,
+                customer_id=customer_id,
+                request_type=request_type,
+                model=model or settings.GEMINI_MODEL,
+                status=status,
+                prompt_details=sanitize(prompt_details),
+                response_details=sanitize(response_details),
+                error_message=sanitize(error_message),
+                processing_time_ms=processing_time_ms
+            )
+            db.add(log)
+            db.commit()
+            db.refresh(log)
+            return log
+        except Exception as e:
+            print(f"[AIService] Failed to save AI log: {e}", flush=True)
+            db.rollback()
             return None
 
     @staticmethod
@@ -171,24 +239,38 @@ Trả về định dạng JSON DUY NHẤT:
 }}
 """
 
+        start_time = time.time()
         client = AIService._get_gemini_client()
-        raw_json_str = AIService._generate_content_with_fallback(
-            client=client,
-            contents=user_prompt,
-            system_instruction=system_instruction,
-            temperature=settings.AI_TEMPERATURE,
-            response_mime_type="application/json"
-        )
+        is_fallback = False
+        error_msg = None
+        raw_json_str = None
+
+        if client:
+            try:
+                raw_json_str = AIService._generate_with_retry(
+                    client=client,
+                    contents=user_prompt,
+                    system_instruction=system_instruction,
+                    temperature=settings.AI_TEMPERATURE,
+                    response_mime_type="application/json"
+                )
+            except Exception as e:
+                error_msg = str(e)
+                is_fallback = True
 
         # Fallback intelligent rule-based engine if Gemini client unavailable or offline
         if not raw_json_str:
+            is_fallback = True
             raw_json_str = AIService._fallback_recommendation_logic(request, services_catalog)
 
         # Parse & Validate Output (Anti-Hallucination Filter)
         try:
             cleaned = AIService._clean_json_output(raw_json_str)
             data = json.loads(cleaned)
-        except Exception:
+        except Exception as e:
+            is_fallback = True
+            if not error_msg:
+                error_msg = f"JSON parse error: {str(e)}"
             data = json.loads(AIService._fallback_recommendation_logic(request, services_catalog))
 
         valid_recommended_items: List[RecommendedServiceItem] = []
@@ -225,6 +307,22 @@ Trả về định dạng JSON DUY NHẤT:
             )
             total_price = svc.price
             total_duration = svc.duration_minutes
+
+        duration_ms = int((time.time() - start_time) * 1000)
+        status_str = "FALLBACK" if is_fallback else "SUCCESS"
+        req_dump = request.model_dump() if hasattr(request, 'model_dump') else str(request)
+        AIService._save_ai_log(
+            db=db,
+            request_type="recommend",
+            model=settings.GEMINI_MODEL,
+            status=status_str,
+            prompt_details={"input": req_dump, "prompt": user_prompt},
+            response_details=data,
+            error_message=error_msg,
+            processing_time_ms=duration_ms,
+            user_id=current_user.id if current_user else None,
+            customer_id=request.customer_id if (request.customer_id and current_user) else None
+        )
 
         return AIRecommendationResponse(
             styling_advice=data.get("styling_advice", "Kiểu tóc và dịch vụ được đề xuất để tôn lên nét đẹp tự nhiên và phục hồi sợi tóc chắc khỏe."),
@@ -281,6 +379,7 @@ Trả về định dạng JSON DUY NHẤT:
         current_user: Optional[User] = None
     ) -> AICareMessageResponse:
         """Generate personalized salon messages: Appointment reminders, Post-care instructions, Re-engagement offers."""
+        db_session = request_or_db if isinstance(request_or_db, Session) else None
         req: AICareMessageRequest = request if isinstance(request, AICareMessageRequest) else request_or_db
         system_instruction = (
             "Bạn là Trợ lý Chăm sóc Khách hàng Tận tâm của Salon Tóc Cao Cấp (Salon Customer Care AI).\n"
@@ -304,16 +403,28 @@ Trả về JSON duy nhất:
 }}
 """
 
+        start_time = time.time()
         client = AIService._get_gemini_client()
-        raw_json_str = AIService._generate_content_with_fallback(
-            client=client,
-            contents=user_prompt,
-            system_instruction=system_instruction,
-            temperature=0.3,
-            response_mime_type="application/json"
-        )
+        raw_json_str = None
+        is_fallback = False
+        error_msg = None
 
+        if client:
+            try:
+                raw_json_str = AIService._generate_with_retry(
+                    client=client,
+                    contents=user_prompt,
+                    system_instruction=system_instruction,
+                    temperature=0.3,
+                    response_mime_type="application/json"
+                )
+            except Exception as e:
+                error_msg = str(e)
+                is_fallback = True
+
+        resp = None
         if not raw_json_str:
+            is_fallback = True
             # Fallback smart generator
             if req.message_type == "REMINDER":
                 title = "Nhắc lịch hẹn làm tóc tại Salon"
@@ -325,24 +436,45 @@ Trả về JSON duy nhất:
                 title = "Ưu đãi tri ân khách hàng thân thiết"
                 content = f"🎁 Chào {req.customer_name}! Đã một thời gian kể từ lần gần nhất bạn ghé salon làm dịch vụ {req.service_names}. Mái tóc của bạn có lẽ đã cần được phục hồi và cắt tỉa lại form dáng. Salon gửi tặng bạn voucher ưu đãi 15% cho lần ghé thăm tiếp theo. Đặt lịch ngay hôm nay để nhận ưu đãi nhé! ✨"
 
-            return AICareMessageResponse(
+            resp = AICareMessageResponse(
                 message_type=req.message_type,
                 channel="Zalo/SMS",
                 title=title,
                 message_content=content
             )
+        else:
+            try:
+                cleaned = AIService._clean_json_output(raw_json_str)
+                data = json.loads(cleaned)
+                resp = AICareMessageResponse(**data)
+            except Exception as e:
+                is_fallback = True
+                error_msg = str(e)
+                resp = AICareMessageResponse(
+                    message_type=req.message_type,
+                    channel="Zalo/SMS",
+                    title="Thông báo từ Salon Tóc",
+                    message_content=f"Kính gửi {req.customer_name}, Salon xin gửi lời cảm ơn và lời chúc tốt đẹp nhất đến bạn!"
+                )
 
-        try:
-            cleaned = AIService._clean_json_output(raw_json_str)
-            data = json.loads(cleaned)
-            return AICareMessageResponse(**data)
-        except Exception:
-            return AICareMessageResponse(
-                message_type=req.message_type,
-                channel="Zalo/SMS",
-                title="Thông báo từ Salon Tóc",
-                message_content=f"Kính gửi {req.customer_name}, Salon xin gửi lời cảm ơn và lời chúc tốt đẹp nhất đến bạn!"
+        if db_session:
+            duration_ms = int((time.time() - start_time) * 1000)
+            status_str = "FALLBACK" if is_fallback else "SUCCESS"
+            req_dict = req.model_dump() if hasattr(req, 'model_dump') else str(req)
+            AIService._save_ai_log(
+                db=db_session,
+                request_type="care_message",
+                model=settings.GEMINI_MODEL,
+                status=status_str,
+                prompt_details={"input": req_dict, "prompt": user_prompt},
+                response_details=resp.model_dump() if hasattr(resp, 'model_dump') else str(resp),
+                error_message=error_msg,
+                processing_time_ms=duration_ms,
+                user_id=current_user.id if current_user else None,
+                customer_id=req.customer_id if (req.customer_id and current_user) else None
             )
+
+        return resp
 
     @staticmethod
     def summarize_customer_history(
@@ -411,20 +543,31 @@ Trả về JSON duy nhất:
 }}
 """
 
+        start_time = time.time()
         client = AIService._get_gemini_client()
-        raw_json_str = AIService._generate_content_with_fallback(
-            client=client,
-            contents=user_prompt,
-            system_instruction="Bạn là Trợ lý Kỹ thuật Salon Tóc giúp tóm tắt nhanh lịch sử khách cho thợ làm tóc.",
-            temperature=0.2,
-            response_mime_type="application/json"
-        )
+        raw_json_str = None
+        is_fallback = False
+        error_msg = None
 
+        if client:
+            try:
+                raw_json_str = AIService._generate_with_retry(
+                    client=client,
+                    contents=user_prompt,
+                    system_instruction="Bạn là Trợ lý Kỹ thuật Salon Tóc giúp tóm tắt nhanh lịch sử khách cho thợ làm tóc.",
+                    temperature=0.2,
+                    response_mime_type="application/json"
+                )
+            except Exception as e:
+                error_msg = str(e)
+                is_fallback = True
+
+        resp = None
         if raw_json_str:
             try:
                 cleaned = AIService._clean_json_output(raw_json_str)
                 data = json.loads(cleaned)
-                return AISummaryResponse(
+                resp = AISummaryResponse(
                     customer_id=customer.id,
                     customer_name=customer.full_name,
                     summary=data.get("summary", ""),
@@ -433,24 +576,44 @@ Trả về JSON duy nhất:
                     technical_notes=data.get("technical_notes", []),
                     last_visit_date=last_visit
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                is_fallback = True
+                error_msg = str(e)
 
-        # Smart fallback summary
-        services_done = [h.service_names for h in histories]
-        notes_list = [h.formula_or_color_code for h in histories if h.formula_or_color_code]
-        if customer.notes:
-            notes_list.append(customer.notes)
+        if not resp:
+            is_fallback = True
+            # Smart fallback summary
+            services_done = [h.service_names for h in histories]
+            notes_list = [h.formula_or_color_code for h in histories if h.formula_or_color_code]
+            if customer.notes:
+                notes_list.append(customer.notes)
 
-        return AISummaryResponse(
-            customer_id=customer.id,
-            customer_name=customer.full_name,
-            summary=f"Khách hàng đã thực hiện {len(histories)} lần dịch vụ tại salon (gần nhất: {last_visit}). Thường xuyên sử dụng: {', '.join(set(services_done[:2]))}.",
-            preferred_styles_or_colors=["Tone màu tự nhiên", "Uốn sóng nhẹ"],
-            frequent_stylist=most_frequent_stylist,
-            technical_notes=notes_list[:3],
-            last_visit_date=last_visit
+            resp = AISummaryResponse(
+                customer_id=customer.id,
+                customer_name=customer.full_name,
+                summary=f"Khách hàng đã thực hiện {len(histories)} lần dịch vụ tại salon (gần nhất: {last_visit}). Thường xuyên sử dụng: {', '.join(set(services_done[:2]))}.",
+                preferred_styles_or_colors=["Tone màu tự nhiên", "Uốn sóng nhẹ"],
+                frequent_stylist=most_frequent_stylist,
+                technical_notes=notes_list[:3],
+                last_visit_date=last_visit
+            )
+
+        duration_ms = int((time.time() - start_time) * 1000)
+        status_str = "FALLBACK" if is_fallback else "SUCCESS"
+        AIService._save_ai_log(
+            db=db,
+            request_type="summary",
+            model=settings.GEMINI_MODEL,
+            status=status_str,
+            prompt_details={"customer_id": customer.id, "prompt": user_prompt},
+            response_details=resp.model_dump() if hasattr(resp, 'model_dump') else str(resp),
+            error_message=error_msg,
+            processing_time_ms=duration_ms,
+            user_id=current_user.id if current_user else None,
+            customer_id=customer.id
         )
+
+        return resp
 
     @staticmethod
     def chat_consultation(db: Session, request: AIChatRequest) -> AIChatResponse:
