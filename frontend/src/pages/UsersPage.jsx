@@ -148,16 +148,49 @@ export const UsersPage = () => {
     }
   };
 
-  const filteredUsers = users.filter((u) => {
-    const matchesSearch =
-      (u.full_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (u.username || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (u.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (u.phone || '').includes(searchQuery);
+  const getUserRoleName = (u) => {
+    // 1. If role is string (e.g. "admin", "receptionist", "hairdresser")
+    if (typeof u?.role === 'string' && u.role.trim()) {
+      return u.role.trim();
+    }
+    // 2. If role is object with name property
+    if (u?.role && typeof u.role === 'object' && u.role.name) {
+      return u.role.name;
+    }
+    // 3. Match from roles list by role_id
+    if (u?.role_id && Array.isArray(roles) && roles.length > 0) {
+      const foundRole = roles.find((r) => r.id === u.role_id);
+      if (foundRole?.name) return foundRole.name;
+    }
+    // 4. Fallback to role_name property if present
+    if (u?.role_name) {
+      return u.role_name;
+    }
+    return '';
+  };
 
+  const filteredUsers = users.filter((u) => {
+    const q = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      (u.full_name || '').toLowerCase().includes(q) ||
+      (u.username || '').toLowerCase().includes(q) ||
+      (u.email || '').toLowerCase().includes(q) ||
+      (u.phone || '').includes(q);
+
+    if (roleFilter === 'ALL') {
+      return matchesSearch;
+    }
+
+    const userRoleStr = getUserRoleName(u).toLowerCase();
+    const targetFilter = roleFilter.toLowerCase();
+
+    // Check by role name (exact or substring match) or role_id
     const matchesRole =
-      roleFilter === 'ALL' ||
-      (u.role?.name || u.role_name || '').toLowerCase() === roleFilter.toLowerCase();
+      userRoleStr === targetFilter ||
+      userRoleStr.includes(targetFilter) ||
+      targetFilter.includes(userRoleStr) ||
+      String(u.role_id) === String(roleFilter);
 
     return matchesSearch && matchesRole;
   });
@@ -178,9 +211,16 @@ export const UsersPage = () => {
         </span>
       );
     }
+    if (name.includes('hairdresser') || name.includes('thợ') || name.includes('stylist')) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black bg-blue-500/15 text-blue-400 border border-blue-500/30">
+          <User className="w-3 h-3" /> Thợ làm tóc (Hairdresser)
+        </span>
+      );
+    }
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black bg-blue-500/15 text-blue-400 border border-blue-500/30">
-        <User className="w-3 h-3" /> Stylist / Thợ
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black bg-slate-500/15 text-slate-300 border border-slate-500/30">
+        <User className="w-3 h-3" /> {roleName || 'Nhân viên'}
       </span>
     );
   };
@@ -227,12 +267,33 @@ export const UsersPage = () => {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:border-amber-400"
+            className="bg-slate-900 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:border-amber-400 cursor-pointer"
           >
             <option value="ALL">Tất cả vai trò</option>
-            <option value="admin">Quản lý (Admin)</option>
-            <option value="receptionist">Lễ tân (Receptionist)</option>
-            <option value="hairdresser">Thợ làm tóc (Hairdresser)</option>
+            {roles && roles.length > 0 ? (
+              roles.map((r) => {
+                const roleKey = (r.name || '').toLowerCase();
+                let label = r.description || r.name;
+                if (roleKey.includes('admin') || roleKey.includes('quản lý')) {
+                  label = 'Quản lý (Admin)';
+                } else if (roleKey.includes('receptionist') || roleKey.includes('lễ tân')) {
+                  label = 'Lễ tân (Receptionist)';
+                } else if (roleKey.includes('hairdresser') || roleKey.includes('thợ') || roleKey.includes('stylist')) {
+                  label = 'Thợ làm tóc (Hairdresser)';
+                }
+                return (
+                  <option key={r.id} value={r.name.toLowerCase()}>
+                    {label}
+                  </option>
+                );
+              })
+            ) : (
+              <>
+                <option value="admin">Quản lý (Admin)</option>
+                <option value="receptionist">Lễ tân (Receptionist)</option>
+                <option value="hairdresser">Thợ làm tóc (Hairdresser)</option>
+              </>
+            )}
           </select>
         </div>
       </div>
@@ -265,8 +326,7 @@ export const UsersPage = () => {
                 </tr>
               ) : (
                 filteredUsers.map((u) => {
-                  const roleObj = roles.find((r) => r.id === u.role_id);
-                  const roleName = roleObj?.name || u.role?.name || u.role_name || 'Staff';
+                  const roleName = getUserRoleName(u) || 'Staff';
 
                   return (
                     <tr key={u.id} className="hover:bg-slate-700/30 transition-colors">
